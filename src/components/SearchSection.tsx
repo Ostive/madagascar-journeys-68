@@ -79,9 +79,9 @@ const SearchSection = () => {
               <Users className="text-emerald" />
               <select className="flex-1 p-2 border rounded">
                 <option>Tous les budgets</option>
-                <option>< 1000€</option>
+                <option>{"< 1000€"}</option>
                 <option>1000€ - 2000€</option>
-                <option>> 2000€</option>
+                <option>{"> 2000€"}</option>
               </select>
             </div>
             <div className="flex items-center space-x-2">
