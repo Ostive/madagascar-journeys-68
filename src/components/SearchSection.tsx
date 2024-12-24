@@ -1,6 +1,8 @@
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
-import { Search, MapPin, Calendar, Users, Filter } from "lucide-react";
+import { Search, MapPin, Calendar, Users } from "lucide-react";
+import { Input } from "./ui/input";
+import { Select } from "./ui/select";
 
 const destinations = [
   {
@@ -37,64 +39,52 @@ const SearchSection = () => {
     <section className="py-20 bg-gray-50" id="circuits">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-poppins font-bold text-dark text-center mb-4">
-          Nos Circuits
+          Trouvez votre voyage idéal
         </h2>
         <p className="text-lg text-dark/70 text-center mb-12 font-opensans">
           Des itinéraires soigneusement conçus pour une expérience inoubliable
         </p>
 
-        {/* Search Filters */}
+        {/* New Search UI */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="flex items-center space-x-2">
-              <Filter className="text-emerald" />
-              <select className="flex-1 p-2 border rounded">
-                <option>Type de voyage</option>
-                <option>Aventure</option>
-                <option>Culture</option>
-                <option>Détente</option>
-                <option>Nature</option>
-              </select>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <label className="font-medium">Destination</label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Input 
+                  placeholder="Où souhaitez-vous aller ?" 
+                  className="pl-10"
+                />
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <MapPin className="text-emerald" />
-              <select className="flex-1 p-2 border rounded">
-                <option>Toutes les régions</option>
-                <option>Nord</option>
-                <option>Sud</option>
-                <option>Est</option>
-                <option>Ouest</option>
-              </select>
+            
+            <div className="space-y-2">
+              <label className="font-medium">Date de départ</label>
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Input 
+                  type="date"
+                  placeholder="dd/mm/yyyy"
+                  className="pl-10"
+                />
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Calendar className="text-emerald" />
-              <select className="flex-1 p-2 border rounded">
-                <option>Toutes les durées</option>
-                <option>1 semaine</option>
-                <option>2 semaines</option>
-                <option>3 semaines</option>
-              </select>
+            
+            <div className="space-y-2">
+              <label className="font-medium">Voyageurs</label>
+              <div className="relative">
+                <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Select>
+                  <option>1 personne</option>
+                  <option>2 personnes</option>
+                  <option>3 personnes</option>
+                  <option>4 personnes ou plus</option>
+                </Select>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Users className="text-emerald" />
-              <select className="flex-1 p-2 border rounded">
-                <option>Tous les budgets</option>
-                <option>{"< 1000€"}</option>
-                <option>1000€ - 2000€</option>
-                <option>{"> 2000€"}</option>
-              </select>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Calendar className="text-emerald" />
-              <select className="flex-1 p-2 border rounded">
-                <option>Toutes les saisons</option>
-                <option>Printemps</option>
-                <option>Été</option>
-                <option>Automne</option>
-                <option>Hiver</option>
-              </select>
-            </div>
-            <Button className="w-full bg-emerald hover:bg-emerald/90">
+
+            <Button className="bg-emerald hover:bg-emerald/90 h-[40px] mt-auto">
               <Search className="mr-2 h-4 w-4" />
               Rechercher
             </Button>
