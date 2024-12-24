@@ -1,24 +1,25 @@
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
 
 const destinations = [
   {
     title: "Nosy Be",
     description: "Plages paradisiaques et eaux cristallines",
     price: "1200",
-    image: "https://images.unsplash.com/photo-1580650587430-3d6c10b86e8f?w=800&auto=format&fit=crop"
+    image: "/images/nosy-be.jpg"
   },
   {
     title: "Parc National d'Isalo",
     description: "Canyons spectaculaires et randonnées inoubliables",
     price: "800",
-    image: "https://images.unsplash.com/photo-1580650587430-3d6c10b86e8f?w=800&auto=format&fit=crop"
+    image: "/images/isalo.jpg"
   },
   {
     title: "Allée des Baobabs",
     description: "Paysages iconiques et couchers de soleil magiques",
     price: "600",
-    image: "https://images.unsplash.com/photo-1580650587430-3d6c10b86e8f?w=800&auto=format&fit=crop"
+    image: "/images/baobabs.jpg"
   }
 ];
 
@@ -65,9 +66,11 @@ const DestinationsSection = () => {
         </div>
         
         <div className="mt-12 text-center">
-          <Button variant="outline" className="hover:bg-emerald hover:text-white">
-            Voir toutes les destinations
-          </Button>
+          <Link to="/destinations">
+            <Button variant="outline" className="hover:bg-emerald hover:text-white">
+              Voir toutes les destinations
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
