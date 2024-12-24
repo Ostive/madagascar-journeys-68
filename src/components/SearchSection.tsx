@@ -45,7 +45,7 @@ const SearchSection = () => {
           Des itinéraires soigneusement conçus pour une expérience inoubliable
         </p>
 
-        {/* New Search UI */}
+        {/* Search UI */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
@@ -65,7 +65,6 @@ const SearchSection = () => {
                 <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <Input 
                   type="date"
-                  placeholder="dd/mm/yyyy"
                   className="pl-10"
                 />
               </div>
@@ -75,7 +74,7 @@ const SearchSection = () => {
               <label className="font-medium">Voyageurs</label>
               <div className="relative">
                 <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                <Select>
+                <Select className="pl-10">
                   <option>1 personne</option>
                   <option>2 personnes</option>
                   <option>3 personnes</option>
@@ -84,10 +83,12 @@ const SearchSection = () => {
               </div>
             </div>
 
-            <Button className="bg-emerald hover:bg-emerald/90 h-[40px] mt-auto">
-              <Search className="mr-2 h-4 w-4" />
-              Rechercher
-            </Button>
+            <div className="flex items-end">
+              <Button className="w-full bg-emerald hover:bg-emerald/90">
+                <Search className="mr-2 h-4 w-4" />
+                Rechercher
+              </Button>
+            </div>
           </div>
         </div>
 
