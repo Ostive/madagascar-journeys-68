@@ -2,7 +2,13 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Search, MapPin, Calendar, Users } from "lucide-react";
 import { Input } from "./ui/input";
-import { Select } from "./ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 const destinations = [
   {
@@ -74,11 +80,16 @@ const SearchSection = () => {
               <label className="font-medium">Voyageurs</label>
               <div className="relative">
                 <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                <Select className="pl-10">
-                  <option>1 personne</option>
-                  <option>2 personnes</option>
-                  <option>3 personnes</option>
-                  <option>4 personnes ou plus</option>
+                <Select>
+                  <SelectTrigger className="pl-10">
+                    <SelectValue placeholder="Nombre de voyageurs" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 personne</SelectItem>
+                    <SelectItem value="2">2 personnes</SelectItem>
+                    <SelectItem value="3">3 personnes</SelectItem>
+                    <SelectItem value="4">4 personnes ou plus</SelectItem>
+                  </SelectContent>
                 </Select>
               </div>
             </div>
