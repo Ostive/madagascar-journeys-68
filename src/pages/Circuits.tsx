@@ -84,9 +84,9 @@ const CircuitsPage = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les prix</SelectItem>
-                <SelectItem value="budget">< 1000€</SelectItem>
+                <SelectItem value="budget">Moins de 1000€</SelectItem>
                 <SelectItem value="mid">1000€ - 2000€</SelectItem>
-                <SelectItem value="luxury">> 2000€</SelectItem>
+                <SelectItem value="luxury">Plus de 2000€</SelectItem>
               </SelectContent>
             </Select>
 
