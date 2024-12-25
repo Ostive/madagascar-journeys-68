@@ -3,28 +3,28 @@ import TopBar from "@/components/TopBar";
 import Footer from "@/components/Footer";
 import { Users, Award, BookOpen, History } from "lucide-react";
 
-const AboutUs = () => {
-  const team = [
-    {
-      name: "Jean Dupont",
-      role: "Fondateur & CEO",
-      image: "/placeholder.svg",
-      description: "20 ans d'expérience dans le tourisme à Madagascar"
-    },
-    {
-      name: "Marie Laurent",
-      role: "Directrice des Opérations",
-      image: "/placeholder.svg",
-      description: "Experte en logistique et organisation de voyages"
-    },
-    {
-      name: "Pierre Martin",
-      role: "Guide Senior",
-      image: "/placeholder.svg",
-      description: "Guide certifié avec plus de 500 circuits réalisés"
-    }
-  ];
+const team = [
+  {
+    name: "Jean Dupont",
+    role: "Fondateur & CEO",
+    image: "/lovable-uploads/e33ed146-65bb-44b8-9251-84d03d375284.png",
+    description: "20 ans d'expérience dans le tourisme à Madagascar"
+  },
+  {
+    name: "Marie Laurent",
+    role: "Directrice des Opérations",
+    image: "/lovable-uploads/b33d8cd1-7240-4e19-8051-c0c3dc7afd42.png",
+    description: "Experte en logistique et organisation de voyages"
+  },
+  {
+    name: "Pierre Martin",
+    role: "Guide Senior",
+    image: "/lovable-uploads/e33ed146-65bb-44b8-9251-84d03d375284.png",
+    description: "Guide certifié avec plus de 500 circuits réalisés"
+  }
+];
 
+const AboutUs = () => {
   return (
     <div className="min-h-screen">
       <TopBar />
@@ -91,11 +91,13 @@ const AboutUs = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {team.map((member) => (
               <div key={member.name} className="bg-white p-6 rounded-lg shadow-md">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-                />
+                <div className="w-32 h-32 mx-auto mb-4 overflow-hidden rounded-full">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <h3 className="text-xl font-poppins font-semibold text-center mb-2">{member.name}</h3>
                 <p className="text-emerald text-center mb-3 font-opensans">{member.role}</p>
                 <p className="text-dark/70 text-center font-opensans">{member.description}</p>
