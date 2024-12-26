@@ -56,7 +56,7 @@ const DestinationsSection = () => {
                   <p className="text-lg font-semibold text-emerald">
                     À partir de {destination.price}€
                   </p>
-                  <Button variant="outline" className="hover:bg-emerald hover:text-white">
+                  <Button variant="outline" className="hover:bg-emerald hover:text-white rounded-full">
                     En savoir plus
                   </Button>
                 </div>

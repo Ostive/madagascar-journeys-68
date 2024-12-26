@@ -40,7 +40,7 @@ const Header = () => {
                 {item.label}
               </Link>
             ))}
-            <Button className="bg-emerald hover:bg-emerald/90">
+            <Button className="bg-emerald rounded-full hover:bg-emerald/90">
               Réserver maintenant
             </Button>
           </nav>
