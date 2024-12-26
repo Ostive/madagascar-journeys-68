@@ -17,7 +17,7 @@ const destinations = [
     difficulty: "Facile",
     price: "299",
     type: "Nature",
-    image: "/lovable-uploads/e33ed146-65bb-44b8-9251-84d03d375284.png"
+    image: "https://images.unsplash.com/photo-1472396961693-142e6e269027"
   },
   {
     title: "Allée des Baobabs",
@@ -26,7 +26,7 @@ const destinations = [
     difficulty: "Facile",
     price: "199",
     type: "Paysage",
-    image: "/lovable-uploads/e33ed146-65bb-44b8-9251-84d03d375284.png"
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb"
   },
   {
     title: "Nosy Be",

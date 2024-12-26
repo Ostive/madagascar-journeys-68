@@ -17,7 +17,7 @@ const circuits = [
     persons: "4-12 personnes",
     price: "2499",
     rating: "4.8",
-    image: "/lovable-uploads/b33d8cd1-7240-4e19-8051-c0c3dc7afd42.png"
+    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e"
   },
   {
     title: "Route du Sud",
