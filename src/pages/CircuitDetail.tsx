@@ -13,31 +13,57 @@ import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const CircuitDetail = () => {
   const { id } = useParams();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Fetch main circuit data
   const { data: circuit, isLoading } = useQuery({
     queryKey: ['circuit', id],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First try to find by slug (id parameter)
+      const { data: circuitByTitle, error: titleError } = await supabase
         .from('circuits')
         .select('*')
-        .eq('id', id)
+        .ilike('title', id?.replace(/-/g, ' ') || '')
         .single();
 
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Failed to load circuit details",
-          variant: "destructive",
-        });
-        throw error;
+      if (circuitByTitle) {
+        return circuitByTitle;
       }
 
-      return data;
+      // If not found by title, try as UUID (for backward compatibility)
+      if (id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+        const { data: circuitById, error } = await supabase
+          .from('circuits')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          toast({
+            title: "Error",
+            description: "Circuit non trouvé",
+            variant: "destructive",
+          });
+          navigate('/circuits');
+          throw error;
+        }
+
+        return circuitById;
+      }
+
+      // If neither found
+      toast({
+        title: "Error",
+        description: "Circuit non trouvé",
+        variant: "destructive",
+      });
+      navigate('/circuits');
+      throw new Error("Circuit not found");
     },
   });
 
@@ -90,7 +116,7 @@ const CircuitDetail = () => {
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900">Circuit not found</h1>
-            <p className="mt-2 text-gray-600">The circuit you're looking for doesn't exist.</p>
+            <p className="mt-2 text-gray-600">Le circuit que vous recherchez n'existe pas.</p>
           </div>
         </div>
       </div>
