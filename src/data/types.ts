@@ -18,21 +18,21 @@ export interface Circuit {
   id: string;
   title: string;
   description: string;
-  longDescription: string;
+  long_description: string | null;
   duration: string;
   persons: string;
   price: string;
   rating: string;
-  dateRange: string;
+  date_range: string;
   image: string;
-  gallery: string[];
+  gallery: string[] | null;
   itinerary: {
     day: number;
     title: string;
     description: string;
-  }[];
-  included: string[];
-  notIncluded: string[];
+  }[] | null;
+  included: string[] | null;
+  not_included: string[] | null;
   difficulty: string;
 }
 

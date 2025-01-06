@@ -2,24 +2,7 @@ import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
-
-interface Circuit {
-  id: string;
-  title: string;
-  image: string;
-  date_range: string;
-  price: string;
-  rating: string;
-  description: string;
-  long_description: string | null;
-  duration: string;
-  persons: string;
-  gallery: string[] | null;
-  itinerary: any[] | null;
-  included: string[] | null;
-  not_included: string[] | null;
-  difficulty: string;
-}
+import { Circuit } from "@/data/types";
 
 interface CircuitCardProps {
   circuit: Circuit;
