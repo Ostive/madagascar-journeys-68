@@ -2,34 +2,33 @@ import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Circuit } from '@/data/types';
+
+interface Circuit {
+  id: string;
+  title: string;
+  image: string;
+  date_range: string;
+  price: string;
+  rating: string;
+  description: string;
+  long_description: string | null;
+  duration: string;
+  persons: string;
+  gallery: string[] | null;
+  itinerary: any[] | null;
+  included: string[] | null;
+  not_included: string[] | null;
+  difficulty: string;
+}
 
 interface CircuitCardProps {
-  circuit?: Circuit;
+  circuit: Circuit;
   className?: string;
   compact?: boolean;
 }
 
-const sampleCircuit: Circuit = {
-  id: "1",
-  title: "Bali Tour Package",
-  image: "/api/placeholder/400/500",
-  dateRange: "23 AUGUST - 29 AUGUST",
-  price: "285",
-  rating: "4.8",
-  description: "",
-  longDescription: "",
-  duration: "7 days",
-  persons: "2-4",
-  gallery: [],
-  itinerary: [],
-  included: [],
-  notIncluded: [],
-  difficulty: "moderate"
-};
-
 const CircuitCard = ({ 
-  circuit = sampleCircuit,
+  circuit,
   className = "",
   compact = false
 }: CircuitCardProps) => {
@@ -51,7 +50,7 @@ const CircuitCard = ({
         {/* Top Content */}
         <div className="absolute top-3 left-3 right-3 flex justify-between items-start text-white">
           <span className="text-sm bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-            7 Days
+            {circuit.duration}
           </span>
           <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -62,7 +61,7 @@ const CircuitCard = ({
         {/* Bottom Content */}
         <div className="absolute bottom-3 left-3 right-3 text-white">
           <div className="text-xs mb-1 opacity-90">
-            {circuit.dateRange}
+            {circuit.date_range}
           </div>
           <div className="flex justify-between items-end">
             <h3 className="text-lg font-semibold">

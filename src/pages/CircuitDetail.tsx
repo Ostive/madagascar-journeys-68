@@ -1,29 +1,101 @@
 import { useParams } from "react-router-dom";
-import { circuits } from "@/data/data";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Check, X } from "lucide-react";
 import Header from "@/components/Header";
 import TopBar from "@/components/TopBar";
 import Footer from "@/components/Footer";
 import CircuitCard from "@/components/cards/CircuitCard";
-import { useState } from "react";
 import FAQ from "@/components/FAQ";
 import GalleryGrid from "@/components/GaleryGrid";
 import CardCarousel from "@/components/CardCarousel";
 import ReservationCard from "@/components/reservation/ReservationCard";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const CircuitDetail = () => {
   const { id } = useParams();
-  const circuit = circuits.find((c) => c.id === id);
+  const { toast } = useToast();
 
-  if (!circuit) {
-    return <div>Circuit non trouvé</div>;
+  // Fetch main circuit data
+  const { data: circuit, isLoading } = useQuery({
+    queryKey: ['circuit', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('circuits')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load circuit details",
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      return data;
+    },
+  });
+
+  // Fetch similar circuits
+  const { data: similarCircuits } = useQuery({
+    queryKey: ['similar-circuits', circuit?.difficulty],
+    enabled: !!circuit,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('circuits')
+        .select('*')
+        .eq('difficulty', circuit.difficulty)
+        .neq('id', circuit.id)
+        .limit(3);
+
+      if (error) {
+        console.error('Error fetching similar circuits:', error);
+        return [];
+      }
+
+      return data;
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <TopBar />
+        <Header />
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+            <div className="h-96 bg-gray-200 rounded mb-8"></div>
+            <div className="space-y-4">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  const similarCircuits = circuits
-    .filter((c) => c.id !== circuit.id && c.difficulty === circuit.difficulty)
-    .slice(0, 3);
+  if (!circuit) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <TopBar />
+        <Header />
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900">Circuit not found</h1>
+            <p className="mt-2 text-gray-600">The circuit you're looking for doesn't exist.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const faqs = [
     {
@@ -64,7 +136,7 @@ const CircuitDetail = () => {
           <h1 className="text-3xl font-bold">{circuit.title}</h1>
         </motion.div>
 
-        <GalleryGrid images={circuit.gallery} title={circuit.title} />
+        <GalleryGrid images={circuit.gallery || []} title={circuit.title} />
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:pt-8">
@@ -81,7 +153,7 @@ const CircuitDetail = () => {
                   <h2 className="text-2xl font-semibold">Overview</h2>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600">{circuit.longDescription}</p>
+                  <p className="text-gray-600">{circuit.long_description || circuit.description}</p>
                 </CardContent>
               </Card>
 
@@ -89,7 +161,7 @@ const CircuitDetail = () => {
               <Card className="p-6 mb-8">
                 <h2 className="text-2xl font-semibold mb-6">Itinéraire</h2>
                 <div className="space-y-6">
-                  {circuit.itinerary.map((day) => (
+                  {(circuit.itinerary || []).map((day: any) => (
                     <div key={day.day} className="border-l-2 border-emerald pl-4">
                       <h3 className="text-lg font-semibold mb-2">
                         Jour {day.day} - {day.title}
@@ -108,7 +180,7 @@ const CircuitDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {circuit.included.map((item, index) => (
+                      {(circuit.included || []).map((item: string, index: number) => (
                         <li key={index} className="flex items-center gap-2">
                           <Check className="text-emerald w-4 h-4" />
                           <span>{item}</span>
@@ -124,7 +196,7 @@ const CircuitDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {circuit.notIncluded.map((item, index) => (
+                      {(circuit.not_included || []).map((item: string, index: number) => (
                         <li key={index} className="flex items-center gap-2">
                           <X className="text-red-500 w-4 h-4" />
                           <span>{item}</span>
@@ -143,12 +215,14 @@ const CircuitDetail = () => {
               </Card>
 
               {/* Similar Circuits */}
-              <CardCarousel
-                items={similarCircuits}
-                CardComponent={CircuitCard}
-                itemPropName="circuit"
-                title="Circuits similaires"
-              />
+              {similarCircuits && similarCircuits.length > 0 && (
+                <CardCarousel
+                  items={similarCircuits}
+                  CardComponent={CircuitCard}
+                  itemPropName="circuit"
+                  title="Circuits similaires"
+                />
+              )}
             </motion.div>
           </div>
 
