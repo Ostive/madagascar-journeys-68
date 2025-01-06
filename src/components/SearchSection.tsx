@@ -1,21 +1,13 @@
 import { Card } from "./ui/card";
 import { Search, MapPin, Calendar, Users } from "lucide-react";
-import { Input } from "./ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
 import { Button } from "./ui/button";
 
 const SearchSection = () => {
   return (
-    <div className="bg-white rounded-lg shadow-xl p-6 max-w-4xl">
+    <Card className="w-full max-w-4xl bg-white/95 backdrop-blur-md p-6 rounded-xl shadow-xl">
       <form className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
             Destination
           </label>
           <div className="relative">
@@ -23,31 +15,31 @@ const SearchSection = () => {
             <input
               type="text"
               placeholder="Où souhaitez-vous aller ?"
-              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald focus:border-emerald"
             />
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
             Date de départ
           </label>
           <div className="relative">
             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="date"
-              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald focus:border-emerald"
             />
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
             Voyageurs
           </label>
           <div className="relative">
             <Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-            <select className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <select className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald focus:border-emerald appearance-none">
               <option>1 personne</option>
               <option>2 personnes</option>
               <option>3 personnes</option>
@@ -56,17 +48,20 @@ const SearchSection = () => {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            &nbsp;
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700 invisible">
+            Rechercher
           </label>
-          <button className="w-full bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-600/90 transition-colors flex items-center justify-center gap-2">
+          <Button 
+            type="submit"
+            className="w-full bg-emerald hover:bg-emerald/90 text-white py-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+          >
             <Search size={20} />
             Rechercher
-          </button>
+          </Button>
         </div>
       </form>
-    </div>
+    </Card>
   );
 };
 
