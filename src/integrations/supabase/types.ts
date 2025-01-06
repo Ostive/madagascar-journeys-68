@@ -9,6 +9,156 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          date: string
+          excerpt: string
+          id: string
+          image: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          content: string
+          created_at?: string
+          date: string
+          excerpt: string
+          id?: string
+          image: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          date?: string
+          excerpt?: string
+          id?: string
+          image?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      circuits: {
+        Row: {
+          created_at: string
+          date_range: string
+          description: string
+          difficulty: string
+          duration: string
+          gallery: string[] | null
+          id: string
+          image: string
+          included: string[] | null
+          itinerary: Json[] | null
+          long_description: string | null
+          not_included: string[] | null
+          persons: string
+          price: string
+          rating: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date_range: string
+          description: string
+          difficulty: string
+          duration: string
+          gallery?: string[] | null
+          id?: string
+          image: string
+          included?: string[] | null
+          itinerary?: Json[] | null
+          long_description?: string | null
+          not_included?: string[] | null
+          persons: string
+          price: string
+          rating: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date_range?: string
+          description?: string
+          difficulty?: string
+          duration?: string
+          gallery?: string[] | null
+          id?: string
+          image?: string
+          included?: string[] | null
+          itinerary?: Json[] | null
+          long_description?: string | null
+          not_included?: string[] | null
+          persons?: string
+          price?: string
+          rating?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      destinations: {
+        Row: {
+          best_time_to_visit: string | null
+          created_at: string
+          description: string
+          duration: string
+          gallery: string[] | null
+          highlights: string[] | null
+          id: string
+          image: string
+          included: string[] | null
+          location: string
+          long_description: string | null
+          not_included: string[] | null
+          price: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          best_time_to_visit?: string | null
+          created_at?: string
+          description: string
+          duration: string
+          gallery?: string[] | null
+          highlights?: string[] | null
+          id?: string
+          image: string
+          included?: string[] | null
+          location: string
+          long_description?: string | null
+          not_included?: string[] | null
+          price: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          best_time_to_visit?: string | null
+          created_at?: string
+          description?: string
+          duration?: string
+          gallery?: string[] | null
+          highlights?: string[] | null
+          id?: string
+          image?: string
+          included?: string[] | null
+          location?: string
+          long_description?: string | null
+          not_included?: string[] | null
+          price?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       quiz_responses: {
         Row: {
           activities: string[] | null

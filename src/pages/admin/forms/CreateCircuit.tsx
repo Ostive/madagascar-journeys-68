@@ -4,8 +4,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { circuits } from "@/data/circuits";
 import { ArrowLeft } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useMutation } from "@tanstack/react-query";
 
 const CreateCircuit = () => {
   const navigate = useNavigate();
@@ -16,34 +17,55 @@ const CreateCircuit = () => {
   const [persons, setPersons] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+  const [dateRange, setDateRange] = useState("");
+  const [difficulty, setDifficulty] = useState("");
+
+  const createMutation = useMutation({
+    mutationFn: async (formData: any) => {
+      const { error } = await supabase
+        .from('circuits')
+        .insert([formData]);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Circuit created",
+        description: "The circuit has been successfully created.",
+      });
+      navigate('/admin/circuit');
+    },
+    onError: (error) => {
+      console.error('Error creating circuit:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create circuit. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const newCircuit = {
-      id: title.toLowerCase().replace(/\s+/g, '-'),
+    const formData = {
       title,
       description,
-      longDescription: description,
+      long_description: description,
       duration,
       persons,
       price,
       rating: "4.5",
-      dateRange: "Toute l'année",
+      date_range: dateRange,
       image,
       gallery: [image],
       itinerary: [],
       included: [],
-      notIncluded: [],
-      difficulty: "Facile",
+      not_included: [],
+      difficulty,
     };
 
-    circuits.push(newCircuit);
-    toast({
-      title: "Circuit created",
-      description: "The circuit has been successfully created.",
-    });
-    navigate('/admin/circuit');
+    createMutation.mutate(formData);
   };
 
   return (
@@ -108,6 +130,26 @@ const CreateCircuit = () => {
         </div>
 
         <div className="space-y-2">
+          <label className="text-sm font-medium">Date Range</label>
+          <Input
+            value={dateRange}
+            onChange={(e) => setDateRange(e.target.value)}
+            placeholder="Enter date range"
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Difficulty</label>
+          <Input
+            value={difficulty}
+            onChange={(e) => setDifficulty(e.target.value)}
+            placeholder="Enter difficulty level"
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
           <label className="text-sm font-medium">Image URL</label>
           <Input
             value={image}
@@ -117,7 +159,9 @@ const CreateCircuit = () => {
           />
         </div>
 
-        <Button type="submit">Create Circuit</Button>
+        <Button type="submit" disabled={createMutation.isPending}>
+          {createMutation.isPending ? "Creating..." : "Create Circuit"}
+        </Button>
       </form>
     </div>
   );

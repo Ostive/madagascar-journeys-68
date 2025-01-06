@@ -4,8 +4,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { destinations } from "@/data/destinations";
 import { ArrowLeft } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useMutation } from "@tanstack/react-query";
 
 const CreateDestination = () => {
   const navigate = useNavigate();
@@ -16,15 +17,40 @@ const CreateDestination = () => {
   const [location, setLocation] = useState("");
   const [duration, setDuration] = useState("");
   const [image, setImage] = useState("");
+  const [bestTimeToVisit, setBestTimeToVisit] = useState("");
+
+  const createMutation = useMutation({
+    mutationFn: async (formData: any) => {
+      const { error } = await supabase
+        .from('destinations')
+        .insert([formData]);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Destination created",
+        description: "The destination has been successfully created.",
+      });
+      navigate('/admin/destination');
+    },
+    onError: (error) => {
+      console.error('Error creating destination:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create destination. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const newDestination = {
-      id: title.toLowerCase().replace(/\s+/g, '-'),
+    const formData = {
       title,
       description,
-      longDescription: description,
+      long_description: description,
       price,
       location,
       duration,
@@ -32,16 +58,11 @@ const CreateDestination = () => {
       gallery: [image],
       highlights: [],
       included: [],
-      notIncluded: [],
-      bestTimeToVisit: "",
+      not_included: [],
+      best_time_to_visit: bestTimeToVisit,
     };
 
-    destinations.push(newDestination);
-    toast({
-      title: "Destination created",
-      description: "The destination has been successfully created.",
-    });
-    navigate('/admin/destination');
+    createMutation.mutate(formData);
   };
 
   return (
@@ -106,6 +127,15 @@ const CreateDestination = () => {
         </div>
 
         <div className="space-y-2">
+          <label className="text-sm font-medium">Best Time to Visit</label>
+          <Input
+            value={bestTimeToVisit}
+            onChange={(e) => setBestTimeToVisit(e.target.value)}
+            placeholder="Enter best time to visit"
+          />
+        </div>
+
+        <div className="space-y-2">
           <label className="text-sm font-medium">Image URL</label>
           <Input
             value={image}
@@ -115,7 +145,9 @@ const CreateDestination = () => {
           />
         </div>
 
-        <Button type="submit">Create Destination</Button>
+        <Button type="submit" disabled={createMutation.isPending}>
+          {createMutation.isPending ? "Creating..." : "Create Destination"}
+        </Button>
       </form>
     </div>
   );

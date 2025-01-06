@@ -1,24 +1,58 @@
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { circuits } from "@/data/circuits";
 import { Plus, Pencil, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const AdminCircuit = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const handleDelete = (id: string) => {
-    const index = circuits.findIndex(circuit => circuit.id === id);
-    if (index !== -1) {
-      circuits.splice(index, 1);
+  const { data: circuits, isLoading } = useQuery({
+    queryKey: ['circuits'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('circuits')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('circuits')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['circuits'] });
       toast({
         title: "Circuit deleted",
         description: "The circuit has been successfully deleted.",
       });
-    }
-  };
+    },
+    onError: (error) => {
+      console.error('Error deleting circuit:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete circuit. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto p-8">
@@ -42,7 +76,7 @@ const AdminCircuit = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {circuits.map((circuit) => (
+            {circuits?.map((circuit) => (
               <TableRow key={circuit.id}>
                 <TableCell className="font-medium">{circuit.title}</TableCell>
                 <TableCell>{circuit.duration}</TableCell>
@@ -60,7 +94,7 @@ const AdminCircuit = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => handleDelete(circuit.id)}
+                      onClick={() => deleteMutation.mutate(circuit.id)}
                     >
                       <Trash className="h-4 w-4" />
                     </Button>
