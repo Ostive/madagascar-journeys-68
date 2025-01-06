@@ -1,110 +1,184 @@
-import { useToast } from "@/components/ui/use-toast";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Pencil, Trash } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Pencil, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+interface Circuit {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  price: string;
+  created_at: string;
+}
 
 const AdminCircuit = () => {
-  const navigate = useNavigate();
+  const [circuits, setCircuits] = useState<Circuit[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
-  const { data: circuits, isLoading } = useQuery({
-    queryKey: ['circuits'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('circuits')
-        .select('*')
-        .order('created_at', { ascending: false });
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || user.email !== 'admin@example.com') {
+        toast({
+          title: "Accès refusé",
+          description: "Vous n'avez pas les droits d'accès à cette page.",
+          variant: "destructive",
+        });
+        navigate("/");
+      }
+    };
+    
+    checkAdmin();
+  }, [toast, navigate]);
 
-      if (error) throw error;
-      return data;
-    },
-  });
+  // Fetch circuits
+  useEffect(() => {
+    const fetchCircuits = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('circuits')
+          .select('id, title, description, duration, price, created_at')
+          .order('created_at', { ascending: false });
 
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
+        if (error) throw error;
+        setCircuits(data || []);
+      } catch (error) {
+        console.error('Error fetching circuits:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les circuits.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCircuits();
+  }, [toast]);
+
+  const handleDelete = async (id: string) => {
+    try {
       const { error } = await supabase
         .from('circuits')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['circuits'] });
+
+      setCircuits(circuits.filter(circuit => circuit.id !== id));
       toast({
-        title: "Circuit deleted",
-        description: "The circuit has been successfully deleted.",
+        title: "Circuit supprimé",
+        description: "Le circuit a été supprimé avec succès.",
       });
-    },
-    onError: (error) => {
+    } catch (error) {
       console.error('Error deleting circuit:', error);
       toast({
-        title: "Error",
-        description: "Failed to delete circuit. Please try again.",
+        title: "Erreur",
+        description: "Impossible de supprimer le circuit.",
         variant: "destructive",
       });
-    },
-  });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+    }
+  };
 
   return (
     <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Admin - Manage Circuits</h1>
-        <Button onClick={() => navigate('/admin/circuit/create')}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create New Circuit
+        <h1 className="text-3xl font-bold">Gestion des Circuits</h1>
+        <Button onClick={() => navigate("/admin/circuit/create")}>
+          Créer un nouveau circuit
         </Button>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
+      {isLoading ? (
+        <div className="text-center">Chargement...</div>
+      ) : (
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Duration</TableHead>
-              <TableHead>Persons</TableHead>
-              <TableHead>Price</TableHead>
+              <TableHead>Titre</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Durée</TableHead>
+              <TableHead>Prix</TableHead>
+              <TableHead>Date de création</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {circuits?.map((circuit) => (
+            {circuits.map((circuit) => (
               <TableRow key={circuit.id}>
-                <TableCell className="font-medium">{circuit.title}</TableCell>
+                <TableCell>{circuit.title}</TableCell>
+                <TableCell className="max-w-md truncate">
+                  {circuit.description}
+                </TableCell>
                 <TableCell>{circuit.duration}</TableCell>
-                <TableCell>{circuit.persons}</TableCell>
-                <TableCell>{circuit.price}</TableCell>
+                <TableCell>{circuit.price} €</TableCell>
                 <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => navigate(`/admin/circuit/edit/${circuit.id}`)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => deleteMutation.mutate(circuit.id)}
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  {new Date(circuit.created_at).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="space-x-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigate(`/admin/circuit/edit/${circuit.id}`)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" size="icon">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Êtes-vous sûr de vouloir supprimer ce circuit ? Cette action est irréversible.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDelete(circuit.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Supprimer
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </div>
+      )}
     </div>
   );
 };
