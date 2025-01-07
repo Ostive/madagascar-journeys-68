@@ -24,6 +24,7 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import CreateBlog from "./pages/admin/forms/CreateBlog";
 import CreateDestination from "./pages/admin/forms/CreateDestination";
 import CreateCircuit from "./pages/admin/forms/CreateCircuit";
+import EditCircuit from "./pages/admin/forms/EditCircuit";
 import { AdminLayout } from "./components/layouts/AdminLayout";
 
 const queryClient = new QueryClient();
@@ -56,6 +57,7 @@ const App = () => (
               <Route path="/admin/destination/create" element={<CreateDestination />} />
               <Route path="/admin/circuit" element={<AdminCircuit />} />
               <Route path="/admin/circuit/create" element={<CreateCircuit />} />
+              <Route path="/admin/circuit/edit/:id" element={<EditCircuit />} />
               <Route path="/admin/bookings" element={<AdminBookings />} />
               <Route path="/admin/users" element={<AdminUsers />} />
               <Route path="/admin/settings" element={<AdminSettings />} />

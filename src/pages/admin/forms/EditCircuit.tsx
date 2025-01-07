@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Label } from "@/components/ui/label";
 import { 
   Select,
@@ -16,7 +16,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const CreateCircuit = () => {
+const EditCircuit = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -39,29 +40,47 @@ const CreateCircuit = () => {
   const [newNotIncluded, setNewNotIncluded] = useState("");
   const [newGalleryImage, setNewGalleryImage] = useState("");
 
-  const createMutation = useMutation({
+  const { data: circuit, isLoading } = useQuery({
+    queryKey: ['circuit', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('circuits')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  useEffect(() => {
+    if (circuit) {
+      setFormData(circuit);
+    }
+  }, [circuit]);
+
+  const updateMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
       const { error } = await supabase
         .from('circuits')
-        .insert([{
-          ...data,
-          rating: "0",
-        }]);
+        .update(data)
+        .eq('id', id);
       
       if (error) throw error;
     },
     onSuccess: () => {
       toast({
-        title: "Circuit créé",
-        description: "Le circuit a été créé avec succès.",
+        title: "Circuit mis à jour",
+        description: "Le circuit a été mis à jour avec succès.",
       });
       navigate('/admin/circuit');
     },
     onError: (error) => {
-      console.error('Error creating circuit:', error);
+      console.error('Error updating circuit:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de créer le circuit. Veuillez réessayer.",
+        description: "Impossible de mettre à jour le circuit. Veuillez réessayer.",
         variant: "destructive",
       });
     },
@@ -76,7 +95,7 @@ const CreateCircuit = () => {
     if (newIncluded.trim()) {
       setFormData(prev => ({
         ...prev,
-        included: [...prev.included, newIncluded.trim()]
+        included: [...(prev.included || []), newIncluded.trim()]
       }));
       setNewIncluded("");
     }
@@ -86,7 +105,7 @@ const CreateCircuit = () => {
     if (newNotIncluded.trim()) {
       setFormData(prev => ({
         ...prev,
-        not_included: [...prev.not_included, newNotIncluded.trim()]
+        not_included: [...(prev.not_included || []), newNotIncluded.trim()]
       }));
       setNewNotIncluded("");
     }
@@ -96,7 +115,7 @@ const CreateCircuit = () => {
     if (newGalleryImage.trim()) {
       setFormData(prev => ({
         ...prev,
-        gallery: [...prev.gallery, newGalleryImage.trim()]
+        gallery: [...(prev.gallery || []), newGalleryImage.trim()]
       }));
       setNewGalleryImage("");
     }
@@ -104,8 +123,12 @@ const CreateCircuit = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createMutation.mutate(formData);
+    updateMutation.mutate(formData);
   };
+
+  if (isLoading) {
+    return <div>Chargement...</div>;
+  }
 
   return (
     <div className="container mx-auto p-8">
@@ -114,7 +137,7 @@ const CreateCircuit = () => {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Retour à la liste des circuits
         </Button>
-        <h1 className="text-3xl font-bold">Créer un nouveau circuit</h1>
+        <h1 className="text-3xl font-bold">Modifier le circuit</h1>
       </div>
       
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
@@ -144,7 +167,7 @@ const CreateCircuit = () => {
           <Label>Description longue</Label>
           <Textarea
             name="long_description"
-            value={formData.long_description}
+            value={formData.long_description || ""}
             onChange={handleChange}
             placeholder="Entrez la description détaillée"
             required
@@ -236,7 +259,7 @@ const CreateCircuit = () => {
             </Button>
           </div>
           <div className="mt-2">
-            {formData.gallery.map((img, index) => (
+            {formData.gallery?.map((img, index) => (
               <div key={index} className="flex items-center gap-2 mt-1">
                 <span className="text-sm">{img}</span>
                 <Button
@@ -246,7 +269,7 @@ const CreateCircuit = () => {
                   onClick={() => {
                     setFormData(prev => ({
                       ...prev,
-                      gallery: prev.gallery.filter((_, i) => i !== index)
+                      gallery: prev.gallery?.filter((_, i) => i !== index)
                     }));
                   }}
                 >
@@ -270,7 +293,7 @@ const CreateCircuit = () => {
             </Button>
           </div>
           <div className="mt-2">
-            {formData.included.map((item, index) => (
+            {formData.included?.map((item, index) => (
               <div key={index} className="flex items-center gap-2 mt-1">
                 <span className="text-sm">{item}</span>
                 <Button
@@ -280,7 +303,7 @@ const CreateCircuit = () => {
                   onClick={() => {
                     setFormData(prev => ({
                       ...prev,
-                      included: prev.included.filter((_, i) => i !== index)
+                      included: prev.included?.filter((_, i) => i !== index)
                     }));
                   }}
                 >
@@ -304,7 +327,7 @@ const CreateCircuit = () => {
             </Button>
           </div>
           <div className="mt-2">
-            {formData.not_included.map((item, index) => (
+            {formData.not_included?.map((item, index) => (
               <div key={index} className="flex items-center gap-2 mt-1">
                 <span className="text-sm">{item}</span>
                 <Button
@@ -314,7 +337,7 @@ const CreateCircuit = () => {
                   onClick={() => {
                     setFormData(prev => ({
                       ...prev,
-                      not_included: prev.not_included.filter((_, i) => i !== index)
+                      not_included: prev.not_included?.filter((_, i) => i !== index)
                     }));
                   }}
                 >
@@ -328,13 +351,13 @@ const CreateCircuit = () => {
         <Button
           type="submit"
           className="w-full"
-          disabled={createMutation.isPending}
+          disabled={updateMutation.isPending}
         >
-          {createMutation.isPending ? "Création en cours..." : "Créer le circuit"}
+          {updateMutation.isPending ? "Mise à jour en cours..." : "Mettre à jour le circuit"}
         </Button>
       </form>
     </div>
   );
 };
 
-export default CreateCircuit;
+export default EditCircuit;
