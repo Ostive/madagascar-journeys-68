@@ -1,41 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { supabase } from "@/integrations/supabase/client";
 
 const AdminSettings = () => {
   const { toast } = useToast();
   const [emailNotifications, setEmailNotifications] = useState(true);
-  const [siteName, setSiteName] = useState("Ostive Travel");
-  const [contactEmail, setContactEmail] = useState("contact@ostive.com");
+  const [siteName, setSiteName] = useState("Madagascar Travel");
+  const [contactEmail, setContactEmail] = useState("contact@madagascartravel.com");
   const [isLoading, setIsLoading] = useState(false);
-
-  // Check if user is admin
-  useEffect(() => {
-    const checkAdmin = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user || user.email !== 'admin@example.com') {
-        toast({
-          title: "Accès refusé",
-          description: "Vous n'avez pas les droits d'accès à cette page.",
-          variant: "destructive",
-        });
-        // You might want to redirect here
-      }
-    };
-    
-    checkAdmin();
-  }, [toast]);
 
   const handleSave = async () => {
     setIsLoading(true);
     try {
       // Here you would typically save to Supabase
-      // For now we'll just show a success message
       toast({
         title: "Paramètres sauvegardés",
         description: "Les paramètres ont été mis à jour avec succès.",
