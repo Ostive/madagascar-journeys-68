@@ -104,7 +104,7 @@ const CreateBlog = () => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">URL de l'image</label>
+          <label className="text-sm font-medium">URL de l&apos;image</label>
           <Input
             name="image"
             value={formData.image}
@@ -133,7 +133,7 @@ const CreateBlog = () => {
               Création en cours...
             </>
           ) : (
-            'Créer l'article'
+            "Créer l'article"
           )}
         </Button>
       </form>
