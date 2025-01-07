@@ -4,41 +4,59 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { blogPosts } from "@/data/blog";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const CreateBlog = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [title, setTitle] = useState("");
-  const [excerpt, setExcerpt] = useState("");
-  const [category, setCategory] = useState("");
-  const [image, setImage] = useState("");
-  const [content, setContent] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    excerpt: "",
+    content: "",
+    category: "",
+    image: "",
+    date: new Date().toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const newBlog = {
-      id: title.toLowerCase().replace(/\s+/g, '-'),
-      title,
-      excerpt,
-      category,
-      image,
-      content,
-      date: new Date().toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      })
-    };
+    setIsSubmitting(true);
 
-    blogPosts.push(newBlog);
-    toast({
-      title: "Blog post created",
-      description: "The blog post has been successfully created.",
-    });
-    navigate('/admin/blog');
+    try {
+      const { error } = await supabase
+        .from('blog_posts')
+        .insert([formData]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Article créé",
+        description: "L'article a été créé avec succès.",
+      });
+      navigate('/admin/blog');
+    } catch (error) {
+      console.error('Error creating blog post:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer l'article.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -46,64 +64,78 @@ const CreateBlog = () => {
       <div className="flex items-center gap-4 mb-8">
         <Button variant="ghost" onClick={() => navigate('/admin/blog')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Blog List
+          Retour à la liste
         </Button>
-        <h1 className="text-3xl font-bold">Create New Blog Post</h1>
+        <h1 className="text-3xl font-bold">Créer un nouvel article</h1>
       </div>
       
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Title</label>
+          <label className="text-sm font-medium">Titre</label>
           <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter blog title"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            placeholder="Entrez le titre"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Excerpt</label>
+          <label className="text-sm font-medium">Extrait</label>
           <Textarea
-            value={excerpt}
-            onChange={(e) => setExcerpt(e.target.value)}
-            placeholder="Enter blog excerpt"
+            name="excerpt"
+            value={formData.excerpt}
+            onChange={handleChange}
+            placeholder="Entrez un extrait"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Category</label>
+          <label className="text-sm font-medium">Catégorie</label>
           <Input
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            placeholder="Enter blog category"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            placeholder="Entrez la catégorie"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Image URL</label>
+          <label className="text-sm font-medium">URL de l'image</label>
           <Input
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            placeholder="Enter image URL"
+            name="image"
+            value={formData.image}
+            onChange={handleChange}
+            placeholder="Entrez l'URL de l'image"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Content</label>
+          <label className="text-sm font-medium">Contenu</label>
           <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Enter blog content"
+            name="content"
+            value={formData.content}
+            onChange={handleChange}
+            placeholder="Entrez le contenu de l'article"
             required
-            className="min-h-[200px]"
+            className="min-h-[300px]"
           />
         </div>
 
-        <Button type="submit">Create Blog Post</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Création en cours...
+            </>
+          ) : (
+            'Créer l'article'
+          )}
+        </Button>
       </form>
     </div>
   );
