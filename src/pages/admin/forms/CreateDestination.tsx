@@ -1,68 +1,110 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useMutation } from "@tanstack/react-query";
 
 const CreateDestination = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [location, setLocation] = useState("");
-  const [duration, setDuration] = useState("");
-  const [image, setImage] = useState("");
-  const [bestTimeToVisit, setBestTimeToVisit] = useState("");
-
-  const createMutation = useMutation({
-    mutationFn: async (formData: any) => {
-      const { error } = await supabase
-        .from('destinations')
-        .insert([formData]);
-      
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast({
-        title: "Destination created",
-        description: "The destination has been successfully created.",
-      });
-      navigate('/admin/destination');
-    },
-    onError: (error) => {
-      console.error('Error creating destination:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create destination. Please try again.",
-        variant: "destructive",
-      });
-    },
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    longDescription: "",
+    price: "",
+    location: "",
+    duration: "",
+    image: "",
+    bestTimeToVisit: "",
+    highlights: [] as string[],
+    included: [] as string[],
+    notIncluded: [] as string[],
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const formData = {
-      title,
-      description,
-      long_description: description,
-      price,
-      location,
-      duration,
-      image,
-      gallery: [image],
-      highlights: [],
-      included: [],
-      not_included: [],
-      best_time_to_visit: bestTimeToVisit,
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || user.email !== 'admin@example.com') {
+        toast({
+          title: "Accès refusé",
+          description: "Vous n'avez pas les droits d'accès à cette page.",
+          variant: "destructive",
+        });
+        navigate("/");
+      }
     };
+    
+    checkAdmin();
+  }, [toast, navigate]);
 
-    createMutation.mutate(formData);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from('destinations')
+        .insert([{
+          title: formData.title,
+          description: formData.description,
+          long_description: formData.longDescription,
+          price: formData.price,
+          location: formData.location,
+          duration: formData.duration,
+          image: formData.image,
+          best_time_to_visit: formData.bestTimeToVisit,
+          highlights: formData.highlights,
+          included: formData.included,
+          not_included: formData.notIncluded,
+          gallery: [formData.image],
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Destination créée",
+        description: "La destination a été créée avec succès.",
+      });
+      navigate('/admin/destination');
+    } catch (error) {
+      console.error('Error creating destination:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer la destination.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleArrayInput = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    field: 'highlights' | 'included' | 'notIncluded'
+  ) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const value = (e.target as HTMLInputElement).value.trim();
+      if (value) {
+        setFormData((prev) => ({
+          ...prev,
+          [field]: [...prev[field], value]
+        }));
+        (e.target as HTMLInputElement).value = '';
+      }
+    }
   };
 
   return (
@@ -70,83 +112,153 @@ const CreateDestination = () => {
       <div className="flex items-center gap-4 mb-8">
         <Button variant="ghost" onClick={() => navigate('/admin/destination')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Destinations List
+          Retour à la liste
         </Button>
-        <h1 className="text-3xl font-bold">Create New Destination</h1>
+        <h1 className="text-3xl font-bold">Créer une nouvelle destination</h1>
       </div>
       
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Title</label>
+          <label className="text-sm font-medium">Titre</label>
           <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter destination title"
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
+            placeholder="Entrez le titre"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Description</label>
+          <label className="text-sm font-medium">Description courte</label>
           <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter destination description"
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            placeholder="Entrez une description courte"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Price</label>
+          <label className="text-sm font-medium">Description longue</label>
+          <Textarea
+            name="longDescription"
+            value={formData.longDescription}
+            onChange={handleInputChange}
+            placeholder="Entrez une description détaillée"
+            className="min-h-[200px]"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Prix</label>
           <Input
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="Enter price"
+            name="price"
+            value={formData.price}
+            onChange={handleInputChange}
+            placeholder="Entrez le prix"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Location</label>
+          <label className="text-sm font-medium">Localisation</label>
           <Input
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="Enter location"
+            name="location"
+            value={formData.location}
+            onChange={handleInputChange}
+            placeholder="Entrez la localisation"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Duration</label>
+          <label className="text-sm font-medium">Durée</label>
           <Input
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-            placeholder="Enter duration"
+            name="duration"
+            value={formData.duration}
+            onChange={handleInputChange}
+            placeholder="Entrez la durée"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Best Time to Visit</label>
+          <label className="text-sm font-medium">Meilleure période</label>
           <Input
-            value={bestTimeToVisit}
-            onChange={(e) => setBestTimeToVisit(e.target.value)}
-            placeholder="Enter best time to visit"
+            name="bestTimeToVisit"
+            value={formData.bestTimeToVisit}
+            onChange={handleInputChange}
+            placeholder="Entrez la meilleure période pour visiter"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Image URL</label>
+          <label className="text-sm font-medium">Points forts (Appuyez sur Entrée pour ajouter)</label>
           <Input
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            placeholder="Enter image URL"
+            onKeyDown={(e) => handleArrayInput(e, 'highlights')}
+            placeholder="Ajoutez un point fort"
+          />
+          <div className="flex flex-wrap gap-2 mt-2">
+            {formData.highlights.map((item, index) => (
+              <div key={index} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Inclus (Appuyez sur Entrée pour ajouter)</label>
+          <Input
+            onKeyDown={(e) => handleArrayInput(e, 'included')}
+            placeholder="Ajoutez un élément inclus"
+          />
+          <div className="flex flex-wrap gap-2 mt-2">
+            {formData.included.map((item, index) => (
+              <div key={index} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Non inclus (Appuyez sur Entrée pour ajouter)</label>
+          <Input
+            onKeyDown={(e) => handleArrayInput(e, 'notIncluded')}
+            placeholder="Ajoutez un élément non inclus"
+          />
+          <div className="flex flex-wrap gap-2 mt-2">
+            {formData.notIncluded.map((item, index) => (
+              <div key={index} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">URL de l'image</label>
+          <Input
+            name="image"
+            value={formData.image}
+            onChange={handleInputChange}
+            placeholder="Entrez l'URL de l'image"
             required
           />
         </div>
 
-        <Button type="submit" disabled={createMutation.isPending}>
-          {createMutation.isPending ? "Creating..." : "Create Destination"}
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Création en cours...
+            </>
+          ) : (
+            'Créer la destination'
+          )}
         </Button>
       </form>
     </div>

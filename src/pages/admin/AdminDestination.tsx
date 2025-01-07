@@ -1,110 +1,190 @@
-import { useToast } from "@/components/ui/use-toast";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Pencil, Trash } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Pencil, Trash2, Plus } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+interface Destination {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  price: string;
+  duration: string;
+  created_at: string;
+}
 
 const AdminDestination = () => {
-  const navigate = useNavigate();
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
-  const { data: destinations, isLoading } = useQuery({
-    queryKey: ['destinations'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('destinations')
-        .select('*')
-        .order('created_at', { ascending: false });
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || user.email !== 'admin@example.com') {
+        toast({
+          title: "Accès refusé",
+          description: "Vous n'avez pas les droits d'accès à cette page.",
+          variant: "destructive",
+        });
+        navigate("/");
+      }
+    };
+    
+    checkAdmin();
+  }, [toast, navigate]);
 
-      if (error) throw error;
-      return data;
-    },
-  });
+  // Fetch destinations
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('destinations')
+          .select('id, title, description, location, price, duration, created_at')
+          .order('created_at', { ascending: false });
 
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
+        if (error) throw error;
+        setDestinations(data || []);
+      } catch (error) {
+        console.error('Error fetching destinations:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les destinations.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDestinations();
+  }, [toast]);
+
+  const handleDelete = async (id: string) => {
+    try {
       const { error } = await supabase
         .from('destinations')
         .delete()
         .eq('id', id);
-      
+
       if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['destinations'] });
+
+      setDestinations(destinations.filter(destination => destination.id !== id));
       toast({
-        title: "Destination deleted",
-        description: "The destination has been successfully deleted.",
+        title: "Destination supprimée",
+        description: "La destination a été supprimée avec succès.",
       });
-    },
-    onError: (error) => {
+    } catch (error) {
       console.error('Error deleting destination:', error);
       toast({
-        title: "Error",
-        description: "Failed to delete destination. Please try again.",
+        title: "Erreur",
+        description: "Impossible de supprimer la destination.",
         variant: "destructive",
       });
-    },
-  });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+    }
+  };
 
   return (
     <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Admin - Manage Destinations</h1>
-        <Button onClick={() => navigate('/admin/destination/create')}>
+        <h1 className="text-3xl font-bold">Gestion des Destinations</h1>
+        <Button onClick={() => navigate("/admin/destination/create")}>
           <Plus className="h-4 w-4 mr-2" />
-          Create New Destination
+          Créer une nouvelle destination
         </Button>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Location</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Duration</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {destinations?.map((destination) => (
-              <TableRow key={destination.id}>
-                <TableCell className="font-medium">{destination.title}</TableCell>
-                <TableCell>{destination.location}</TableCell>
-                <TableCell>{destination.price}</TableCell>
-                <TableCell>{destination.duration}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
+      {isLoading ? (
+        <div className="text-center">Chargement...</div>
+      ) : (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Titre</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Localisation</TableHead>
+                <TableHead>Prix</TableHead>
+                <TableHead>Durée</TableHead>
+                <TableHead>Date de création</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {destinations.map((destination) => (
+                <TableRow key={destination.id}>
+                  <TableCell className="font-medium">{destination.title}</TableCell>
+                  <TableCell className="max-w-md truncate">
+                    {destination.description}
+                  </TableCell>
+                  <TableCell>{destination.location}</TableCell>
+                  <TableCell>{destination.price}</TableCell>
+                  <TableCell>{destination.duration}</TableCell>
+                  <TableCell>
+                    {new Date(destination.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className="space-x-2">
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="icon"
                       onClick={() => navigate(`/admin/destination/edit/${destination.id}`)}
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => deleteMutation.mutate(destination.id)}
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="icon">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Êtes-vous sûr de vouloir supprimer cette destination ? Cette action est irréversible.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Annuler</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDelete(destination.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Supprimer
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   );
 };
