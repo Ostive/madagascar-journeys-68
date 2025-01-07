@@ -1,7 +1,4 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useLocation, Link, Outlet } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -23,39 +20,9 @@ import {
   FileText,
   Calendar
 } from "lucide-react";
-import { Outlet, Link, useLocation } from "react-router-dom";
 
 export function AdminLayout() {
   const location = useLocation();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    if (!user) {
-      toast({
-        title: "Accès refusé",
-        description: "Vous devez être connecté pour accéder à cette page.",
-        variant: "destructive",
-      });
-      navigate("/");
-      return;
-    }
-
-    if (user.email !== "admin@gmail.com") {
-      toast({
-        title: "Accès refusé",
-        description: "Vous n'avez pas les droits d'accès à cette page.",
-        variant: "destructive",
-      });
-      navigate("/");
-      return;
-    }
-  }, [user, navigate, toast]);
-
-  if (!user || user.email !== "admin@gmail.com") {
-    return null;
-  }
 
   const items = [
     {
