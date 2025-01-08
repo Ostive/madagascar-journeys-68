@@ -10,8 +10,14 @@ import { ImageUploadSection } from "@/components/admin/destination/ImageUploadSe
 import { HighlightsSection } from "@/components/admin/destination/HighlightsSection";
 import { PackageOptionsSection } from "@/components/admin/destination/PackageOptionsSection";
 import { DurationSection } from "@/components/admin/destination/DurationSection";
+import { FAQSection } from "@/components/admin/destination/FAQSection";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
+
+interface FAQ {
+  question: string;
+  answer: string;
+}
 
 interface FormData {
   name: string;
@@ -26,6 +32,7 @@ interface FormData {
   included: string[];
   not_included: string[];
   gallery: string[];
+  faqs: FAQ[];
 }
 
 const CreateDestination = () => {
@@ -46,6 +53,7 @@ const CreateDestination = () => {
     included: [],
     not_included: [],
     gallery: [],
+    faqs: [],
   });
 
   // Check if user is admin
@@ -77,7 +85,7 @@ const CreateDestination = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
+      const { data: destinationData, error: destinationError } = await supabase
         .from('destinations')
         .insert([{
           name: formData.name,
@@ -89,9 +97,26 @@ const CreateDestination = () => {
           main_image: formData.main_image,
           best_time_to_visit: formData.best_time_to_visit,
           gallery: [formData.main_image, ...formData.gallery],
-        }]);
+        }])
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (destinationError) throw destinationError;
+
+      // Insert FAQs
+      if (formData.faqs.length > 0) {
+        const { error: faqError } = await supabase
+          .from('faqs')
+          .insert(
+            formData.faqs.map(faq => ({
+              destination_id: destinationData.id,
+              question: faq.question,
+              answer: faq.answer,
+            }))
+          );
+
+        if (faqError) throw faqError;
+      }
 
       toast({
         title: "Destination créée",
@@ -216,6 +241,11 @@ const CreateDestination = () => {
           notIncluded={formData.not_included}
           onIncludedChange={(included) => setFormData(prev => ({ ...prev, included }))}
           onNotIncludedChange={(notIncluded) => setFormData(prev => ({ ...prev, not_included: notIncluded }))}
+        />
+
+        <FAQSection
+          faqs={formData.faqs}
+          onChange={(faqs) => setFormData(prev => ({ ...prev, faqs }))}
         />
 
         <Button type="submit" disabled={isSubmitting}>
