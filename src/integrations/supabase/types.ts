@@ -324,7 +324,7 @@ export type Database = {
         Row: {
           created_at: string | null
           description: string | null
-          direction: string | null
+          direction: Database["public"]["Enums"]["direction_enum"] | null
           geom: unknown
           id: number
           name: string
@@ -332,7 +332,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           description?: string | null
-          direction?: string | null
+          direction?: Database["public"]["Enums"]["direction_enum"] | null
           geom: unknown
           id?: never
           name: string
@@ -340,7 +340,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           description?: string | null
-          direction?: string | null
+          direction?: Database["public"]["Enums"]["direction_enum"] | null
           geom?: unknown
           id?: never
           name?: string
@@ -681,7 +681,15 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      direction_enum:
+        | "nord"
+        | "sud"
+        | "est"
+        | "ouest"
+        | "nord-est"
+        | "nord-ouest"
+        | "sud-est"
+        | "sud-ouest"
     }
     CompositeTypes: {
       [_ in never]: never

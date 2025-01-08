@@ -60,6 +60,7 @@ export function LocationSection({
   onDirectionChange,
 }: LocationSectionProps) {
   const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(location);
 
   return (
     <div className="space-y-4">
@@ -73,8 +74,8 @@ export function LocationSection({
               aria-expanded={open}
               className="w-full justify-between"
             >
-              {location
-                ? locations.find((loc) => loc.value === location)?.label
+              {value
+                ? locations.find((location) => location.value === value)?.label
                 : "Sélectionnez un lieu..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
@@ -84,22 +85,23 @@ export function LocationSection({
               <CommandInput placeholder="Rechercher un lieu..." />
               <CommandEmpty>Aucun lieu trouvé.</CommandEmpty>
               <CommandGroup>
-                {locations.map((loc) => (
+                {locations.map((location) => (
                   <CommandItem
-                    key={loc.value}
-                    value={loc.value}
+                    key={location.value}
+                    value={location.value}
                     onSelect={(currentValue) => {
-                      onLocationChange(currentValue === location ? "" : currentValue);
+                      setValue(currentValue);
+                      onLocationChange(currentValue);
                       setOpen(false);
                     }}
                   >
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        location === loc.value ? "opacity-100" : "opacity-0"
+                        value === location.value ? "opacity-100" : "opacity-0"
                       )}
                     />
-                    {loc.label}
+                    {location.label}
                   </CommandItem>
                 ))}
               </CommandGroup>
