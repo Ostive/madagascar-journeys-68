@@ -21,25 +21,27 @@ import {
 } from "@/components/ui/card";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables } from "@/integrations/supabase/database.types";
 
-type PackageOption = Tables['package_options']['Row'];
 type HighlightOption = {
   id: number;
   description: string;
-  created_at?: string;
-  updated_at?: string;
+};
+
+type PackageOption = {
+  id: number;
+  name: string;
+  description: string | null;
 };
 
 const OptionsSettings = () => {
   const { toast } = useToast();
   const [highlights, setHighlights] = useState<HighlightOption[]>([]);
-  const [packages, setPackages] = useState<PackageOption[]>([]);
+  const [options, setOptions] = useState<PackageOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newHighlight, setNewHighlight] = useState("");
   const [newPackage, setNewPackage] = useState({
+    name: "",
     description: "",
-    is_included: true,
   });
 
   useEffect(() => {
@@ -48,16 +50,16 @@ const OptionsSettings = () => {
 
   const fetchData = async () => {
     try {
-      const [highlightsRes, packagesRes] = await Promise.all([
-        supabase.from('highlight_options').select('*').order('id', { ascending: true }),
-        supabase.from('package_options').select('*').order('id', { ascending: true }),
+      const [highlightsRes, optionsRes] = await Promise.all([
+        supabase.from('highlights').select('*').order('id', { ascending: true }),
+        supabase.from('options').select('*').order('id', { ascending: true }),
       ]);
 
       if (highlightsRes.error) throw highlightsRes.error;
-      if (packagesRes.error) throw packagesRes.error;
+      if (optionsRes.error) throw optionsRes.error;
 
       setHighlights(highlightsRes.data);
-      setPackages(packagesRes.data);
+      setOptions(optionsRes.data);
     } catch (error) {
       console.error("Error fetching data:", error);
       toast({
@@ -74,14 +76,14 @@ const OptionsSettings = () => {
     if (!newHighlight) return;
     try {
       const { data, error } = await supabase
-        .from('highlight_options')
+        .from('highlights')
         .insert({ description: newHighlight })
         .select()
         .single();
 
       if (error) throw error;
 
-      setHighlights([...highlights, data as HighlightOption]);
+      setHighlights([...highlights, data]);
       setNewHighlight("");
       toast({
         title: "Succès",
@@ -98,27 +100,27 @@ const OptionsSettings = () => {
   };
 
   const addPackage = async () => {
-    if (!newPackage.description) return;
+    if (!newPackage.name) return;
     try {
       const { data, error } = await supabase
-        .from('package_options')
+        .from('options')
         .insert(newPackage)
         .select()
         .single();
 
       if (error) throw error;
 
-      setPackages([...packages, data as PackageOption]);
-      setNewPackage({ description: "", is_included: true });
+      setOptions([...options, data]);
+      setNewPackage({ name: "", description: "" });
       toast({
         title: "Succès",
-        description: "Option de package ajoutée",
+        description: "Option ajoutée",
       });
     } catch (error) {
       console.error("Error adding package option:", error);
       toast({
         title: "Erreur",
-        description: "Impossible d'ajouter l'option de package",
+        description: "Impossible d'ajouter l'option",
         variant: "destructive",
       });
     }
@@ -127,7 +129,7 @@ const OptionsSettings = () => {
   const deleteHighlight = async (id: number) => {
     try {
       const { error } = await supabase
-        .from('highlight_options')
+        .from('highlights')
         .delete()
         .eq('id', id);
 
@@ -151,22 +153,22 @@ const OptionsSettings = () => {
   const deletePackage = async (id: number) => {
     try {
       const { error } = await supabase
-        .from('package_options')
+        .from('options')
         .delete()
         .eq('id', id);
 
       if (error) throw error;
 
-      setPackages(packages.filter((p) => p.id !== id));
+      setOptions(options.filter((p) => p.id !== id));
       toast({
         title: "Succès",
-        description: "Option de package supprimée",
+        description: "Option supprimée",
       });
     } catch (error) {
       console.error("Error deleting package option:", error);
       toast({
         title: "Erreur",
-        description: "Impossible de supprimer l'option de package",
+        description: "Impossible de supprimer l'option",
         variant: "destructive",
       });
     }
@@ -236,28 +238,29 @@ const OptionsSettings = () => {
         <CardHeader>
           <CardTitle>Options de package</CardTitle>
           <CardDescription>
-            Gérez la liste des options de package disponibles
+            Gérez la liste des options disponibles
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex gap-4 items-end">
               <div className="flex-1 space-y-2">
-                <Label>Description</Label>
+                <Label>Nom</Label>
                 <Input
-                  placeholder="Nouvelle option de package"
-                  value={newPackage.description}
+                  placeholder="Nouvelle option"
+                  value={newPackage.name}
                   onChange={(e) =>
-                    setNewPackage({ ...newPackage, description: e.target.value })
+                    setNewPackage({ ...newPackage, name: e.target.value })
                   }
                 />
               </div>
-              <div className="space-y-2">
-                <Label>Type</Label>
-                <Switch
-                  checked={newPackage.is_included}
-                  onCheckedChange={(checked) =>
-                    setNewPackage({ ...newPackage, is_included: checked })
+              <div className="flex-1 space-y-2">
+                <Label>Description</Label>
+                <Input
+                  placeholder="Description de l'option"
+                  value={newPackage.description}
+                  onChange={(e) =>
+                    setNewPackage({ ...newPackage, description: e.target.value })
                   }
                 />
               </div>
@@ -269,23 +272,21 @@ const OptionsSettings = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Nom</TableHead>
                   <TableHead>Description</TableHead>
-                  <TableHead>Type</TableHead>
                   <TableHead className="w-24">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {packages.map((pkg) => (
-                  <TableRow key={pkg.id}>
-                    <TableCell>{pkg.description}</TableCell>
-                    <TableCell>
-                      {pkg.is_included ? "Inclus" : "Non inclus"}
-                    </TableCell>
+                {options.map((option) => (
+                  <TableRow key={option.id}>
+                    <TableCell>{option.name}</TableCell>
+                    <TableCell>{option.description}</TableCell>
                     <TableCell>
                       <Button
                         variant="destructive"
                         size="icon"
-                        onClick={() => deletePackage(pkg.id)}
+                        onClick={() => deletePackage(option.id)}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
