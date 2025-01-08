@@ -165,6 +165,7 @@ export type Database = {
         Row: {
           best_time_to_visit: string | null
           description: string | null
+          direction: string | null
           duration: string | null
           id: number
           location: string | null
@@ -178,6 +179,7 @@ export type Database = {
         Insert: {
           best_time_to_visit?: string | null
           description?: string | null
+          direction?: string | null
           duration?: string | null
           id?: never
           location?: string | null
@@ -191,6 +193,7 @@ export type Database = {
         Update: {
           best_time_to_visit?: string | null
           description?: string | null
+          direction?: string | null
           duration?: string | null
           id?: never
           location?: string | null
