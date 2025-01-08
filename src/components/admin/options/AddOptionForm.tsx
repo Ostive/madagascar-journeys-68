@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 interface AddOptionFormProps {
   onAdd: (name: string, description: string) => void;
@@ -12,35 +12,38 @@ export const AddOptionForm = ({ onAdd }: AddOptionFormProps) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = () => {
-    if (!name) return;
-    onAdd(name, description);
-    setName("");
-    setDescription("");
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (name.trim()) {
+      onAdd(name, description);
+      setName("");
+      setDescription("");
+    }
   };
 
   return (
-    <div className="flex gap-4 items-end">
-      <div className="flex-1 space-y-2">
-        <Label>Nom</Label>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Nom de l'option</Label>
         <Input
-          placeholder="Nouvelle option"
+          id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          placeholder="Entrez le nom de l'option"
+          required
         />
       </div>
-      <div className="flex-1 space-y-2">
-        <Label>Description</Label>
-        <Input
-          placeholder="Description de l'option"
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          placeholder="Entrez une description (optionnel)"
+          rows={3}
         />
       </div>
-      <Button onClick={handleSubmit}>
-        <Plus className="w-4 h-4 mr-2" />
-        Ajouter
-      </Button>
-    </div>
+      <Button type="submit">Ajouter l'option</Button>
+    </form>
   );
 };

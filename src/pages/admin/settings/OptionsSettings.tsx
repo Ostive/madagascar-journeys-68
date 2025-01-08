@@ -13,10 +13,10 @@ const OptionsSettings = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchData();
+    fetchOptions();
   }, []);
 
-  const fetchData = async () => {
+  const fetchOptions = async () => {
     try {
       const { data: optionsData, error: optionsError } = await supabase
         .from('options')
@@ -24,12 +24,12 @@ const OptionsSettings = () => {
         .order('id', { ascending: true });
 
       if (optionsError) throw optionsError;
-      setOptions(optionsData);
+      setOptions(optionsData || []);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching options:", error);
       toast({
         title: "Erreur",
-        description: "Impossible de charger les données",
+        description: "Impossible de charger les options",
         variant: "destructive",
       });
     } finally {
@@ -37,7 +37,7 @@ const OptionsSettings = () => {
     }
   };
 
-  const addOption = async (name: string, description: string) => {
+  const handleAddOption = async (name: string, description: string) => {
     try {
       const { data, error } = await supabase
         .from('options')
@@ -50,7 +50,7 @@ const OptionsSettings = () => {
       setOptions([...options, data]);
       toast({
         title: "Succès",
-        description: "Option ajoutée",
+        description: "Option ajoutée avec succès",
       });
     } catch (error) {
       console.error("Error adding option:", error);
@@ -62,7 +62,7 @@ const OptionsSettings = () => {
     }
   };
 
-  const deleteOption = async (id: number) => {
+  const handleDeleteOption = async (id: number) => {
     try {
       const { error } = await supabase
         .from('options')
@@ -71,10 +71,10 @@ const OptionsSettings = () => {
 
       if (error) throw error;
 
-      setOptions(options.filter((o) => o.id !== id));
+      setOptions(options.filter(option => option.id !== id));
       toast({
         title: "Succès",
-        description: "Option supprimée",
+        description: "Option supprimée avec succès",
       });
     } catch (error) {
       console.error("Error deleting option:", error);
@@ -95,24 +95,20 @@ const OptionsSettings = () => {
   }
 
   return (
-    <div className="container mx-auto p-8 space-y-8">
-      <h1 className="text-3xl font-bold mb-8">Gestion des options</h1>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Options</CardTitle>
-          <CardDescription>
-            Gérez la liste des options disponibles
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <AddOptionForm onAdd={addOption} />
-            <OptionsList options={options} onDelete={deleteOption} />
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Options</CardTitle>
+        <CardDescription>
+          Gérez les options disponibles pour les destinations
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6">
+          <AddOptionForm onAdd={handleAddOption} />
+          <OptionsList options={options} onDelete={handleDeleteOption} />
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
