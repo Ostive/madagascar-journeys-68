@@ -11,6 +11,7 @@ import { HighlightsSection } from "@/components/admin/destination/HighlightsSect
 import { PackageOptionsSection } from "@/components/admin/destination/PackageOptionsSection";
 import { DurationSection } from "@/components/admin/destination/DurationSection";
 import { FAQSection } from "@/components/admin/destination/FAQSection";
+import { LocationSection } from "@/components/admin/destination/LocationSection";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 
@@ -25,6 +26,7 @@ interface FormData {
   long_description: string;
   price: number;
   location: string;
+  direction: string;
   duration: string;
   main_image: string;
   best_time_to_visit: string;
@@ -46,6 +48,7 @@ const CreateDestination = () => {
     long_description: "",
     price: 0,
     location: "",
+    direction: "",
     duration: "",
     main_image: "",
     best_time_to_visit: "",
@@ -93,6 +96,7 @@ const CreateDestination = () => {
           long_description: formData.long_description,
           price: formData.price,
           location: formData.location,
+          direction: formData.direction,
           duration: formData.duration,
           main_image: formData.main_image,
           best_time_to_visit: formData.best_time_to_visit,
@@ -198,16 +202,12 @@ const CreateDestination = () => {
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Localisation</label>
-          <Input
-            name="location"
-            value={formData.location}
-            onChange={handleInputChange}
-            placeholder="Entrez la localisation"
-            required
-          />
-        </div>
+        <LocationSection
+          location={formData.location}
+          direction={formData.direction}
+          onLocationChange={(value) => setFormData(prev => ({ ...prev, location: value }))}
+          onDirectionChange={(value) => setFormData(prev => ({ ...prev, direction: value }))}
+        />
 
         <DurationSection
           value={dateRange}

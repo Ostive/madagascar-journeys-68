@@ -321,6 +321,7 @@ export type Database = {
         Row: {
           created_at: string | null
           description: string | null
+          direction: string | null
           geom: unknown
           id: number
           name: string
@@ -328,6 +329,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           description?: string | null
+          direction?: string | null
           geom: unknown
           id?: never
           name: string
@@ -335,6 +337,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           description?: string | null
+          direction?: string | null
           geom?: unknown
           id?: never
           name?: string
