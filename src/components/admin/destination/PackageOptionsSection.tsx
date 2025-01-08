@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables } from "@/integrations/supabase/database.types";
 
 interface PackageOptionsProps {
   included: string[];
@@ -10,7 +9,11 @@ interface PackageOptionsProps {
   onNotIncludedChange: (notIncluded: string[]) => void;
 }
 
-type PackageOption = Tables['package_options']['Row'];
+interface Option {
+  id: number;
+  name: string;
+  description: string | null;
+}
 
 export const PackageOptionsSection = ({
   included,
@@ -18,17 +21,17 @@ export const PackageOptionsSection = ({
   onIncludedChange,
   onNotIncludedChange,
 }: PackageOptionsProps) => {
-  const [options, setOptions] = useState<PackageOption[]>([]);
+  const [options, setOptions] = useState<Option[]>([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
       const { data, error } = await supabase
-        .from('package_options')
+        .from('options')
         .select('*')
         .order('id', { ascending: true });
       
       if (error) {
-        console.error('Error fetching package options:', error);
+        console.error('Error fetching options:', error);
         return;
       }
       
@@ -38,28 +41,25 @@ export const PackageOptionsSection = ({
     fetchOptions();
   }, []);
 
-  const includedOptions = options.filter(option => option.included);
-  const notIncludedOptions = options.filter(option => option.not_included);
-
   return (
     <div className="grid grid-cols-2 gap-8">
       <div className="space-y-4">
         <label className="text-sm font-medium">Inclus</label>
-        {includedOptions.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Pas encore d'options incluses à sélectionner.</p>
+        {options.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Pas encore d'options à sélectionner.</p>
         ) : (
           <div className="space-y-2">
-            {includedOptions.map((option) => (
+            {options.map((option) => (
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={`included-${option.id}`}
-                  checked={included.includes(option.additional_activities)}
+                  checked={included.includes(option.name)}
                   onCheckedChange={(checked) => {
                     if (checked) {
-                      onIncludedChange([...included, option.additional_activities]);
+                      onIncludedChange([...included, option.name]);
                     } else {
                       onIncludedChange(
-                        included.filter((i) => i !== option.additional_activities)
+                        included.filter((i) => i !== option.name)
                       );
                     }
                   }}
@@ -68,7 +68,7 @@ export const PackageOptionsSection = ({
                   htmlFor={`included-${option.id}`}
                   className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  {option.additional_activities}
+                  {option.name}
                 </label>
               </div>
             ))}
@@ -78,21 +78,21 @@ export const PackageOptionsSection = ({
 
       <div className="space-y-4">
         <label className="text-sm font-medium">Non inclus</label>
-        {notIncludedOptions.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Pas encore d'options non incluses à sélectionner.</p>
+        {options.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Pas encore d'options à sélectionner.</p>
         ) : (
           <div className="space-y-2">
-            {notIncludedOptions.map((option) => (
+            {options.map((option) => (
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={`not-included-${option.id}`}
-                  checked={notIncluded.includes(option.additional_activities)}
+                  checked={notIncluded.includes(option.name)}
                   onCheckedChange={(checked) => {
                     if (checked) {
-                      onNotIncludedChange([...notIncluded, option.additional_activities]);
+                      onNotIncludedChange([...notIncluded, option.name]);
                     } else {
                       onNotIncludedChange(
-                        notIncluded.filter((i) => i !== option.additional_activities)
+                        notIncluded.filter((i) => i !== option.name)
                       );
                     }
                   }}
@@ -101,7 +101,7 @@ export const PackageOptionsSection = ({
                   htmlFor={`not-included-${option.id}`}
                   className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  {option.additional_activities}
+                  {option.name}
                 </label>
               </div>
             ))}
