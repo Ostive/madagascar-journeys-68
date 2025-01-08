@@ -11,7 +11,7 @@ import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, Comma
 const SearchSection = () => {
   const navigate = useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
-  const [selectedDestination, setSelectedDestination] = useState("");
+  const [selectedDestination, setSelectedDestination] = useState<number | null>(null);
   const [date, setDate] = useState("");
   const [travelers, setTravelers] = useState("1");
 
@@ -61,7 +61,7 @@ const SearchSection = () => {
                   appearance: 'none'
                 }}
                 onClick={() => setSearchOpen(true)}
-                value={selectedDestination ? destinations.find((d) => d.id === selectedDestination)?.title || circuits.find((c) => c.id === selectedDestination)?.title : ""}
+                value={selectedDestination ? destinations.find((d) => d.id === selectedDestination)?.name || circuits.find((c) => c.id === selectedDestination)?.name : ""}
                 readOnly
               />
             </div>
@@ -147,7 +147,7 @@ const SearchSection = () => {
                   }}
                 >
                   <MapPin className="mr-2 h-4 w-4" />
-                  {destination.title}
+                  {destination.name}
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -161,7 +161,7 @@ const SearchSection = () => {
                   }}
                 >
                   <MapPin className="mr-2 h-4 w-4" />
-                  {circuit.title}
+                  {circuit.name}
                 </CommandItem>
               ))}
             </CommandGroup>

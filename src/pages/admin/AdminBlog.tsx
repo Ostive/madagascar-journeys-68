@@ -23,7 +23,7 @@ const AdminBlog = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [postToDelete, setPostToDelete] = useState<string | null>(null);
+  const [postToDelete, setPostToDelete] = useState<number | null>(null);
 
   // Check if user is admin
   useEffect(() => {
@@ -47,7 +47,7 @@ const AdminBlog = () => {
     const fetchPosts = async () => {
       try {
         const { data, error } = await supabase
-          .from('blog_posts')
+          .from('blogs')
           .select('*')
           .order('created_at', { ascending: false });
 
@@ -73,7 +73,7 @@ const AdminBlog = () => {
 
     try {
       const { error } = await supabase
-        .from('blog_posts')
+        .from('blogs')
         .delete()
         .eq('id', postToDelete);
 
@@ -97,7 +97,7 @@ const AdminBlog = () => {
     }
   };
 
-  const confirmDelete = (id: string) => {
+  const confirmDelete = (id: number) => {
     setPostToDelete(id);
     setDeleteDialogOpen(true);
   };

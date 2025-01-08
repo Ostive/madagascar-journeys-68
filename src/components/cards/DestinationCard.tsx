@@ -11,18 +11,18 @@ interface DestinationCardProps {
 }
 
 const sampleDestination: Destination = {
-  id: "1",
-  title: "Bali Paradise",
-  image: "/api/placeholder/400/500",
+  id: 1,
+  name: "Bali Paradise",
+  main_image: "/api/placeholder/400/500",
   location: "Indonesia",
-  bestTimeToVisit: "JUN - SEP",
-  price: "285",
+  best_time_to_visit: "JUN - SEP",
+  price: 285,
   description: "",
-  longDescription: "",
+  long_description: "",
   gallery: [],
   highlights: [],
   included: [],
-  notIncluded: [],
+  not_included: [],
   duration: "7 days"
 };
 
@@ -38,8 +38,8 @@ const DestinationCard = ({
       >
         {/* Background Image */}
         <img
-          src={destination.image}
-          alt={destination.title}
+          src={destination.main_image}
+          alt={destination.name}
           className="absolute w-full h-full object-cover"
         />
         
@@ -58,11 +58,11 @@ const DestinationCard = ({
         <div className="absolute bottom-3 left-3 right-3 text-white">
           <div className="flex items-center gap-1.5 text-xs mb-1 opacity-90">
             <Calendar className="w-3.5 h-3.5" />
-            {destination.bestTimeToVisit}
+            {destination.best_time_to_visit}
           </div>
           <div className="flex justify-between items-end">
             <h3 className="text-lg font-semibold">
-              {destination.title}
+              {destination.name}
             </h3>
             <div className="text-xl font-bold">
               ${destination.price}

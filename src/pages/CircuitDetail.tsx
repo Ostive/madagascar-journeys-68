@@ -15,6 +15,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
+interface CircuitData {
+  id: number;
+  name: string;
+  description: string;
+  duration_days: number;
+  price: number;
+  short_description: string | null;
+  long_description: string | null;
+  persons: string | null;
+  rating: number | null;
+  date_range: string | null;
+  main_image: string | null;
+  difficulty: string | null;
+  user_id: string | null;
+}
+
 const CircuitDetail = () => {
   const { id } = useParams();
   const { toast } = useToast();
@@ -25,22 +41,23 @@ const CircuitDetail = () => {
     queryKey: ['circuit', id],
     queryFn: async () => {
       // First try to find by slug (id parameter)
-      const { data: circuitByTitle, error: titleError } = await supabase
+      const { data: circuitByName, error: nameError } = await supabase
         .from('circuits')
         .select('*')
-        .ilike('title', id?.replace(/-/g, ' ') || '')
+        .ilike('name', id?.replace(/-/g, ' ') || '')
         .single();
 
-      if (circuitByTitle) {
-        return circuitByTitle;
+      if (circuitByName) {
+        return circuitByName;
       }
 
-      // If not found by title, try as UUID (for backward compatibility)
-      if (id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+      // If not found by name, try as number ID
+      const numericId = parseInt(id || '');
+      if (!isNaN(numericId)) {
         const { data: circuitById, error } = await supabase
           .from('circuits')
           .select('*')
-          .eq('id', id)
+          .eq('id', numericId)
           .single();
 
         if (error) {
@@ -131,7 +148,7 @@ const CircuitDetail = () => {
     },
     {
       question: "Quel niveau de condition physique est requis ?",
-      answer: `Ce circuit est de niveau ${circuit.difficulty.toLowerCase()}. Il est recommandé d'avoir une bonne condition physique et d'être habitué à la marche.`,
+      answer: `Ce circuit est de niveau ${circuit.difficulty?.toLowerCase() || 'modéré'}. Il est recommandé d'avoir une bonne condition physique et d'être habitué à la marche.`,
     },
     {
       question: "Les repas sont-ils inclus ?",
@@ -159,10 +176,10 @@ const CircuitDetail = () => {
           transition={{ duration: 0.5 }}
           className="space-y-4 my-6"
         >
-          <h1 className="text-3xl font-bold">{circuit.title}</h1>
+          <h1 className="text-3xl font-bold">{circuit.name}</h1>
         </motion.div>
 
-        <GalleryGrid images={circuit.gallery || []} title={circuit.title} />
+        <GalleryGrid images={[circuit.main_image || '']} title={circuit.name} />
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:pt-8">
@@ -183,21 +200,6 @@ const CircuitDetail = () => {
                 </CardContent>
               </Card>
 
-              {/* Itinerary */}
-              <Card className="p-6 mb-8">
-                <h2 className="text-2xl font-semibold mb-6">Itinéraire</h2>
-                <div className="space-y-6">
-                  {(circuit.itinerary || []).map((day: any) => (
-                    <div key={day.day} className="border-l-2 border-emerald pl-4">
-                      <h3 className="text-lg font-semibold mb-2">
-                        Jour {day.day} - {day.title}
-                      </h3>
-                      <p className="text-gray-600">{day.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
               {/* Included/Not Included */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <Card>
@@ -206,12 +208,15 @@ const CircuitDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {(circuit.included || []).map((item: string, index: number) => (
-                        <li key={index} className="flex items-center gap-2">
-                          <Check className="text-emerald w-4 h-4" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
+                      {/* We'll need to fetch this from practical_information table */}
+                      <li className="flex items-center gap-2">
+                        <Check className="text-emerald w-4 h-4" />
+                        <span>Transport</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="text-emerald w-4 h-4" />
+                        <span>Hébergement</span>
+                      </li>
                     </ul>
                   </CardContent>
                 </Card>
@@ -222,12 +227,15 @@ const CircuitDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {(circuit.not_included || []).map((item: string, index: number) => (
-                        <li key={index} className="flex items-center gap-2">
-                          <X className="text-red-500 w-4 h-4" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
+                      {/* We'll need to fetch this from practical_information table */}
+                      <li className="flex items-center gap-2">
+                        <X className="text-red-500 w-4 h-4" />
+                        <span>Vols internationaux</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <X className="text-red-500 w-4 h-4" />
+                        <span>Dépenses personnelles</span>
+                      </li>
                     </ul>
                   </CardContent>
                 </Card>
@@ -261,9 +269,9 @@ const CircuitDetail = () => {
               className="sticky top-24"
             >
               <ReservationCard
-                price={circuit.price}
-                duration={circuit.duration}
-                persons={circuit.persons}
+                price={circuit.price?.toString() || "0"}
+                duration={`${circuit.duration_days} jours`}
+                persons={circuit.persons || "2-8 personnes"}
               />
             </motion.div>
           </div>

@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 
 const DestinationDetail = () => {
   const { id } = useParams();
-  const destination = destinations.find((d) => d.id === id);
+  const destination = destinations.find((d) => d.id === Number(id));
 
   if (!destination) {
     return <div>Destination non trouvée</div>;
@@ -29,11 +29,11 @@ const DestinationDetail = () => {
   const faqs = [
     {
       question: "Quelle est la meilleure période pour visiter ?",
-      answer: `La meilleure période pour visiter ${destination.title} est ${destination.bestTimeToVisit}.`,
+      answer: `La meilleure période pour visiter ${destination.name} est ${destination.best_time_to_visit}.`,
     },
     {
       question: "Quelle est la durée recommandée du séjour ?",
-      answer: `La durée recommandée pour profiter pleinement de ${destination.title} est ${destination.duration}.`,
+      answer: `La durée recommandée pour profiter pleinement de ${destination.name} est ${destination.duration}.`,
     },
     {
       question: "Qu'est-ce qui est inclus dans le prix ?",
@@ -41,7 +41,7 @@ const DestinationDetail = () => {
     },
     {
       question: "Qu'est-ce qui n'est pas inclus dans le prix ?",
-      answer: destination.notIncluded.join(", "),
+      answer: destination.not_included.join(", "),
     },
   ];
 
@@ -52,38 +52,33 @@ const DestinationDetail = () => {
       <div className="p-8 md:p-14" />
 
       <div className="max-w-6xl px-4 md:mx-auto md:py-4 pb-14">
-        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="space-y-4 my-6"
         >
-          <h1 className="text-3xl font-bold">{destination.title}</h1>
+          <h1 className="text-3xl font-bold">{destination.name}</h1>
         </motion.div>
 
-        <GalleryGrid images={destination.gallery} title={destination.title} />
+        <GalleryGrid images={destination.gallery} title={destination.name} />
 
-        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:pt-8">
-          {/* Main Content */}
           <div className="lg:col-span-2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              {/* Overview Card */}
               <Card className="mb-8">
                 <CardHeader>
                   <h2 className="text-2xl font-semibold">Overview</h2>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600">{destination.longDescription}</p>
+                  <p className="text-gray-600">{destination.long_description}</p>
                 </CardContent>
               </Card>
 
-              {/* Highlights */}
               <Card className="mb-8">
                 <CardHeader>
                   <h2 className="text-2xl font-semibold">Points forts</h2>
@@ -100,7 +95,6 @@ const DestinationDetail = () => {
                 </CardContent>
               </Card>
 
-              {/* Included/Not Included */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <Card>
                   <CardHeader>
@@ -124,7 +118,7 @@ const DestinationDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {destination.notIncluded.map((item, index) => (
+                      {destination.not_included.map((item, index) => (
                         <li key={index} className="flex items-center gap-2">
                           <X className="text-red-500 w-4 h-4" />
                           <span>{item}</span>
@@ -135,14 +129,12 @@ const DestinationDetail = () => {
                 </Card>
               </div>
 
-              {/* FAQ Section */}
               <Card className="mb-8">
                 <CardContent className="pt-6">
                   <FAQ faqs={faqs} />
                 </CardContent>
               </Card>
 
-              {/* Similar Destinations */}
               <CardCarousel
                 items={similarDestinations}
                 CardComponent={DestinationCard}
@@ -152,7 +144,6 @@ const DestinationDetail = () => {
             </motion.div>
           </div>
 
-          {/* Sidebar */}
           <div className="lg:col-span-1">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -161,10 +152,10 @@ const DestinationDetail = () => {
               className="sticky top-24"
             >
               <ReservationCard
-                price={destination.price}
+                price={destination.price.toString()}
                 duration={destination.duration}
-                bestTimeToVisit={destination.bestTimeToVisit}
-                title={destination.title}
+                bestTimeToVisit={destination.best_time_to_visit}
+                title={destination.name}
                 description={destination.description}
               />
             </motion.div>

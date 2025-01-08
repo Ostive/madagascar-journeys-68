@@ -13,19 +13,12 @@ export const formSchema = z.object({
   estimated_season: z.string().optional(),
 });
 
-export type FormSchema = z.infer<typeof formSchema>;
+export const reservationSchema = z.object({
+  adultsCount: z.number().min(1),
+  childrenCount: z.number().min(0),
+  startDate: z.string(),
+  endDate: z.string(),
+});
 
-// This type ensures form data matches what Supabase expects
-export type ReservationRequest = {
-  user_id: string;
-  destination_id: string;
-  travel_type: string;
-  adults_count?: number;
-  children_count?: number;
-  group_type?: string;
-  group_size?: number;
-  start_date?: string;
-  end_date?: string;
-  estimated_month?: string;
-  estimated_season?: string;
-};
+export type FormSchema = z.infer<typeof formSchema>;
+export type ReservationSchema = z.infer<typeof reservationSchema>;

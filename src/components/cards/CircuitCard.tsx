@@ -22,8 +22,8 @@ const CircuitCard = ({
       >
         {/* Background Image */}
         <img
-          src={circuit.image}
-          alt={circuit.title}
+          src={circuit.main_image}
+          alt={circuit.name}
           className="absolute w-full h-full object-cover"
         />
         
@@ -33,7 +33,7 @@ const CircuitCard = ({
         {/* Top Content */}
         <div className="absolute top-3 left-3 right-3 flex justify-between items-start text-white">
           <span className="text-sm bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-            {circuit.duration}
+            {`${circuit.duration_days} jours`}
           </span>
           <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -48,7 +48,7 @@ const CircuitCard = ({
           </div>
           <div className="flex justify-between items-end">
             <h3 className="text-lg font-semibold">
-              {circuit.title}
+              {circuit.name}
             </h3>
             <div className="text-xl font-bold">
               ${circuit.price}

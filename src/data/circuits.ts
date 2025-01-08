@@ -2,16 +2,15 @@ import { Circuit } from './types';
 
 export const circuits: Circuit[] = [
   {
-    id: "grand-tour",
-    title: "Grand Tour de Madagascar",
+    id: 1,
+    name: "Grand Tour de Madagascar",
     description: "Un voyage complet à travers les plus beaux sites de l'île",
-    long_description: "Ce circuit complet vous permet de découvrir les sites les plus emblématiques de Madagascar. Des forêts tropicales aux plages paradisiaques, en passant par les parcs nationaux et les villages traditionnels, vous vivrez une expérience inoubliable au cœur de la biodiversité malgache.",
-    duration: "15 jours",
+    duration_days: 15,
     persons: "4-12 personnes",
-    price: "2499",
-    rating: "4.8",
+    price: 2499,
+    rating: 4.8,
     date_range: "1 JUIN - 15 JUIN",
-    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=2000&q=80",
+    main_image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=2000&q=80",
     gallery: [
       "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=2000&q=80",
       "https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?auto=format&fit=crop&w=2000&q=80",
@@ -49,16 +48,16 @@ export const circuits: Circuit[] = [
     difficulty: "Modéré"
   },
   {
-    id: "sud-route",
-    title: "Route du Sud",
+    id: 2,
+    name: "Route du Sud",
     description: "Découverte des parcs nationaux et des plages du Sud",
     long_description: "La Route du Sud vous emmène à la découverte des trésors cachés de Madagascar. Des hauts plateaux aux plages sauvages, en passant par les parcs nationaux, vous découvrirez la diversité des paysages et la richesse culturelle du sud de l'île.",
-    duration: "8 jours",
+    duration_days: 8,
     persons: "6-10 personnes",
-    price: "1299",
-    rating: "4.6",
+    price: 1299,
+    rating: 4.6,
     date_range: "10 JUILLET - 17 JUILLET",
-    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?auto=format&fit=crop&w=2000&q=80",
+    main_image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?auto=format&fit=crop&w=2000&q=80",
     gallery: [
       "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=2000&q=80",
       "https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?auto=format&fit=crop&w=2000&q=80",
@@ -91,16 +90,16 @@ export const circuits: Circuit[] = [
     difficulty: "Facile"
   },
   {
-    id: "nord-ouest",
-    title: "Aventure Nord-Ouest",
+    id: 3,
+    name: "Aventure Nord-Ouest",
     description: "Entre tsingys, baobabs et plages paradisiaques",
     long_description: "Partez à l'aventure dans le Nord-Ouest de Madagascar, une région qui regorge de merveilles naturelles. Des Tsingys de Bemaraha aux plages de Majunga, en passant par les baobabs, ce circuit vous fera découvrir des paysages uniques au monde.",
-    duration: "12 jours",
+    duration_days: 12,
     persons: "4-8 personnes",
-    price: "1899",
-    rating: "4.9",
+    price: 1899,
+    rating: 4.9,
     date_range: "5 AOÛT - 16 AOÛT",
-    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=2000&q=80",
+    main_image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=2000&q=80",
     gallery: [
       "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=2000&q=80",
       "https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?auto=format&fit=crop&w=2000&q=80",

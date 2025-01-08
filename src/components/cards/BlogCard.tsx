@@ -2,15 +2,7 @@ import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Calendar, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string;
-  image: string;
-  category: string;
-  date: string;
-}
+import { BlogPost } from '@/data/types';
 
 interface BlogCardProps {
   post?: BlogPost;
@@ -23,7 +15,8 @@ const samplePost: BlogPost = {
   excerpt: "Discover the hidden gems and most beautiful locations in Bali...",
   image: "/api/placeholder/400/500",
   category: "Travel",
-  date: "23 Aug 2024"
+  date: "23 Aug 2024",
+  content: "Sample content"
 };
 
 const BlogCard = ({ 

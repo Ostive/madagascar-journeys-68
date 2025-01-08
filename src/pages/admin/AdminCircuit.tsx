@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Circuit } from "@/data/types";
 import {
   Table,
   TableBody,
@@ -23,15 +24,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
-interface Circuit {
-  id: string;
-  title: string;
-  description: string;
-  duration: string;
-  price: string;
-  created_at: string;
-}
 
 const AdminCircuit = () => {
   const [circuits, setCircuits] = useState<Circuit[]>([]);
@@ -62,8 +54,8 @@ const AdminCircuit = () => {
       try {
         const { data, error } = await supabase
           .from('circuits')
-          .select('id, title, description, duration, price, created_at')
-          .order('created_at', { ascending: false });
+          .select('*')
+          .order('id', { ascending: false });
 
         if (error) throw error;
         setCircuits(data || []);
@@ -82,7 +74,7 @@ const AdminCircuit = () => {
     fetchCircuits();
   }, [toast]);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     try {
       const { error } = await supabase
         .from('circuits')
@@ -104,6 +96,16 @@ const AdminCircuit = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const formatDate = (dateString: string | Date | undefined) => {
+    if (!dateString) return 'N/A';
+    const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+    return date.toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
   return (
@@ -132,14 +134,14 @@ const AdminCircuit = () => {
           <TableBody>
             {circuits.map((circuit) => (
               <TableRow key={circuit.id}>
-                <TableCell>{circuit.title}</TableCell>
+                <TableCell>{circuit.name}</TableCell>
                 <TableCell className="max-w-md truncate">
                   {circuit.description}
                 </TableCell>
-                <TableCell>{circuit.duration}</TableCell>
+                <TableCell>{circuit.duration_days} jours</TableCell>
                 <TableCell>{circuit.price} €</TableCell>
                 <TableCell>
-                  {new Date(circuit.created_at).toLocaleDateString()}
+                  {formatDate(circuit.created_at)}
                 </TableCell>
                 <TableCell className="space-x-2">
                   <Button

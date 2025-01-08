@@ -6,23 +6,46 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ImageUploadSection } from "@/components/admin/destination/ImageUploadSection";
+import { HighlightsSection } from "@/components/admin/destination/HighlightsSection";
+import { PackageOptionsSection } from "@/components/admin/destination/PackageOptionsSection";
+import { DurationSection } from "@/components/admin/destination/DurationSection";
+import { DateRange } from "react-day-picker";
+import { format } from "date-fns";
+
+interface FormData {
+  name: string;
+  description: string;
+  long_description: string;
+  price: number;
+  location: string;
+  duration: string;
+  main_image: string;
+  best_time_to_visit: string;
+  highlights: string[];
+  included: string[];
+  not_included: string[];
+  gallery: string[];
+}
 
 const CreateDestination = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
+  const [dateRange, setDateRange] = useState<DateRange>();
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
     description: "",
-    longDescription: "",
-    price: "",
+    long_description: "",
+    price: 0,
     location: "",
     duration: "",
-    image: "",
-    bestTimeToVisit: "",
-    highlights: [] as string[],
-    included: [] as string[],
-    notIncluded: [] as string[],
+    main_image: "",
+    best_time_to_visit: "",
+    highlights: [],
+    included: [],
+    not_included: [],
+    gallery: [],
   });
 
   // Check if user is admin
@@ -42,6 +65,13 @@ const CreateDestination = () => {
     checkAdmin();
   }, [toast, navigate]);
 
+  useEffect(() => {
+    if (dateRange?.from && dateRange?.to) {
+      const duration = `${format(dateRange.from, "d MMM")} - ${format(dateRange.to, "d MMM")}`;
+      setFormData(prev => ({ ...prev, duration }));
+    }
+  }, [dateRange]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -50,18 +80,15 @@ const CreateDestination = () => {
       const { error } = await supabase
         .from('destinations')
         .insert([{
-          title: formData.title,
+          name: formData.name,
           description: formData.description,
-          long_description: formData.longDescription,
+          long_description: formData.long_description,
           price: formData.price,
           location: formData.location,
           duration: formData.duration,
-          image: formData.image,
-          best_time_to_visit: formData.bestTimeToVisit,
-          highlights: formData.highlights,
-          included: formData.included,
-          not_included: formData.notIncluded,
-          gallery: [formData.image],
+          main_image: formData.main_image,
+          best_time_to_visit: formData.best_time_to_visit,
+          gallery: [formData.main_image, ...formData.gallery],
         }]);
 
       if (error) throw error;
@@ -90,23 +117,6 @@ const CreateDestination = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleArrayInput = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    field: 'highlights' | 'included' | 'notIncluded'
-  ) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const value = (e.target as HTMLInputElement).value.trim();
-      if (value) {
-        setFormData((prev) => ({
-          ...prev,
-          [field]: [...prev[field], value]
-        }));
-        (e.target as HTMLInputElement).value = '';
-      }
-    }
-  };
-
   return (
     <div className="container mx-auto p-8">
       <div className="flex items-center gap-4 mb-8">
@@ -121,8 +131,8 @@ const CreateDestination = () => {
         <div className="space-y-2">
           <label className="text-sm font-medium">Titre</label>
           <Input
-            name="title"
-            value={formData.title}
+            name="name"
+            value={formData.name}
             onChange={handleInputChange}
             placeholder="Entrez le titre"
             required
@@ -143,8 +153,8 @@ const CreateDestination = () => {
         <div className="space-y-2">
           <label className="text-sm font-medium">Description longue</label>
           <Textarea
-            name="longDescription"
-            value={formData.longDescription}
+            name="long_description"
+            value={formData.long_description}
             onChange={handleInputChange}
             placeholder="Entrez une description détaillée"
             className="min-h-[200px]"
@@ -155,6 +165,7 @@ const CreateDestination = () => {
           <label className="text-sm font-medium">Prix</label>
           <Input
             name="price"
+            type="number"
             value={formData.price}
             onChange={handleInputChange}
             placeholder="Entrez le prix"
@@ -173,82 +184,39 @@ const CreateDestination = () => {
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Durée</label>
-          <Input
-            name="duration"
-            value={formData.duration}
-            onChange={handleInputChange}
-            placeholder="Entrez la durée"
-            required
-          />
-        </div>
+        <DurationSection
+          value={dateRange}
+          onChange={setDateRange}
+        />
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Meilleure période</label>
           <Input
-            name="bestTimeToVisit"
-            value={formData.bestTimeToVisit}
+            name="best_time_to_visit"
+            value={formData.best_time_to_visit}
             onChange={handleInputChange}
             placeholder="Entrez la meilleure période pour visiter"
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Points forts (Appuyez sur Entrée pour ajouter)</label>
-          <Input
-            onKeyDown={(e) => handleArrayInput(e, 'highlights')}
-            placeholder="Ajoutez un point fort"
-          />
-          <div className="flex flex-wrap gap-2 mt-2">
-            {formData.highlights.map((item, index) => (
-              <div key={index} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
+        <ImageUploadSection
+          mainImage={formData.main_image}
+          gallery={formData.gallery}
+          onMainImageChange={(url) => setFormData(prev => ({ ...prev, main_image: url }))}
+          onGalleryChange={(urls) => setFormData(prev => ({ ...prev, gallery: urls }))}
+        />
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Inclus (Appuyez sur Entrée pour ajouter)</label>
-          <Input
-            onKeyDown={(e) => handleArrayInput(e, 'included')}
-            placeholder="Ajoutez un élément inclus"
-          />
-          <div className="flex flex-wrap gap-2 mt-2">
-            {formData.included.map((item, index) => (
-              <div key={index} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
+        <HighlightsSection
+          selectedHighlights={formData.highlights}
+          onHighlightsChange={(highlights) => setFormData(prev => ({ ...prev, highlights }))}
+        />
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Non inclus (Appuyez sur Entrée pour ajouter)</label>
-          <Input
-            onKeyDown={(e) => handleArrayInput(e, 'notIncluded')}
-            placeholder="Ajoutez un élément non inclus"
-          />
-          <div className="flex flex-wrap gap-2 mt-2">
-            {formData.notIncluded.map((item, index) => (
-              <div key={index} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium">URL de l'image</label>
-          <Input
-            name="image"
-            value={formData.image}
-            onChange={handleInputChange}
-            placeholder="Entrez l'URL de l'image"
-            required
-          />
-        </div>
+        <PackageOptionsSection
+          included={formData.included}
+          notIncluded={formData.not_included}
+          onIncludedChange={(included) => setFormData(prev => ({ ...prev, included }))}
+          onNotIncludedChange={(notIncluded) => setFormData(prev => ({ ...prev, not_included: notIncluded }))}
+        />
 
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? (

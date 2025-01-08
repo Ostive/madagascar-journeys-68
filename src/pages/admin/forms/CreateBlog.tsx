@@ -24,33 +24,33 @@ const CreateBlog = () => {
     })
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .insert([formData]);
+  try {
+    const { error } = await supabase
+      .from('blogs')
+      .insert([formData]);
 
-      if (error) throw error;
+    if (error) throw error;
 
-      toast({
-        title: "Article créé",
-        description: "L'article a été créé avec succès.",
-      });
-      navigate('/admin/blog');
-    } catch (error) {
-      console.error('Error creating blog post:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de créer l'article.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    toast({
+      title: "Article créé",
+      description: "L'article a été créé avec succès.",
+    });
+    navigate('/admin/blog');
+  } catch (error) {
+    console.error('Error creating blog post:', error);
+    toast({
+      title: "Erreur",
+      description: "Impossible de créer l'article.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

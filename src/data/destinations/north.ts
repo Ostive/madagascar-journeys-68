@@ -1,86 +1,40 @@
-import { Destination } from '../types';
+import { Destination } from "../types";
 
 export const northDestinations: Destination[] = [
   {
-    id: "nosy-be",
-    title: "Nosy Be",
-    description: "Plages paradisiaques et eaux cristallines",
-    longDescription: "Découvrez Nosy Be, surnommée 'l'île aux parfums' pour ses plantations d'ylang-ylang. Cette île paradisiaque offre des plages de sable blanc, des eaux turquoise et une biodiversité marine exceptionnelle.",
-    price: "1200",
-    image: "https://static.vecteezy.com/system/resources/previews/013/089/094/large_2x/aerial-top-view-on-sand-beach-tropical-beach-with-white-sand-turquoise-sea-palm-trees-under-sunlight-drone-view-luxury-travel-destination-scenic-vacation-landscape-amazing-nature-paradise-island-photo.jpg",
-    gallery: [
-      "https://images.unsplash.com/photo-1526652433653-62083c8f6c5c?auto=format&fit=crop&w=2000&q=80",
-      "https://images.unsplash.com/photo-1526706462370-82e39fb5e404?auto=format&fit=crop&w=2000&q=80",
-      "https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=2000&q=80",
-    ],
-    highlights: [
-      "Plages de sable blanc immaculées",
-      "Spots de plongée exceptionnels",
-      "Observation des baleines (en saison)",
-      "Excursions en bateau vers les îles voisines",
-    ],
-    included: ["Transferts", "Hébergement", "Petit-déjeuner"],
-    notIncluded: ["Vols internationaux", "Repas non inclus"],
-    location: "Nord-ouest de Madagascar",
-    duration: "5-7 jours recommandés",
-    bestTimeToVisit: "Mai à Novembre",
-  },
-  {
-    id: "antsiranana",
-    title: "Antsiranana (Diego Suarez)",
-    description: "Baies spectaculaires et nature sauvage",
-    longDescription: "Antsiranana offre des baies incroyables, une culture chaleureuse et des paysages variés, allant des plages isolées aux formations rocheuses uniques.",
-    price: "750",
-    image: "https://images.unsplash.com/photo-1605559423186-d90e481bfc2d?auto=format&fit=crop&w=2000&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1523241528541-17eb898661d1?auto=format&fit=crop&w=2000&q=80",
-      "https://images.unsplash.com/photo-1550534453-e85c9f8c2e2e?auto=format&fit=crop&w=2000&q=80",
-      "https://images.unsplash.com/photo-1565130838609-6dc21ab73036?auto=format&fit=crop&w=2000&q=80",
-    ],
-    highlights: [
-      "La Mer d'Émeraude",
-      "Excursions dans les Tsingy Rouges",
-      "Culture locale",
-      "Sports nautiques",
-    ],
-    included: ["Transport local", "Excursions", "Guide"],
-    notIncluded: ["Hébergement", "Repas"],
-    location: "Nord de Madagascar",
-    duration: "4-6 jours recommandés",
-    bestTimeToVisit: "Mai à Octobre",
-  },
-  {
-    id: "nosy-ankao",
-    title: "Nosy Ankao",
+    id: 1,
+    name: "Nosy Ankao",
     description: "Luxe et écotourisme sur une île privée",
-    longDescription: "Nosy Ankao est un sanctuaire écologique où le luxe rencontre la nature. Profitez d'expériences uniques comme les safaris marins, la plongée sous-marine, ou tout simplement la relaxation dans des hébergements haut de gamme.",
-    price: "3000",
-    image: "https://images.unsplash.com/photo-1483683804023-6ccdb62f86ef?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8aXNsYW5kfGVufDB8fDB8fHww",
+    long_description: "Nosy Ankao est un sanctuaire écologique où le luxe rencontre la nature...",
+    price: 3000,
+    main_image: "https://www.outthere.travel/wp-content/uploads/2024/02/Miavana-by-Time-Tide-Nosy-Ankao-Madagascar_Feat.jpg",
     gallery: [
-      "https://images.unsplash.com/photo-1574169208507-843761748365?auto=format&fit=crop&w=2000&q=80",
-      "https://images.unsplash.com/photo-1574169208507-843761748365?auto=format&fit=crop&w=2000&q=80",
-      "https://images.unsplash.com/photo-1593640408183-1a94bbf0a97c?auto=format&fit=crop&w=2000&q=80",
+      "https://edbm.mg/wp-content/uploads/2021/04/v.-Miavana-Piazza-5.jpg",
+      "https://boutiquetravelexperts.com/wp-content/uploads/2022/01/Miavana-Boutique-Travel-Experts-18.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmjUt5zlfXa1p7ipUzPkRIsCwmkqGdlzFLsw&s",
+      "https://www.chaloafrica.com/wp-content/uploads/2017/11/Time-Tide-Miavana-View-770x250.jpg",
+      "https://robbreport.com/wp-content/uploads/2016/01/miavana.jpg"
     ],
     highlights: [
       "Expériences marines immersives",
       "Hébergement écoresponsable",
       "Faune marine exceptionnelle",
-      "Relaxation dans un cadre paradisiaque",
+      "Relaxation dans un cadre paradisiaque"
     ],
     included: [
       "Hébergement en villa de luxe",
       "Pension complète",
       "Excursions guidées",
-      "Sports nautiques non motorisés",
+      "Sports nautiques non motorisés"
     ],
-    notIncluded: [
+    not_included: [
       "Vols internationaux",
       "Activités motorisées",
       "Massages et soins spa",
-      "Pourboires",
+      "Pourboires"
     ],
     location: "Nord-est de Madagascar",
     duration: "3-5 jours recommandés",
-    bestTimeToVisit: "Mai à Octobre",
-  },
+    best_time_to_visit: "Mai à Octobre"
+  }
 ];

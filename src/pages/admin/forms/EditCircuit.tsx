@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Label } from "@/components/ui/label";
+import { Circuit } from "@/data/types";
 import { 
   Select,
   SelectContent,
@@ -16,24 +17,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface FormData {
+  name: string;
+  description: string;
+  long_description: string;
+  duration_days: number;
+  persons: string;
+  price: number;
+  date_range: string;
+  difficulty: string;
+  main_image: string;
+  gallery?: string[];
+  included?: string[];
+  not_included?: string[];
+}
+
 const EditCircuit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    title: "",
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
     description: "",
     long_description: "",
-    duration: "",
+    duration_days: 0,
     persons: "",
-    price: "",
+    price: 0,
     date_range: "",
     difficulty: "",
-    image: "",
-    gallery: [] as string[],
-    included: [] as string[],
-    not_included: [] as string[],
-    itinerary: [] as any[],
+    main_image: "",
+    gallery: [],
+    included: [],
+    not_included: [],
   });
 
   const [newIncluded, setNewIncluded] = useState("");
@@ -43,29 +58,48 @@ const EditCircuit = () => {
   const { data: circuit, isLoading } = useQuery({
     queryKey: ['circuit', id],
     queryFn: async () => {
+      const numericId = parseInt(id || '');
+      if (isNaN(numericId)) throw new Error('Invalid ID');
+
       const { data, error } = await supabase
         .from('circuits')
         .select('*')
-        .eq('id', id)
+        .eq('id', numericId)
         .single();
 
       if (error) throw error;
-      return data;
+      return data as Circuit;
     },
   });
 
   useEffect(() => {
     if (circuit) {
-      setFormData(circuit);
+      setFormData({
+        name: circuit.name,
+        description: circuit.description || '',
+        long_description: circuit.long_description || '',
+        duration_days: circuit.duration_days,
+        persons: circuit.persons || '',
+        price: circuit.price || 0,
+        date_range: circuit.date_range || '',
+        difficulty: circuit.difficulty || '',
+        main_image: circuit.main_image || '',
+        gallery: circuit.gallery || [],
+        included: circuit.included || [],
+        not_included: circuit.not_included || [],
+      });
     }
   }, [circuit]);
 
   const updateMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
+      const numericId = parseInt(id || '');
+      if (isNaN(numericId)) throw new Error('Invalid ID');
+
       const { error } = await supabase
         .from('circuits')
         .update(data)
-        .eq('id', id);
+        .eq('id', numericId);
       
       if (error) throw error;
     },
@@ -144,8 +178,8 @@ const EditCircuit = () => {
         <div className="space-y-2">
           <Label>Titre</Label>
           <Input
-            name="title"
-            value={formData.title}
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             placeholder="Entrez le titre du circuit"
             required
@@ -177,8 +211,9 @@ const EditCircuit = () => {
         <div className="space-y-2">
           <Label>Durée</Label>
           <Input
-            name="duration"
-            value={formData.duration}
+            name="duration_days"
+            type="number"
+            value={formData.duration_days}
             onChange={handleChange}
             placeholder="Ex: 7 jours"
             required
@@ -200,6 +235,7 @@ const EditCircuit = () => {
           <Label>Prix</Label>
           <Input
             name="price"
+            type="number"
             value={formData.price}
             onChange={handleChange}
             placeholder="Entrez le prix"
@@ -238,8 +274,8 @@ const EditCircuit = () => {
         <div className="space-y-2">
           <Label>Image principale</Label>
           <Input
-            name="image"
-            value={formData.image}
+            name="main_image"
+            value={formData.main_image}
             onChange={handleChange}
             placeholder="URL de l'image principale"
             required

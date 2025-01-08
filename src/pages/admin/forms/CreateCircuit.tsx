@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation } from "@tanstack/react-query";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/ui/label"; 
 import { 
   Select,
   SelectContent,
@@ -20,24 +20,16 @@ const CreateCircuit = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    title: "",
+    name: "",
     description: "",
     long_description: "",
-    duration: "",
+    duration_days: 0,
     persons: "",
-    price: "",
+    price: 0,
     date_range: "",
     difficulty: "",
-    image: "",
-    gallery: [] as string[],
-    included: [] as string[],
-    not_included: [] as string[],
-    itinerary: [] as any[],
+    main_image: "",
   });
-
-  const [newIncluded, setNewIncluded] = useState("");
-  const [newNotIncluded, setNewNotIncluded] = useState("");
-  const [newGalleryImage, setNewGalleryImage] = useState("");
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -45,7 +37,7 @@ const CreateCircuit = () => {
         .from('circuits')
         .insert([{
           ...data,
-          rating: "0",
+          rating: 0,
         }]);
       
       if (error) throw error;
@@ -72,36 +64,6 @@ const CreateCircuit = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleAddIncluded = () => {
-    if (newIncluded.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        included: [...prev.included, newIncluded.trim()]
-      }));
-      setNewIncluded("");
-    }
-  };
-
-  const handleAddNotIncluded = () => {
-    if (newNotIncluded.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        not_included: [...prev.not_included, newNotIncluded.trim()]
-      }));
-      setNewNotIncluded("");
-    }
-  };
-
-  const handleAddGalleryImage = () => {
-    if (newGalleryImage.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        gallery: [...prev.gallery, newGalleryImage.trim()]
-      }));
-      setNewGalleryImage("");
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     createMutation.mutate(formData);
@@ -121,8 +83,8 @@ const CreateCircuit = () => {
         <div className="space-y-2">
           <Label>Titre</Label>
           <Input
-            name="title"
-            value={formData.title}
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             placeholder="Entrez le titre du circuit"
             required
@@ -154,8 +116,9 @@ const CreateCircuit = () => {
         <div className="space-y-2">
           <Label>Durée</Label>
           <Input
-            name="duration"
-            value={formData.duration}
+            type="number"
+            name="duration_days"
+            value={formData.duration_days}
             onChange={handleChange}
             placeholder="Ex: 7 jours"
             required
@@ -176,6 +139,7 @@ const CreateCircuit = () => {
         <div className="space-y-2">
           <Label>Prix</Label>
           <Input
+            type="number"
             name="price"
             value={formData.price}
             onChange={handleChange}
@@ -215,114 +179,12 @@ const CreateCircuit = () => {
         <div className="space-y-2">
           <Label>Image principale</Label>
           <Input
-            name="image"
-            value={formData.image}
+            name="main_image"
+            value={formData.main_image}
             onChange={handleChange}
             placeholder="URL de l'image principale"
             required
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Galerie d'images</Label>
-          <div className="flex gap-2">
-            <Input
-              value={newGalleryImage}
-              onChange={(e) => setNewGalleryImage(e.target.value)}
-              placeholder="URL de l'image"
-            />
-            <Button type="button" onClick={handleAddGalleryImage}>
-              Ajouter
-            </Button>
-          </div>
-          <div className="mt-2">
-            {formData.gallery.map((img, index) => (
-              <div key={index} className="flex items-center gap-2 mt-1">
-                <span className="text-sm">{img}</span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setFormData(prev => ({
-                      ...prev,
-                      gallery: prev.gallery.filter((_, i) => i !== index)
-                    }));
-                  }}
-                >
-                  Supprimer
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Inclus</Label>
-          <div className="flex gap-2">
-            <Input
-              value={newIncluded}
-              onChange={(e) => setNewIncluded(e.target.value)}
-              placeholder="Élément inclus"
-            />
-            <Button type="button" onClick={handleAddIncluded}>
-              Ajouter
-            </Button>
-          </div>
-          <div className="mt-2">
-            {formData.included.map((item, index) => (
-              <div key={index} className="flex items-center gap-2 mt-1">
-                <span className="text-sm">{item}</span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setFormData(prev => ({
-                      ...prev,
-                      included: prev.included.filter((_, i) => i !== index)
-                    }));
-                  }}
-                >
-                  Supprimer
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Non inclus</Label>
-          <div className="flex gap-2">
-            <Input
-              value={newNotIncluded}
-              onChange={(e) => setNewNotIncluded(e.target.value)}
-              placeholder="Élément non inclus"
-            />
-            <Button type="button" onClick={handleAddNotIncluded}>
-              Ajouter
-            </Button>
-          </div>
-          <div className="mt-2">
-            {formData.not_included.map((item, index) => (
-              <div key={index} className="flex items-center gap-2 mt-1">
-                <span className="text-sm">{item}</span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setFormData(prev => ({
-                      ...prev,
-                      not_included: prev.not_included.filter((_, i) => i !== index)
-                    }));
-                  }}
-                >
-                  Supprimer
-                </Button>
-              </div>
-            ))}
-          </div>
         </div>
 
         <Button
