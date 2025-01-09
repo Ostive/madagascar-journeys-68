@@ -60,6 +60,7 @@ export function LocationSection({
   onDirectionChange,
 }: LocationSectionProps) {
   const [open, setOpen] = useState(false);
+  const selectedLocation = locations.find((loc) => loc.value === location);
 
   return (
     <div className="space-y-4">
@@ -73,9 +74,7 @@ export function LocationSection({
               aria-expanded={open}
               className="w-full justify-between"
             >
-              {location
-                ? locations.find((loc) => loc.value === location)?.label
-                : "Sélectionnez un lieu..."}
+              {selectedLocation?.label || "Sélectionnez un lieu..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -88,8 +87,8 @@ export function LocationSection({
                   <CommandItem
                     key={loc.value}
                     value={loc.value}
-                    onSelect={(currentValue) => {
-                      onLocationChange(currentValue);
+                    onSelect={() => {
+                      onLocationChange(loc.value);
                       setOpen(false);
                     }}
                   >
