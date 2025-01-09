@@ -7,29 +7,30 @@ const BlogSection = () => {
   return (
     <section className="py-20 bg-white" id="blog">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-poppins font-bold text-dark text-center mb-4">
-          Blog & Actualités
-        </h2>
-        <p className="text-lg text-dark/70 text-center mb-12 font-opensans">
-          Restez informés des dernières actualités et découvrez nos conseils de
-          voyage
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
-          {blogPosts.map((post) => (
-            <BlogCard key={post.title} post={post} />
-          ))}
-        </div>
-
-        <div className="mt-12 text-center">
+        <div className="flex justify-between items-center mb-12">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-poppins font-bold text-dark mb-4">
+              Blog & Actualités
+            </h2>
+            <p className="text-lg text-dark/70 font-opensans">
+              Restez informés des dernières actualités et découvrez nos conseils de
+              voyage
+            </p>
+          </div>
           <Link to="/blog">
             <Button
               variant="outline"
               className="hover:bg-emerald hover:text-white"
             >
-              Voir tous les articles
+              Voir tout
             </Button>
           </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {blogPosts.map((post) => (
+            <BlogCard key={post.title} post={post} />
+          ))}
         </div>
       </div>
     </section>

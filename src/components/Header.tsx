@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, User, LogOut, LogIn } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { AuthDialog } from "./auth/AuthDialog";
@@ -16,6 +16,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DestinationsMenu } from "./navigation/DestinationsMenu";
 import { CircuitsMenu } from "./navigation/CircuitsMenu";
 import { BlogMenu } from "./navigation/BlogMenu";
@@ -82,32 +83,26 @@ const Header = () => {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="border-emerald text-emerald hover:bg-emerald hover:text-white transition-all duration-200"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  {user.email?.split("@")[0]}
-                </Button>
+                <Avatar className="h-10 w-10 cursor-pointer hover:opacity-80 transition-opacity">
+                  <AvatarImage src={user.user_metadata?.avatar_url || "/lovable-uploads/avatar.png"} />
+                  <AvatarFallback className="bg-emerald text-white">
+                    {user.email?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="flex flex-col space-y-1 p-2 border-b">
+                  <p className="text-sm font-medium">{user.email?.split("@")[0]}</p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                </div>
                 <Link to="/account">
-                  <DropdownMenuItem>
-                    <User className="h-4 w-4 mr-2" />
-                    Mon compte
-                  </DropdownMenuItem>
+                  <DropdownMenuItem>Mon compte</DropdownMenuItem>
                 </Link>
                 <Link to="/bookings">
-                  <DropdownMenuItem>
-                    <User className="h-4 w-4 mr-2" />
-                    Mes réservations
-                  </DropdownMenuItem>
+                  <DropdownMenuItem>Mes réservations</DropdownMenuItem>
                 </Link>
                 <Link to="/favorites">
-                  <DropdownMenuItem>
-                    <User className="h-4 w-4 mr-2" />
-                    Mes favoris
-                  </DropdownMenuItem>
+                  <DropdownMenuItem>Mes favoris</DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem 
                   onClick={() => signOut()}
@@ -124,8 +119,11 @@ const Header = () => {
               className="text-dark border-none bg-transparent hover:text-emerald"
               onClick={() => setIsAuthDialogOpen(true)}
             >
-              <User className="h-4 w-4 rounded-full " />
-              <span className="hidden md:inline">Se connecter</span>
+              <Avatar className="h-8 w-8">
+                <AvatarImage src="/lovable-uploads/avatar.png" />
+                <AvatarFallback>GT</AvatarFallback>
+              </Avatar>
+              <span className="hidden md:inline ml-2">Se connecter</span>
             </Button>
           )}
 
