@@ -196,28 +196,6 @@ const Header = () => {
               >
                 Contact
               </Link>
-              {user ? (
-                <Button
-                  variant="outline"
-                  className="border-emerald text-emerald hover:bg-emerald hover:text-white w-full transition-all duration-200"
-                  onClick={() => signOut()}
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Déconnexion
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  className="border-emerald text-emerald hover:bg-emerald hover:text-white w-full transition-all duration-200 "
-                  onClick={() => {
-                    setIsAuthDialogOpen(true);
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  <User className="h-4 w-4 rounded" />
-                  Se connecter
-                </Button>
-              )}
             </div>
           </nav>
         )}
