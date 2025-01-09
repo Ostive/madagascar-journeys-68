@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { MapPin, Palmtree, Mountain, Building } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const regions = [
   { 
@@ -54,7 +55,17 @@ export function DestinationsMenu() {
       <NavigationMenuContent>
         <div className="p-6 w-[800px]">
           <div className="mb-6">
-            <h4 className="mb-3 text-sm font-medium leading-none">Par région</h4>
+            <div className="flex justify-between items-center mb-3">
+              <h4 className="text-sm font-medium leading-none">Par région</h4>
+              <Link to="/destinations">
+                <Button 
+                  variant="ghost" 
+                  className="text-sm hover:text-emerald hover:bg-emerald/10"
+                >
+                  Voir toutes les destinations
+                </Button>
+              </Link>
+            </div>
             <div className="flex gap-4 overflow-x-auto pb-4">
               {regions.map((region) => (
                 <Link
