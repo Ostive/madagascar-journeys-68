@@ -1,7 +1,6 @@
 import {
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
+  NavigationMenuContent,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { MapPin, Palmtree, Mountain, Building } from "lucide-react";
@@ -10,50 +9,59 @@ import { Button } from "@/components/ui/button";
 
 const regions = [
   { 
-    name: "Nord", 
-    examples: "Nosy Be, Diego Suarez", 
-    path: "/destinations?region=nord",
-    image: "https://my-make-bucket.s3.eu-north-1.amazonaws.com/Photos/n23fvkcer7vlg7vmb1w9.webp"
+    name: "Nord",
+    image: "/lovable-uploads/north.jpg",
+    description: "Découvrez les plages paradisiaques et les îles du Nord"
   },
-  { 
-    name: "Sud", 
-    examples: "Tuléar, Isalo", 
-    path: "/destinations?region=sud",
-    image: "https://www.parcs-madagascar.com/parcs/images/andringitra/andringitra.jpg"
+  {
+    name: "Sud",
+    image: "/lovable-uploads/south.jpg",
+    description: "Explorez les parcs nationaux et les paysages uniques du Sud"
   },
-  { 
-    name: "Est", 
-    examples: "Sainte-Marie, Pangalanes", 
-    path: "/destinations?region=est",
-    image: "https://madagascar-green-island-discovery.com/wp-content/uploads/2020/07/Masoala.jpg"
+  {
+    name: "Est",
+    image: "/lovable-uploads/east.jpg",
+    description: "Visitez les forêts tropicales et les côtes sauvages de l'Est"
   },
-  { 
-    name: "Ouest", 
-    examples: "Morondava, Bemaraha", 
-    path: "/destinations?region=ouest",
-    image: "https://ifc.shorthandstories.com/b-tir-des-opportunit-s-madagascar-un-microcr-dit-la-fois/assets/YC1RKIcLkR/madagascartanadronejs-frame-0ms-1920x1080.jpg"
+  {
+    name: "Ouest",
+    image: "/lovable-uploads/west.jpg",
+    description: "Admirez les baobabs et les formations rocheuses de l'Ouest"
   },
-  { 
-    name: "Centre", 
-    examples: "Antananarivo, Antsirabe", 
-    path: "/destinations?region=centre",
-    image: "https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcRIMiXSoT13oLl0l9VUfehrkIhRNg4b4H7-WhBG6Rua997J47UGzc8utoOgBUAiuKC_OcoTVpX1yj7iAOsAjo_yY8PovuQtbpVgHEmzyA"
-  },
+  {
+    name: "Centre",
+    image: "/lovable-uploads/central.jpg",
+    description: "Découvrez la culture et l'histoire au cœur de Madagascar"
+  }
 ];
 
 const types = [
-  { name: "Plages et lagons", icon: Palmtree, path: "/destinations?type=plages" },
-  { name: "Parcs nationaux et réserves", icon: MapPin, path: "/destinations?type=parcs" },
-  { name: "Villes et villages historiques", icon: Building, path: "/destinations?type=villes" },
-  { name: "Paysages montagneux", icon: Mountain, path: "/destinations?type=montagnes" },
+  {
+    icon: <Palmtree className="h-4 w-4" />,
+    name: "Plages",
+    description: "Découvrez nos plus belles plages"
+  },
+  {
+    icon: <Mountain className="h-4 w-4" />,
+    name: "Montagnes",
+    description: "Explorez nos sommets majestueux"
+  },
+  {
+    icon: <Building className="h-4 w-4" />,
+    name: "Villes",
+    description: "Visitez nos villes historiques"
+  }
 ];
 
 export function DestinationsMenu() {
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger>Destinations</NavigationMenuTrigger>
+      <NavigationMenuTrigger className="text-dark hover:text-emerald">
+        <MapPin className="h-4 w-4 mr-1" />
+        Destinations
+      </NavigationMenuTrigger>
       <NavigationMenuContent>
-        <div className="p-6 w-[800px]">
+        <div className="p-6 w-[800px] mx-auto">
           <div className="mb-6">
             <div className="flex justify-between items-center mb-3">
               <h4 className="text-sm font-medium leading-none">Par région</h4>
@@ -66,45 +74,44 @@ export function DestinationsMenu() {
                 </Button>
               </Link>
             </div>
-            <div className="flex gap-4 overflow-x-auto pb-4">
+            <div className="flex justify-center gap-4 overflow-x-auto pb-4">
               {regions.map((region) => (
                 <Link
                   key={region.name}
-                  to={region.path}
-                  className="block min-w-[180px] select-none rounded-md no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  to={`/destinations?region=${region.name.toLowerCase()}`}
+                  className="relative group min-w-[160px] h-[120px] rounded-lg overflow-hidden"
                 >
-                  <div className="relative h-24 overflow-hidden rounded-md">
-                    <img 
-                      src={region.image} 
-                      alt={region.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/40" />
-                    <div className="absolute bottom-2 left-2 text-white">
-                      <div className="text-sm font-medium leading-none">{region.name}</div>
-                      <p className="text-xs leading-snug text-white/80 mt-1">
-                        {region.examples}
-                      </p>
-                    </div>
+                  <img
+                    src={region.image}
+                    alt={region.name}
+                    className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
+                  <div className="absolute inset-0 p-4 flex flex-col justify-end">
+                    <h3 className="text-white font-medium mb-1">{region.name}</h3>
+                    <p className="text-white/80 text-sm line-clamp-2">{region.description}</p>
                   </div>
                 </Link>
               ))}
             </div>
           </div>
-          
+
           <div>
             <h4 className="mb-3 text-sm font-medium leading-none">Par type</h4>
-            <div className="grid grid-cols-2 gap-2">
-              {types.map(({ name, icon: Icon, path }) => (
+            <div className="grid grid-cols-3 gap-4">
+              {types.map((type) => (
                 <Link
-                  key={name}
-                  to={path}
-                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  key={type.name}
+                  to={`/destinations?type=${type.name.toLowerCase()}`}
+                  className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                 >
                   <div className="flex items-center gap-2">
-                    <Icon className="h-4 w-4" />
-                    <span className="text-sm font-medium leading-none">{name}</span>
+                    {type.icon}
+                    <div className="text-sm font-medium leading-none">{type.name}</div>
                   </div>
+                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                    {type.description}
+                  </p>
                 </Link>
               ))}
             </div>
