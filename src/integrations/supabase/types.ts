@@ -483,6 +483,27 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       quiz_responses: {
         Row: {
           activities: string[] | null
@@ -667,6 +688,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_admin_user: {
+        Args: {
+          user_email: string
+          user_password: string
+        }
+        Returns: undefined
+      }
       scoring_search_destinations_and_circuits: {
         Args: {
           user_id: string

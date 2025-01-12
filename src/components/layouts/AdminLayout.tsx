@@ -18,7 +18,8 @@ import {
   Users, 
   Settings,
   FileText,
-  Calendar
+  Calendar,
+  Image
 } from "lucide-react";
 
 export function AdminLayout() {
@@ -54,6 +55,11 @@ export function AdminLayout() {
       title: "Utilisateurs",
       url: "/admin/users",
       icon: Users,
+    },
+    {
+      title: "Médiathèque",
+      url: "/admin/media",
+      icon: Image,
     },
     {
       title: "Paramètres",

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Menu, X, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AuthDialog } from "./auth/AuthDialog";
 import { useAuth } from "./auth/AuthProvider";
 import {
@@ -10,21 +10,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DestinationsMenu } from "./navigation/DestinationsMenu";
-import { CircuitsMenu } from "./navigation/CircuitsMenu";
-import { BlogMenu } from "./navigation/BlogMenu";
+import { MainNavigation } from "./navigation/MainNavigation";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
-  const location = useLocation();
   const { user, signOut } = useAuth();
 
   return (
@@ -38,46 +29,7 @@ const Header = () => {
           </Link>
 
           <nav className="hidden md:block">
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <Link to="/">
-                    <NavigationMenuLink
-                      className={`px-4 py-2 ${
-                        location.pathname === "/" ? "text-emerald" : "text-dark hover:text-emerald"
-                      }`}
-                    >
-                      Accueil
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-                <DestinationsMenu />
-                <CircuitsMenu />
-                <NavigationMenuItem>
-                  <Link to="/about">
-                    <NavigationMenuLink
-                      className={`px-4 py-2 ${
-                        location.pathname === "/about" ? "text-emerald" : "text-dark hover:text-emerald"
-                      }`}
-                    >
-                      À propos
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-                <BlogMenu />
-                <NavigationMenuItem>
-                  <Link to="/contact">
-                    <NavigationMenuLink
-                      className={`px-4 py-2 ${
-                        location.pathname === "/contact" ? "text-emerald" : "text-dark hover:text-emerald"
-                      }`}
-                    >
-                      Contact
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+            <MainNavigation />
           </nav>
 
           {user ? (
@@ -144,54 +96,42 @@ const Header = () => {
             <div className="flex flex-col space-y-4">
               <Link
                 to="/"
-                className={`font-opensans ${
-                  location.pathname === "/" ? "text-emerald" : "text-dark hover:text-emerald"
-                }`}
+                className="font-opensans text-dark hover:text-emerald"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Accueil
               </Link>
               <Link
                 to="/destinations"
-                className={`font-opensans ${
-                  location.pathname === "/destinations" ? "text-emerald" : "text-dark hover:text-emerald"
-                }`}
+                className="font-opensans text-dark hover:text-emerald"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Destinations
               </Link>
               <Link
                 to="/circuits"
-                className={`font-opensans ${
-                  location.pathname === "/circuits" ? "text-emerald" : "text-dark hover:text-emerald"
-                }`}
+                className="font-opensans text-dark hover:text-emerald"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Circuits
               </Link>
               <Link
                 to="/about"
-                className={`font-opensans ${
-                  location.pathname === "/about" ? "text-emerald" : "text-dark hover:text-emerald"
-                }`}
+                className="font-opensans text-dark hover:text-emerald"
                 onClick={() => setIsMenuOpen(false)}
               >
                 À propos
               </Link>
               <Link
                 to="/blog"
-                className={`font-opensans ${
-                  location.pathname === "/blog" ? "text-emerald" : "text-dark hover:text-emerald"
-                }`}
+                className="font-opensans text-dark hover:text-emerald"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Blog
               </Link>
               <Link
                 to="/contact"
-                className={`font-opensans ${
-                  location.pathname === "/contact" ? "text-emerald" : "text-dark hover:text-emerald"
-                }`}
+                className="font-opensans text-dark hover:text-emerald"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact

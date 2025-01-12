@@ -24,6 +24,7 @@ import Reservations from "./pages/account/Reservations";
 import Favorites from "./pages/account/Favorites";
 
 // Admin pages
+import AdminAuth from "./pages/admin/AdminAuth";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminDestination from "./pages/admin/AdminDestination";
@@ -31,6 +32,7 @@ import AdminCircuit from "./pages/admin/AdminCircuit";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminMedia from "./pages/admin/AdminMedia";
 import CreateBlog from "./pages/admin/forms/CreateBlog";
 import CreateDestination from "./pages/admin/forms/CreateDestination";
 import CreateCircuit from "./pages/admin/forms/CreateCircuit";
@@ -78,6 +80,9 @@ const App = () => (
             <Route path="/cgv" element={<CGV />} />
             <Route path="/politique-cookies" element={<PolitiqueCookies />} />
             
+            {/* Admin auth route */}
+            <Route path="/admin/auth" element={<AdminAuth />} />
+            
             {/* Admin routes with layout */}
             <Route element={<AdminLayout />}>
               <Route path="/admin" element={<Dashboard />} />
@@ -91,6 +96,7 @@ const App = () => (
               <Route path="/admin/bookings" element={<AdminBookings />} />
               <Route path="/admin/users" element={<AdminUsers />} />
               <Route path="/admin/settings" element={<AdminSettings />} />
+              <Route path="/admin/media" element={<AdminMedia />} />
             </Route>
           </Routes>
         </BrowserRouter>

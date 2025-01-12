@@ -45,7 +45,7 @@ const CircuitDetail = () => {
         .from('circuits')
         .select('*')
         .ilike('name', id?.replace(/-/g, ' ') || '')
-        .single();
+        .maybeSingle();
 
       if (circuitByName) {
         return circuitByName;
@@ -58,7 +58,7 @@ const CircuitDetail = () => {
           .from('circuits')
           .select('*')
           .eq('id', numericId)
-          .single();
+          .maybeSingle();
 
         if (error) {
           toast({
@@ -68,6 +68,16 @@ const CircuitDetail = () => {
           });
           navigate('/circuits');
           throw error;
+        }
+
+        if (!circuitById) {
+          toast({
+            title: "Error",
+            description: "Circuit non trouvé",
+            variant: "destructive",
+          });
+          navigate('/circuits');
+          throw new Error("Circuit not found");
         }
 
         return circuitById;
@@ -132,7 +142,7 @@ const CircuitDetail = () => {
         <Header />
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900">Circuit not found</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Circuit non trouvé</h1>
             <p className="mt-2 text-gray-600">Le circuit que vous recherchez n'existe pas.</p>
           </div>
         </div>
@@ -208,7 +218,6 @@ const CircuitDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {/* We'll need to fetch this from practical_information table */}
                       <li className="flex items-center gap-2">
                         <Check className="text-emerald w-4 h-4" />
                         <span>Transport</span>
@@ -227,7 +236,6 @@ const CircuitDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {/* We'll need to fetch this from practical_information table */}
                       <li className="flex items-center gap-2">
                         <X className="text-red-500 w-4 h-4" />
                         <span>Vols internationaux</span>

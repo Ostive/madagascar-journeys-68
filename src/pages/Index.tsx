@@ -13,6 +13,7 @@ import NewsletterSection from "@/components/NewsletterSection";
 import FAQSection from "@/components/FAQSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import { AnimatedSection } from "@/components/sections/AnimatedSection";
 
 const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -43,86 +44,41 @@ const Index = () => {
         className="relative z-10 bg-white"
       >
         <div className="md:p-14" />
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
+        <AnimatedSection>
           <InspireMeSection />
-        </motion.div>
+        </AnimatedSection>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
+        <AnimatedSection>
           <DestinationsSection />
-        </motion.div>
+        </AnimatedSection>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
+        <AnimatedSection>
           <CircuitsSection />
-        </motion.div>
+        </AnimatedSection>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
+        <AnimatedSection>
           <WhyUsSection />
-        </motion.div>
+        </AnimatedSection>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
+        <AnimatedSection>
           <PartnersSection />
-        </motion.div>
+        </AnimatedSection>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
+        <AnimatedSection>
           <BlogSection />
-        </motion.div>
+        </AnimatedSection>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
+        <AnimatedSection>
           <NewsletterSection />
-        </motion.div>
+        </AnimatedSection>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
+        <AnimatedSection>
           <FAQSection />
-        </motion.div>
+        </AnimatedSection>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
+        <AnimatedSection>
           <ContactSection />
-        </motion.div>
+        </AnimatedSection>
 
         <Footer />
       </motion.div>

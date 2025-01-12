@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import SettingsCard from "@/components/admin/settings/SettingsCard";
 
 const AdminSettings = () => {
   const { toast } = useToast();
@@ -67,56 +67,46 @@ const AdminSettings = () => {
 
         <TabsContent value="general">
           <div className="grid gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Paramètres généraux</CardTitle>
-                <CardDescription>
-                  Configurez les paramètres généraux de votre site
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="siteName">Nom du site</Label>
-                  <Input
-                    id="siteName"
-                    value={siteName}
-                    onChange={(e) => setSiteName(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="contactEmail">Email de contact</Label>
-                  <Input
-                    id="contactEmail"
-                    type="email"
-                    value={contactEmail}
-                    onChange={(e) => setContactEmail(e.target.value)}
-                  />
-                </div>
-              </CardContent>
-            </Card>
+            <SettingsCard
+              title="Paramètres généraux"
+              description="Configurez les paramètres généraux de votre site"
+            >
+              <div className="space-y-2">
+                <Label htmlFor="siteName">Nom du site</Label>
+                <Input
+                  id="siteName"
+                  value={siteName}
+                  onChange={(e) => setSiteName(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contactEmail">Email de contact</Label>
+                <Input
+                  id="contactEmail"
+                  type="email"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                />
+              </div>
+            </SettingsCard>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Notifications</CardTitle>
-                <CardDescription>
-                  Gérez vos préférences de notifications
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Notifications par email</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Recevoir des notifications par email pour les nouvelles réservations
-                    </p>
-                  </div>
-                  <Switch
-                    checked={emailNotifications}
-                    onCheckedChange={setEmailNotifications}
-                  />
+            <SettingsCard
+              title="Notifications"
+              description="Gérez vos préférences de notifications"
+            >
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Notifications par email</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Recevoir des notifications par email pour les nouvelles réservations
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
+                <Switch
+                  checked={emailNotifications}
+                  onCheckedChange={setEmailNotifications}
+                />
+              </div>
+            </SettingsCard>
 
             <div className="flex justify-end">
               <Button 

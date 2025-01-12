@@ -1,26 +1,51 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
+import { AuthForm } from "./AuthForm";
+import { ResetPasswordForm } from "./ResetPasswordForm";
+import { SocialAuth } from "./SocialAuth";
 
 interface AuthDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const authSchema = z.object({
+  email: z.string().email("Email invalide"),
+  password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
+});
+
 export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("signin");
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [isResetPassword, setIsResetPassword] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const { toast } = useToast();
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const validateForm = (email: string, password: string) => {
+    try {
+      authSchema.parse({ email, password });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formattedErrors = error.errors.reduce(
+          (acc, curr) => ({
+            ...acc,
+            [curr.path[0]]: curr.message,
+          }),
+          {}
+        );
+        setErrors(formattedErrors);
+      }
+      return false;
+    }
+  };
+
+  const handleSignIn = async (email: string, password: string) => {
+    if (!validateForm(email, password)) return;
     setLoading(true);
     
     try {
@@ -37,35 +62,41 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
       });
       onClose();
     } catch (error: any) {
+      let errorMessage = "Une erreur est survenue";
+      if (error.message.includes("Invalid login credentials")) {
+        errorMessage = "Email ou mot de passe incorrect";
+      }
       toast({
         variant: "destructive",
         title: "Erreur de connexion",
-        description: error.message,
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignUp = async (email: string, password: string) => {
+    if (!validateForm(email, password)) return;
     setLoading(true);
     
     try {
       const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
 
       if (error) {
-        // Check if the error is due to an existing user
         if (error.message.includes("User already registered")) {
           toast({
             variant: "destructive",
             title: "Compte existant",
             description: "Un compte existe déjà avec cet email. Veuillez vous connecter.",
           });
-          setActiveTab("signin"); // Switch to sign in tab
+          setIsSignUp(false);
           return;
         }
         throw error;
@@ -80,6 +111,36 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
       toast({
         variant: "destructive",
         title: "Erreur d'inscription",
+        description: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (email: string) => {
+    if (!email) {
+      setErrors({ email: "Email requis" });
+      return;
+    }
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Email envoyé",
+        description: "Vérifiez votre email pour réinitialiser votre mot de passe",
+      });
+      setIsResetPassword(false);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
         description: error.message,
       });
     } finally {
@@ -111,116 +172,34 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
       <DialogContent className="sm:max-w-md bg-gradient-to-br from-white to-gray-50">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center bg-gradient-to-r from-emerald to-ocean bg-clip-text text-transparent">
-            Bienvenue sur MadagascarTravel
+            {isResetPassword
+              ? "Réinitialiser le mot de passe"
+              : isSignUp
+              ? "Créer un compte"
+              : "Bienvenue sur MadagascarTravel"}
           </DialogTitle>
         </DialogHeader>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin">Connexion</TabsTrigger>
-            <TabsTrigger value="signup">Inscription</TabsTrigger>
-          </TabsList>
-          <TabsContent value="signin">
-            <form onSubmit={handleSignIn} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="votre@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Mot de passe</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full bg-emerald hover:bg-emerald/90"
-                disabled={loading}
-              >
-                {loading ? "Connexion..." : "Se connecter"}
-              </Button>
-            </form>
-          </TabsContent>
-          <TabsContent value="signup">
-            <form onSubmit={handleSignUp} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="signup-email">Email</Label>
-                <Input
-                  id="signup-email"
-                  type="email"
-                  placeholder="votre@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="signup-password">Mot de passe</Label>
-                <Input
-                  id="signup-password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full bg-emerald hover:bg-emerald/90"
-                disabled={loading}
-              >
-                {loading ? "Inscription..." : "S'inscrire"}
-              </Button>
-            </form>
-          </TabsContent>
-        </Tabs>
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Ou continuer avec
-            </span>
-          </div>
-        </div>
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          onClick={handleGoogleSignIn}
-          disabled={loading}
-        >
-          <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
-            <path
-              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-              fill="#4285F4"
+
+        {isResetPassword ? (
+          <ResetPasswordForm
+            onSubmit={handleResetPassword}
+            onBack={() => setIsResetPassword(false)}
+            loading={loading}
+            errors={errors}
+          />
+        ) : (
+          <>
+            <AuthForm
+              isSignUp={isSignUp}
+              onSubmit={isSignUp ? handleSignUp : handleSignIn}
+              onToggleMode={() => setIsSignUp(!isSignUp)}
+              onResetPassword={() => setIsResetPassword(true)}
+              loading={loading}
+              errors={errors}
             />
-            <path
-              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-              fill="#34A853"
-            />
-            <path
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-              fill="#FBBC05"
-            />
-            <path
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-              fill="#EA4335"
-            />
-          </svg>
-          Google
-        </Button>
+            <SocialAuth onGoogleSignIn={handleGoogleSignIn} loading={loading} />
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );

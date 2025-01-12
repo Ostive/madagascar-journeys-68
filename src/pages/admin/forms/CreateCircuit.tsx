@@ -2,19 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation } from "@tanstack/react-query";
-import { Label } from "@/components/ui/label"; 
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import CircuitBasicInfo from "@/components/admin/forms/circuit/CircuitBasicInfo";
+import CircuitPricing from "@/components/admin/forms/circuit/CircuitPricing";
 
 const CreateCircuit = () => {
   const navigate = useNavigate();
@@ -64,6 +56,10 @@ const CreateCircuit = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleSelectChange = (value: string, name: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     createMutation.mutate(formData);
@@ -79,114 +75,14 @@ const CreateCircuit = () => {
         <h1 className="text-3xl font-bold">Créer un nouveau circuit</h1>
       </div>
       
-      <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
-        <div className="space-y-2">
-          <Label>Titre</Label>
-          <Input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Entrez le titre du circuit"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Description courte</Label>
-          <Textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Entrez une brève description"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Description longue</Label>
-          <Textarea
-            name="long_description"
-            value={formData.long_description}
-            onChange={handleChange}
-            placeholder="Entrez la description détaillée"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Durée</Label>
-          <Input
-            type="number"
-            name="duration_days"
-            value={formData.duration_days}
-            onChange={handleChange}
-            placeholder="Ex: 7 jours"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Nombre de personnes</Label>
-          <Input
-            name="persons"
-            value={formData.persons}
-            onChange={handleChange}
-            placeholder="Ex: 2-8 personnes"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Prix</Label>
-          <Input
-            type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            placeholder="Entrez le prix"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Période</Label>
-          <Input
-            name="date_range"
-            value={formData.date_range}
-            onChange={handleChange}
-            placeholder="Ex: JUIN - AOÛT"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Difficulté</Label>
-          <Select
-            value={formData.difficulty}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, difficulty: value }))}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Sélectionnez la difficulté" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Facile">Facile</SelectItem>
-              <SelectItem value="Modéré">Modéré</SelectItem>
-              <SelectItem value="Difficile">Difficile</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Image principale</Label>
-          <Input
-            name="main_image"
-            value={formData.main_image}
-            onChange={handleChange}
-            placeholder="URL de l'image principale"
-            required
-          />
-        </div>
-
+      <form onSubmit={handleSubmit} className="max-w-2xl space-y-8">
+        <CircuitBasicInfo formData={formData} handleChange={handleChange} />
+        <CircuitPricing 
+          formData={formData} 
+          handleChange={handleChange}
+          handleSelectChange={handleSelectChange}
+        />
+        
         <Button
           type="submit"
           className="w-full"

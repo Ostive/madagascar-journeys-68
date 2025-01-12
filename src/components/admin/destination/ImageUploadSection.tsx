@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Upload } from "lucide-react";
 import PhotoStream from "./PhotoStream";
+import { PhotoLibrary } from "../PhotoLibrary";
 
 interface ImageUploadSectionProps {
   mainImage: string;
@@ -19,18 +20,7 @@ export const ImageUploadSection = ({
   onGalleryChange,
 }: ImageUploadSectionProps) => {
   const [isUploading, setIsUploading] = useState(false);
-  const [existingImages, setExistingImages] = useState<string[]>([]);
-
-  const fetchExistingImages = async () => {
-    const { data, error } = await supabase.storage.from('destinations').list();
-    if (error) {
-      console.error('Error fetching images:', error);
-      return;
-    }
-    setExistingImages(data.map(file => 
-      `${supabase.storage.from('destinations').getPublicUrl(file.name).data.publicUrl}`
-    ));
-  };
+  const [showLibrary, setShowLibrary] = useState(false);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -88,6 +78,14 @@ export const ImageUploadSection = ({
     }
   };
 
+  const handleSelectFromLibrary = (url: string) => {
+    if (!mainImage) {
+      onMainImageChange(url);
+    } else {
+      onGalleryChange([...gallery, url]);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -101,11 +99,11 @@ export const ImageUploadSection = ({
           />
           <Button
             variant="outline"
-            onClick={fetchExistingImages}
+            onClick={() => setShowLibrary(!showLibrary)}
             type="button"
           >
             <Upload className="w-4 h-4 mr-2" />
-            Voir les images existantes
+            {showLibrary ? 'Masquer la bibliothèque' : 'Voir la bibliothèque'}
           </Button>
           {isUploading && <Loader2 className="animate-spin" />}
         </div>
@@ -118,31 +116,8 @@ export const ImageUploadSection = ({
         onSetMainImage={handleSetMainImage}
       />
 
-      {existingImages.length > 0 && (
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium">Images existantes</h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {existingImages.map((url, index) => (
-              <button
-                key={index}
-                className="aspect-square rounded-lg overflow-hidden hover:ring-2 hover:ring-primary transition-all"
-                onClick={() => {
-                  if (!mainImage) {
-                    onMainImageChange(url);
-                  } else {
-                    onGalleryChange([...gallery, url]);
-                  }
-                }}
-              >
-                <img
-                  src={url}
-                  alt={`Existing ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </button>
-            ))}
-          </div>
-        </div>
+      {showLibrary && (
+        <PhotoLibrary onSelect={handleSelectFromLibrary} />
       )}
     </div>
   );
