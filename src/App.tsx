@@ -1,20 +1,33 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "./components/auth/AuthProvider";
 
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MainLayout } from "@/components/layouts/MainLayout";
 
+
+// Pages
+import Index from "./pages/Index";
+import Quiz from "./pages/Quiz";
+import Settings from "./pages/Settings";
+import Destinations from "./pages/Destinations";
+import DestinationDetail from "./pages/DestinationDetail";
+import Circuits from "./pages/Circuits";
+import CircuitDetail from "./pages/CircuitDetail";
+import AboutUs from "./pages/AboutUs";
+import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
+import Contact from "./pages/Contact";
 import CircuitDetailPage from "@/pages/admin/circuit/CircuitDetailPage";
-import Index from "@/pages/Index";
-import AboutUs from "@/pages/AboutUs";
-import Blog from "@/pages/Blog";
-import BlogDetail from "@/pages/BlogDetail";
-import CircuitDetail from "@/pages/CircuitDetail";
-import Circuits from "@/pages/Circuits";
-import Contact from "@/pages/Contact";
-import Destinations from "@/pages/Destinations";
-import DestinationDetail from "@/pages/DestinationDetail";
-import Quiz from "@/pages/Quiz";
 
 
+
+// Account pages
+import Account from "./pages/account/Account";
+import Reservations from "./pages/account/Reservations";
+import Favorites from "./pages/account/Favorites";
 
 // Admin pages
 import { AdminLayout } from "@/components/layouts/AdminLayout";
@@ -36,52 +49,70 @@ import AdminBlog from "./pages/admin/AdminBlog";
 import CreateBlog from "./pages/admin/forms/CreateBlog";
 import CreateDestination from "./pages/admin/forms/CreateDestination";
 
+// Legal pages
+import MentionsLegales from "./pages/legal/MentionsLegales";
+import PolitiqueConfidentialite from "./pages/legal/PolitiqueConfidentialite";
+import CGU from "./pages/legal/CGU";
+import CGV from "./pages/legal/CGV";
+import PolitiqueCookies from "./pages/legal/PolitiqueCookies";
 
+const queryClient = new QueryClient();
 
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        {/* Main routes with MainLayout */}
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Index />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:id" element={<BlogDetail />} />
-          <Route path="/circuits" element={<Circuits />} />
-          <Route path="/circuit/:id" element={<CircuitDetail />} />
-          <Route path="/destinations" element={<Destinations />} />
-          <Route path="/destination/:id" element={<DestinationDetail />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/quiz" element={<Quiz />} />
-        </Route>
-
-        {/* Admin routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="/admin/circuit" element={<AdminCircuit />} />
-          <Route path="/admin/circuit/create" element={<CreateCircuit />} />
-          <Route path="/admin/circuit/edit/:id" element={<EditCircuit />} />
-          <Route path="/admin/circuit/:id" element={<CircuitDetailPage />} />
-          <Route path="/admin/media" element={<AdminMedia />} />
-
-          <Route path="/admin" element={<Dashboard />} />
-          <Route path="/admin/blog" element={<AdminBlog />} />
-          <Route path="/admin/blog/create" element={<CreateBlog />} />
-          <Route path="/admin/destination" element={<AdminDestination />} />
-          <Route path="/admin/destination/create" element={<CreateDestination />} />
-          <Route path="/admin/circuit" element={<AdminCircuit />} />
-          <Route path="/admin/circuit/create" element={<CreateCircuit />} />
-          <Route path="/admin/circuit/edit/:id" element={<EditCircuit />} />
-          <Route path="/admin/bookings" element={<AdminBookings />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/settings" element={<AdminSettings />} />
-
-
-        </Route>
-      </Routes>
-    </Router>
-  );
-}
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <AuthProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/destinations" element={<Destinations />} />
+            <Route path="/destination/:id" element={<DestinationDetail />} />
+            <Route path="/circuits" element={<Circuits />} />
+            <Route path="/circuit/:id" element={<CircuitDetail />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:id" element={<BlogDetail />} />
+            <Route path="/contact" element={<Contact />} />
+            
+            {/* Account routes */}
+            <Route path="/account" element={<Account />} />
+            <Route path="/reservations" element={<Reservations />} />
+            <Route path="/favorites" element={<Favorites />} />
+            
+            {/* Legal routes */}
+            <Route path="/mentions-legales" element={<MentionsLegales />} />
+            <Route path="/politique-confidentialite" element={<PolitiqueConfidentialite />} />
+            <Route path="/cgu" element={<CGU />} />
+            <Route path="/cgv" element={<CGV />} />
+            <Route path="/politique-cookies" element={<PolitiqueCookies />} />
+            
+            {/* Admin auth route */}
+            <Route path="/admin/auth" element={<AdminAuth />} />
+            
+            {/* Admin routes with layout */}
+            <Route element={<AdminLayout />}>
+              <Route path="/admin" element={<Dashboard />} />
+              <Route path="/admin/blog" element={<AdminBlog />} />
+              <Route path="/admin/blog/create" element={<CreateBlog />} />
+              <Route path="/admin/destination" element={<AdminDestination />} />
+              <Route path="/admin/destination/create" element={<CreateDestination />} />
+              <Route path="/admin/circuit" element={<AdminCircuit />} />
+              <Route path="/admin/circuit/create" element={<CreateCircuit />} />
+              <Route path="/admin/circuit/edit/:id" element={<EditCircuit />} />
+              <Route path="/admin/bookings" element={<AdminBookings />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/settings" element={<AdminSettings />} />
+              <Route path="/admin/media" element={<AdminMedia />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
