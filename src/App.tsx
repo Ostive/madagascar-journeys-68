@@ -14,6 +14,7 @@ import CircuitDetail from "@/pages/CircuitDetail";
 import Circuits from "@/pages/Circuits";
 import Contact from "@/pages/Contact";
 import Destinations from "@/pages/Destinations";
+import DestinationDetail from "@/pages/DestinationDetail";
 import Quiz from "@/pages/Quiz";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/circuits" element={<Circuits />} />
           <Route path="/circuit/:id" element={<CircuitDetail />} />
           <Route path="/destinations" element={<Destinations />} />
+          <Route path="/destination/:id" element={<DestinationDetail />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/quiz" element={<Quiz />} />
         </Route>
