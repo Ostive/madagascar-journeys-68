@@ -52,9 +52,13 @@ export type Database = {
         Row: {
           created_at: string | null
           date_range: string | null
+          departure_location: string | null
+          departure_time: string | null
           description: string | null
           difficulty: string | null
+          dress_code: string | null
           duration_days: number
+          enabled: boolean | null
           id: number
           long_description: string | null
           main_image: string | null
@@ -62,16 +66,22 @@ export type Database = {
           persons: string | null
           price: number | null
           rating: number | null
+          return_time: string | null
           short_description: string | null
+          tour_location: string | null
           updated_at: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string | null
           date_range?: string | null
+          departure_location?: string | null
+          departure_time?: string | null
           description?: string | null
           difficulty?: string | null
+          dress_code?: string | null
           duration_days: number
+          enabled?: boolean | null
           id?: never
           long_description?: string | null
           main_image?: string | null
@@ -79,16 +89,22 @@ export type Database = {
           persons?: string | null
           price?: number | null
           rating?: number | null
+          return_time?: string | null
           short_description?: string | null
+          tour_location?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string | null
           date_range?: string | null
+          departure_location?: string | null
+          departure_time?: string | null
           description?: string | null
           difficulty?: string | null
+          dress_code?: string | null
           duration_days?: number
+          enabled?: boolean | null
           id?: never
           long_description?: string | null
           main_image?: string | null
@@ -96,7 +112,9 @@ export type Database = {
           persons?: string | null
           price?: number | null
           rating?: number | null
+          return_time?: string | null
           short_description?: string | null
+          tour_location?: string | null
           updated_at?: string | null
           user_id?: string | null
         }

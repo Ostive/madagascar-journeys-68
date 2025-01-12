@@ -7,6 +7,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMutation } from "@tanstack/react-query";
 import CircuitBasicInfo from "@/components/admin/forms/circuit/CircuitBasicInfo";
 import CircuitPricing from "@/components/admin/forms/circuit/CircuitPricing";
+import CircuitLogistics from "@/components/admin/forms/circuit/CircuitLogistics";
+import CircuitItinerary from "@/components/admin/forms/circuit/CircuitItinerary";
+import CircuitGallery from "@/components/admin/forms/circuit/CircuitGallery";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+
+interface ItineraryDay {
+  day_number: number;
+  title: string;
+  description: string;
+  activities?: string;
+  travel_duration?: string;
+}
 
 const CreateCircuit = () => {
   const navigate = useNavigate();
@@ -20,19 +33,45 @@ const CreateCircuit = () => {
     price: 0,
     date_range: "",
     difficulty: "",
+    departure_location: "",
+    departure_time: "",
+    return_time: "",
+    dress_code: "",
+    tour_location: "",
     main_image: "",
+    gallery: [] as string[],
+    enabled: true,
   });
+
+  const [itinerary, setItinerary] = useState<ItineraryDay[]>([]);
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const { error } = await supabase
+      // First, create the circuit
+      const { data: circuitData, error: circuitError } = await supabase
         .from('circuits')
         .insert([{
           ...data,
           rating: 0,
-        }]);
+        }])
+        .select()
+        .single();
       
-      if (error) throw error;
+      if (circuitError) throw circuitError;
+
+      // Then, create the itinerary
+      if (itinerary.length > 0) {
+        const { error: itineraryError } = await supabase
+          .from('itineraries')
+          .insert(
+            itinerary.map(day => ({
+              ...day,
+              circuit_id: circuitData.id,
+            }))
+          );
+        
+        if (itineraryError) throw itineraryError;
+      }
     },
     onSuccess: () => {
       toast({
@@ -75,13 +114,42 @@ const CreateCircuit = () => {
         <h1 className="text-3xl font-bold">Créer un nouveau circuit</h1>
       </div>
       
-      <form onSubmit={handleSubmit} className="max-w-2xl space-y-8">
-        <CircuitBasicInfo formData={formData} handleChange={handleChange} />
-        <CircuitPricing 
-          formData={formData} 
-          handleChange={handleChange}
-          handleSelectChange={handleSelectChange}
-        />
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="enabled"
+            checked={formData.enabled}
+            onCheckedChange={(checked) => 
+              setFormData(prev => ({ ...prev, enabled: checked }))
+            }
+          />
+          <Label htmlFor="enabled">Circuit actif</Label>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-8">
+            <CircuitBasicInfo formData={formData} handleChange={handleChange} />
+            <CircuitPricing 
+              formData={formData} 
+              handleChange={handleChange}
+              handleSelectChange={handleSelectChange}
+            />
+            <CircuitLogistics formData={formData} handleChange={handleChange} />
+          </div>
+
+          <div className="space-y-8">
+            <CircuitGallery
+              mainImage={formData.main_image}
+              gallery={formData.gallery}
+              onMainImageChange={(url) => setFormData(prev => ({ ...prev, main_image: url }))}
+              onGalleryChange={(urls) => setFormData(prev => ({ ...prev, gallery: urls }))}
+            />
+            <CircuitItinerary
+              itinerary={itinerary}
+              onItineraryChange={setItinerary}
+            />
+          </div>
+        </div>
         
         <Button
           type="submit"
