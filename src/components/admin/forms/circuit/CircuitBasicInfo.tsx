@@ -50,7 +50,7 @@ const CircuitBasicInfo = ({ formData, handleChange }: CircuitBasicInfoProps) => 
       </div>
 
       <div className="space-y-2">
-        <Label>Durée</Label>
+        <Label>Durée (jours)</Label>
         <Input
           type="number"
           name="duration_days"
