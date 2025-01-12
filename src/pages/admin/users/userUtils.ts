@@ -8,16 +8,22 @@ export const fetchProfiles = async () => {
 
   if (profilesError) throw profilesError;
 
-  const profilesWithEmail = await Promise.all(
-    profilesData.map(async (profile) => {
-      const { data: { user }, error: userError } = await supabase.auth.getUser(profile.id);
+  // Fetch users one at a time to avoid token issues
+  const profilesWithEmail = [];
+  for (const profile of profilesData) {
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.admin.getUserById(profile.id);
       if (userError) {
         console.error('Error fetching user:', userError);
-        return { ...profile, email: 'Email not available' };
+        profilesWithEmail.push({ ...profile, email: 'Email not available' });
+      } else {
+        profilesWithEmail.push({ ...profile, email: user?.email });
       }
-      return { ...profile, email: user?.email };
-    })
-  );
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      profilesWithEmail.push({ ...profile, email: 'Email not available' });
+    }
+  }
 
   return profilesWithEmail;
 };

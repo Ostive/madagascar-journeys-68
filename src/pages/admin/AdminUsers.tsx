@@ -4,11 +4,13 @@ import { Loader2 } from "lucide-react";
 import { UserTable } from "./users/UserTable";
 import { fetchProfiles, updateUserRole } from "./users/userUtils";
 import type { Profile } from "./users/types";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const AdminUsers = () => {
   const { toast } = useToast();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadProfiles();
@@ -17,10 +19,12 @@ const AdminUsers = () => {
   const loadProfiles = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       const profilesData = await fetchProfiles();
       setProfiles(profilesData);
     } catch (error) {
       console.error('Error fetching profiles:', error);
+      setError("Impossible de charger les utilisateurs. Veuillez réessayer plus tard.");
       toast({
         title: "Erreur",
         description: "Impossible de charger les utilisateurs",
@@ -66,6 +70,13 @@ const AdminUsers = () => {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Gestion des Utilisateurs</h1>
       </div>
+      
+      {error && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      
       <UserTable profiles={profiles} onRoleChange={handleRoleChange} />
     </div>
   );
