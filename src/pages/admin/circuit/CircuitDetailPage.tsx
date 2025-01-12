@@ -8,33 +8,16 @@ import { ArrowLeft, Calendar, MessageSquare, Star, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import GalleryGrid from "@/components/GaleryGrid";
 import { useToast } from "@/hooks/use-toast";
+import { Database } from "@/integrations/supabase/types";
 
-interface Circuit {
-  id: number;
-  name: string;
-  description: string;
-  long_description?: string;
-  duration_days: number;
-  price: number;
-  persons?: string;
-  rating?: number;
-  date_range?: string;
-  main_image?: string;
+type CircuitRow = Database['public']['Tables']['circuits']['Row'];
+type ReviewRow = Database['public']['Tables']['reviews']['Row'];
+type ReservationRow = Database['public']['Tables']['reservation_requests']['Row'];
+
+interface Circuit extends CircuitRow {
+  reviews?: ReviewRow[];
+  reservation_requests?: ReservationRow[];
   gallery?: string[];
-  difficulty?: string;
-  reviews?: Array<{
-    id: number;
-    rating: number;
-    review_text?: string;
-    traveler_name?: string;
-  }>;
-  reservation_requests?: Array<{
-    id: string;
-    status: string;
-    created_at: string;
-    adults_count?: number;
-    children_count?: number;
-  }>;
 }
 
 const CircuitDetailPage = () => {
@@ -62,7 +45,9 @@ const CircuitDetailPage = () => {
             adults_count,
             children_count
           ),
-          gallery
+          media (
+            media_url
+          )
         `)
         .eq('id', parseInt(id || '0'))
         .single();
@@ -76,7 +61,9 @@ const CircuitDetailPage = () => {
         throw error;
       }
 
-      return data;
+      // Transform media URLs into gallery array
+      const gallery = data.media?.map(m => m.media_url) || [];
+      return { ...data, gallery };
     },
   });
 
@@ -110,12 +97,12 @@ const CircuitDetailPage = () => {
     );
   }
 
-  const averageRating = circuit?.reviews?.length
-    ? circuit.reviews.reduce((acc: number, review: any) => acc + (review.rating || 0), 0) / circuit.reviews.length
+  const averageRating = circuit.reviews?.length
+    ? circuit.reviews.reduce((acc: number, review) => acc + (review.rating || 0), 0) / circuit.reviews.length
     : 0;
 
-  const totalBookings = circuit?.reservation_requests?.length || 0;
-  const confirmedBookings = Array.isArray(circuit?.reservation_requests) 
+  const totalBookings = circuit.reservation_requests?.length || 0;
+  const confirmedBookings = Array.isArray(circuit.reservation_requests) 
     ? circuit.reservation_requests.filter(r => r.status === 'confirmed').length 
     : 0;
 
@@ -218,7 +205,7 @@ const CircuitDetailPage = () => {
             </CardHeader>
             <CardContent>
               <GalleryGrid 
-                images={[circuit.main_image, ...(circuit.gallery || [])].filter(Boolean)} 
+                images={galleryImages}
                 title={circuit.name} 
               />
             </CardContent>
