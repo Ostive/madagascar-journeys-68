@@ -13,11 +13,12 @@ import { Database } from "@/integrations/supabase/types";
 type CircuitRow = Database['public']['Tables']['circuits']['Row'];
 type ReviewRow = Database['public']['Tables']['reviews']['Row'];
 type ReservationRow = Database['public']['Tables']['reservation_requests']['Row'];
+type MediaRow = Database['public']['Tables']['media']['Row'];
 
 interface Circuit extends CircuitRow {
-  reviews?: ReviewRow[];
-  reservation_requests?: ReservationRow[];
-  gallery?: string[];
+  reviews: ReviewRow[];
+  reservation_requests: ReservationRow[];
+  media: MediaRow[];
 }
 
 const CircuitDetailPage = () => {
@@ -33,20 +34,13 @@ const CircuitDetailPage = () => {
         .select(`
           *,
           reviews (
-            id,
-            rating,
-            review_text,
-            traveler_name
+            *
           ),
           reservation_requests (
-            id,
-            status,
-            created_at,
-            adults_count,
-            children_count
+            *
           ),
           media (
-            media_url
+            *
           )
         `)
         .eq('id', parseInt(id || '0'))
@@ -61,9 +55,7 @@ const CircuitDetailPage = () => {
         throw error;
       }
 
-      // Transform media URLs into gallery array
-      const gallery = data.media?.map(m => m.media_url) || [];
-      return { ...data, gallery };
+      return data as Circuit;
     },
   });
 
@@ -98,15 +90,18 @@ const CircuitDetailPage = () => {
   }
 
   const averageRating = circuit.reviews?.length
-    ? circuit.reviews.reduce((acc: number, review) => acc + (review.rating || 0), 0) / circuit.reviews.length
+    ? circuit.reviews.reduce((acc, review) => acc + (review.rating || 0), 0) / circuit.reviews.length
     : 0;
 
   const totalBookings = circuit.reservation_requests?.length || 0;
-  const confirmedBookings = Array.isArray(circuit.reservation_requests) 
+  const confirmedBookings = circuit.reservation_requests
     ? circuit.reservation_requests.filter(r => r.status === 'confirmed').length 
     : 0;
 
-  const galleryImages = circuit ? [circuit.main_image, ...(circuit.gallery || [])].filter(Boolean) : [];
+  const galleryImages = [
+    circuit.main_image,
+    ...(circuit.media?.map(m => m.media_url) || [])
+  ].filter(Boolean) as string[];
 
   return (
     <div className="container mx-auto p-8">
