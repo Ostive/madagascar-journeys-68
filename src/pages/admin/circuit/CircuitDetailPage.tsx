@@ -258,3 +258,6 @@ const CircuitDetailPage = () => {
       </Tabs>
     </div>
   );
+};
+
+export default CircuitDetailPage;
