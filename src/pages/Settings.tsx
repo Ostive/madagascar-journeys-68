@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { MainLayout } from "@/components/layouts/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,11 +22,10 @@ const Settings = () => {
   };
 
   return (
-    <MainLayout>
-      <div className="container mx-auto py-10 px-4">
-        <h1 className="text-3xl font-bold mb-8">Paramètres</h1>
+    <div className="container mx-auto py-10 px-4">
+      <h1 className="text-3xl font-bold mb-8">Paramètres</h1>
 
-        <Tabs defaultValue="profile" className="space-y-6">
+      <Tabs defaultValue="profile" className="space-y-6">
           <TabsList>
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="h-4 w-4" />
@@ -159,15 +157,14 @@ const Settings = () => {
               </CardContent>
             </Card>
           </TabsContent>
-        </Tabs>
+      </Tabs>
 
-        <div className="flex justify-end mt-6">
-          <Button onClick={handleSave}>
-            Sauvegarder les modifications
-          </Button>
-        </div>
+      <div className="flex justify-end mt-6">
+        <Button onClick={handleSave}>
+          Sauvegarder les modifications
+        </Button>
       </div>
-    </MainLayout>
+    </div>
   );
 };
 
