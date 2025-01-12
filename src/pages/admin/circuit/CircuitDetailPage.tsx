@@ -55,7 +55,15 @@ const CircuitDetailPage = () => {
         throw error;
       }
 
-      return data as Circuit;
+      // Ensure the response matches our Circuit interface
+      const circuitData = {
+        ...data,
+        reviews: data.reviews || [],
+        reservation_requests: data.reservation_requests || [],
+        media: data.media || []
+      } as Circuit;
+
+      return circuitData;
     },
   });
 
