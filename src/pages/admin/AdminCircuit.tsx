@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil, Trash2 } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -144,6 +144,13 @@ const AdminCircuit = () => {
                   {formatDate(circuit.created_at)}
                 </TableCell>
                 <TableCell className="space-x-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => navigate(`/admin/circuit/${circuit.id}`)}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
                   <Button
                     variant="outline"
                     size="icon"
