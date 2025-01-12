@@ -35,7 +35,7 @@ const CircuitDetailPage = () => {
             children_count
           )
         `)
-        .eq('id', id)
+        .eq('id', parseInt(id || '0'))
         .single();
 
       if (error) {
@@ -82,11 +82,15 @@ const CircuitDetailPage = () => {
   }
 
   const averageRating = circuit.reviews?.length
-    ? circuit.reviews.reduce((acc, review) => acc + (review.rating || 0), 0) / circuit.reviews.length
+    ? circuit.reviews.reduce((acc: number, review: any) => acc + (review.rating || 0), 0) / circuit.reviews.length
     : 0;
 
   const totalBookings = circuit.reservation_requests?.length || 0;
-  const confirmedBookings = circuit.reservation_requests?.filter(r => r.status === 'confirmed').length || 0;
+  const confirmedBookings = Array.isArray(circuit.reservation_requests) 
+    ? circuit.reservation_requests.filter(r => r.status === 'confirmed').length 
+    : 0;
+
+  const galleryImages = [circuit.main_image].concat(circuit.gallery || []).filter(Boolean);
 
   return (
     <div className="container mx-auto p-8">
