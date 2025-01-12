@@ -9,12 +9,40 @@ import { useNavigate } from "react-router-dom";
 import GalleryGrid from "@/components/GaleryGrid";
 import { useToast } from "@/hooks/use-toast";
 
+interface Circuit {
+  id: number;
+  name: string;
+  description: string;
+  long_description?: string;
+  duration_days: number;
+  price: number;
+  persons?: string;
+  rating?: number;
+  date_range?: string;
+  main_image?: string;
+  gallery?: string[];
+  difficulty?: string;
+  reviews?: Array<{
+    id: number;
+    rating: number;
+    review_text?: string;
+    traveler_name?: string;
+  }>;
+  reservation_requests?: Array<{
+    id: string;
+    status: string;
+    created_at: string;
+    adults_count?: number;
+    children_count?: number;
+  }>;
+}
+
 const CircuitDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const { data: circuit, isLoading } = useQuery({
+  const { data: circuit, isLoading } = useQuery<Circuit>({
     queryKey: ['admin-circuit', id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -33,7 +61,8 @@ const CircuitDetailPage = () => {
             created_at,
             adults_count,
             children_count
-          )
+          ),
+          gallery
         `)
         .eq('id', parseInt(id || '0'))
         .single();
@@ -81,16 +110,16 @@ const CircuitDetailPage = () => {
     );
   }
 
-  const averageRating = circuit.reviews?.length
+  const averageRating = circuit?.reviews?.length
     ? circuit.reviews.reduce((acc: number, review: any) => acc + (review.rating || 0), 0) / circuit.reviews.length
     : 0;
 
-  const totalBookings = circuit.reservation_requests?.length || 0;
-  const confirmedBookings = Array.isArray(circuit.reservation_requests) 
+  const totalBookings = circuit?.reservation_requests?.length || 0;
+  const confirmedBookings = Array.isArray(circuit?.reservation_requests) 
     ? circuit.reservation_requests.filter(r => r.status === 'confirmed').length 
     : 0;
 
-  const galleryImages = [circuit.main_image].concat(circuit.gallery || []).filter(Boolean);
+  const galleryImages = circuit ? [circuit.main_image, ...(circuit.gallery || [])].filter(Boolean) : [];
 
   return (
     <div className="container mx-auto p-8">
@@ -229,6 +258,3 @@ const CircuitDetailPage = () => {
       </Tabs>
     </div>
   );
-};
-
-export default CircuitDetailPage;
