@@ -29,11 +29,36 @@ const Header = () => {
       title: "Destinations",
       path: "/destinations",
       submenu: [
-        { name: "Nord", path: "/destinations?region=nord" },
-        { name: "Sud", path: "/destinations?region=sud" },
-        { name: "Est", path: "/destinations?region=est" },
-        { name: "Ouest", path: "/destinations?region=ouest" },
-        { name: "Centre", path: "/destinations?region=centre" },
+        { 
+          name: "Nord", 
+          path: "/destinations?region=nord",
+          image: "https://images.unsplash.com/photo-1469041797191-50ace28483c3?auto=format&fit=crop&w=800&q=80",
+          description: "Découvrez les plages paradisiaques et les îles du Nord"
+        },
+        { 
+          name: "Sud", 
+          path: "/destinations?region=sud",
+          image: "https://images.unsplash.com/photo-1493962853295-0fd70327578a?auto=format&fit=crop&w=800&q=80",
+          description: "Explorez les parcs nationaux et les paysages uniques du Sud"
+        },
+        { 
+          name: "Est", 
+          path: "/destinations?region=est",
+          image: "https://images.unsplash.com/photo-1485833077593-4278bba3f11f?auto=format&fit=crop&w=800&q=80",
+          description: "Visitez les forêts tropicales et les côtes sauvages de l'Est"
+        },
+        { 
+          name: "Ouest", 
+          path: "/destinations?region=ouest",
+          image: "https://images.unsplash.com/photo-1452378174528-3090a4bba7b2?auto=format&fit=crop&w=800&q=80",
+          description: "Admirez les baobabs et les formations rocheuses de l'Ouest"
+        },
+        { 
+          name: "Centre", 
+          path: "/destinations?region=centre",
+          image: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=800&q=80",
+          description: "Découvrez la culture et l'histoire au cœur de Madagascar"
+        },
       ],
     },
     {
@@ -195,9 +220,33 @@ const Header = () => {
                                 setIsMenuOpen(false);
                                 setActiveSubmenu(null);
                               }}
-                              className="block py-2 text-lg text-gray-900"
+                              className="block"
                             >
-                              {subItem.name}
+                              {'image' in subItem ? (
+                                <div className="relative group rounded-lg overflow-hidden">
+                                  <div className="aspect-[4/3]">
+                                    <img
+                                      src={subItem.image}
+                                      alt={subItem.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-4">
+                                    <h3 className="text-white font-medium text-lg mb-1">
+                                      {subItem.name}
+                                    </h3>
+                                    {'description' in subItem && (
+                                      <p className="text-white/90 text-sm line-clamp-2">
+                                        {subItem.description}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              ) : (
+                                <span className="py-2 text-lg text-gray-900">
+                                  {subItem.name}
+                                </span>
+                              )}
                             </Link>
                           ))}
                       </div>
