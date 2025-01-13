@@ -17,7 +17,6 @@ type MediaRow = Database['public']['Tables']['media']['Row'];
 
 interface Circuit extends CircuitRow {
   reviews: ReviewRow[];
-  reservation_requests: ReservationRow[];
   media: MediaRow[];
 }
 
@@ -26,22 +25,15 @@ const CircuitDetailPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const { data: circuit, isLoading } = useQuery<Circuit>({
+  const { data: circuit, isLoading: isLoadingCircuit } = useQuery({
     queryKey: ['admin-circuit', id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('circuits')
         .select(`
           *,
-          reviews (
-            *
-          ),
-          reservation_requests (
-            *
-          ),
-          media (
-            *
-          )
+          reviews (*),
+          media (*)
         `)
         .eq('id', parseInt(id || '0'))
         .single();
@@ -55,17 +47,30 @@ const CircuitDetailPage = () => {
         throw error;
       }
 
-      // Ensure the response matches our Circuit interface
-      const circuitData = {
-        ...data,
-        reviews: data.reviews || [],
-        reservation_requests: data.reservation_requests || [],
-        media: data.media || []
-      } as Circuit;
-
-      return circuitData;
+      return data as Circuit;
     },
   });
+
+  const { data: reservations, isLoading: isLoadingReservations } = useQuery({
+    queryKey: ['circuit-reservations', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('reservation_requests')
+        .select('*')
+        .eq('reference_type', 'circuit')
+        .eq('reference_id', parseInt(id || '0'));
+
+      if (error) {
+        console.error('Error fetching reservations:', error);
+        return [];
+      }
+
+      return data;
+    },
+    enabled: !!id,
+  });
+
+  const isLoading = isLoadingCircuit || isLoadingReservations;
 
   if (isLoading) {
     return (
@@ -101,9 +106,9 @@ const CircuitDetailPage = () => {
     ? circuit.reviews.reduce((acc, review) => acc + (review.rating || 0), 0) / circuit.reviews.length
     : 0;
 
-  const totalBookings = circuit.reservation_requests?.length || 0;
-  const confirmedBookings = circuit.reservation_requests
-    ? circuit.reservation_requests.filter(r => r.status === 'confirmed').length 
+  const totalBookings = reservations?.length || 0;
+  const confirmedBookings = reservations
+    ? reservations.filter(r => r.status === 'confirmed').length 
     : 0;
 
   const galleryImages = [
