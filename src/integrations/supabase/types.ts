@@ -59,6 +59,7 @@ export type Database = {
           dress_code: string | null
           duration_days: number
           enabled: boolean | null
+          gallery: string[] | null
           id: number
           long_description: string | null
           main_image: string | null
@@ -82,6 +83,7 @@ export type Database = {
           dress_code?: string | null
           duration_days: number
           enabled?: boolean | null
+          gallery?: string[] | null
           id?: never
           long_description?: string | null
           main_image?: string | null
@@ -105,6 +107,7 @@ export type Database = {
           dress_code?: string | null
           duration_days?: number
           enabled?: boolean | null
+          gallery?: string[] | null
           id?: never
           long_description?: string | null
           main_image?: string | null
