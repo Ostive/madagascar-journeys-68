@@ -15,8 +15,6 @@ import { Label } from "@/components/ui/label";
 
 interface ItineraryDay {
   day_number: number;
-  title: string;
-  description: string;
   activities?: string;
   travel_duration?: string;
 }
