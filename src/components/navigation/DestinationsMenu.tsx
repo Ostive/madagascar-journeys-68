@@ -10,27 +10,27 @@ import { Button } from "@/components/ui/button";
 const regions = [
   { 
     name: "Nord",
-    image: "/lovable-uploads/north.jpg",
+    image: "https://images.unsplash.com/photo-1469041797191-50ace28483c3?auto=format&fit=crop&w=800&q=80",
     description: "Découvrez les plages paradisiaques et les îles du Nord"
   },
   {
     name: "Sud",
-    image: "/lovable-uploads/south.jpg",
+    image: "https://images.unsplash.com/photo-1493962853295-0fd70327578a?auto=format&fit=crop&w=800&q=80",
     description: "Explorez les parcs nationaux et les paysages uniques du Sud"
   },
   {
     name: "Est",
-    image: "/lovable-uploads/east.jpg",
+    image: "https://images.unsplash.com/photo-1485833077593-4278bba3f11f?auto=format&fit=crop&w=800&q=80",
     description: "Visitez les forêts tropicales et les côtes sauvages de l'Est"
   },
   {
     name: "Ouest",
-    image: "/lovable-uploads/west.jpg",
+    image: "https://images.unsplash.com/photo-1452378174528-3090a4bba7b2?auto=format&fit=crop&w=800&q=80",
     description: "Admirez les baobabs et les formations rocheuses de l'Ouest"
   },
   {
     name: "Centre",
-    image: "/lovable-uploads/central.jpg",
+    image: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=800&q=80",
     description: "Découvrez la culture et l'histoire au cœur de Madagascar"
   }
 ];
