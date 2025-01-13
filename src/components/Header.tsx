@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, LogOut } from "lucide-react";
+import { Menu, X, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { AuthDialog } from "./auth/AuthDialog";
@@ -12,11 +12,62 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MainNavigation } from "./navigation/MainNavigation";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const { user, signOut } = useAuth();
+
+  const mobileMenuItems = [
+    {
+      title: "Accueil",
+      path: "/",
+    },
+    {
+      title: "Destinations",
+      path: "/destinations",
+      submenu: [
+        { name: "Nord", path: "/destinations?region=nord" },
+        { name: "Sud", path: "/destinations?region=sud" },
+        { name: "Est", path: "/destinations?region=est" },
+        { name: "Ouest", path: "/destinations?region=ouest" },
+        { name: "Centre", path: "/destinations?region=centre" },
+      ],
+    },
+    {
+      title: "Circuits",
+      path: "/circuits",
+      submenu: [
+        { name: "Courts séjours", path: "/circuits?duration=court" },
+        { name: "Circuits d'une semaine", path: "/circuits?duration=semaine" },
+        { name: "Grands circuits", path: "/circuits?duration=long" },
+      ],
+    },
+    {
+      title: "Blog",
+      path: "/blog",
+      submenu: [
+        { name: "Conseils pratiques", path: "/blog/preparer-voyage" },
+        { name: "Guides des régions", path: "/blog/explorer-nord" },
+        { name: "Inspirations", path: "/blog/top-plages" },
+        { name: "Actualités", path: "/blog/evenements" },
+      ],
+    },
+    {
+      title: "À propos",
+      path: "/about",
+    },
+    {
+      title: "Contact",
+      path: "/contact",
+    },
+  ];
 
   return (
     <header className="fixed w-full bg-white/90 backdrop-blur-md z-40 shadow-sm md:top-8">
@@ -92,51 +143,44 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <nav className="md:hidden py-4">
-            <div className="flex flex-col space-y-4">
-              <Link
-                to="/"
-                className="font-opensans text-dark hover:text-emerald"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Accueil
-              </Link>
-              <Link
-                to="/destinations"
-                className="font-opensans text-dark hover:text-emerald"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Destinations
-              </Link>
-              <Link
-                to="/circuits"
-                className="font-opensans text-dark hover:text-emerald"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Circuits
-              </Link>
-              <Link
-                to="/about"
-                className="font-opensans text-dark hover:text-emerald"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                À propos
-              </Link>
-              <Link
-                to="/blog"
-                className="font-opensans text-dark hover:text-emerald"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Blog
-              </Link>
-              <Link
-                to="/contact"
-                className="font-opensans text-dark hover:text-emerald"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contact
-              </Link>
-            </div>
+          <nav className="md:hidden py-4 bg-white rounded-lg shadow-lg">
+            <Accordion type="single" collapsible className="w-full">
+              {mobileMenuItems.map((item, index) => (
+                <AccordionItem value={`item-${index}`} key={index}>
+                  {item.submenu ? (
+                    <>
+                      <AccordionTrigger className="px-4 py-2 hover:text-emerald">
+                        {item.title}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="flex flex-col space-y-2 pl-6">
+                          {item.submenu.map((subItem, subIndex) => (
+                            <Link
+                              key={subIndex}
+                              to={subItem.path}
+                              className="text-sm text-gray-600 hover:text-emerald py-2"
+                              onClick={() => setIsMenuOpen(false)}
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </>
+                  ) : (
+                    <div className="px-4 py-2">
+                      <Link
+                        to={item.path}
+                        className="text-dark hover:text-emerald"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.title}
+                      </Link>
+                    </div>
+                  )}
+                </AccordionItem>
+              ))}
+            </Accordion>
           </nav>
         )}
       </div>
