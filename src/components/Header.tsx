@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, LogOut, ChevronDown } from "lucide-react";
+import { Menu, X, LogOut, ChevronDown, ArrowLeft } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { AuthDialog } from "./auth/AuthDialog";
@@ -12,16 +12,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MainNavigation } from "./navigation/MainNavigation";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
+  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const { user, signOut } = useAuth();
 
   const mobileMenuItems = [
@@ -68,6 +64,15 @@ const Header = () => {
       path: "/contact",
     },
   ];
+
+  const handleMenuItemClick = (item: any) => {
+    if (item.submenu) {
+      setActiveSubmenu(item.title);
+    } else {
+      setIsMenuOpen(false);
+      setActiveSubmenu(null);
+    }
+  };
 
   return (
     <header className="fixed w-full bg-white/90 backdrop-blur-md z-40 shadow-sm md:top-8">
@@ -130,59 +135,79 @@ const Header = () => {
             </Button>
           )}
 
-          <button
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? (
-              <X className="h-6 w-6 text-dark" />
-            ) : (
-              <Menu className="h-6 w-6 text-dark" />
-            )}
-          </button>
-        </div>
-
-        {isMenuOpen && (
-          <nav className="md:hidden py-4 bg-white rounded-lg shadow-lg">
-            <Accordion type="single" collapsible className="w-full">
-              {mobileMenuItems.map((item, index) => (
-                <AccordionItem value={`item-${index}`} key={index}>
-                  {item.submenu ? (
-                    <>
-                      <AccordionTrigger className="px-4 py-2 hover:text-emerald">
-                        {item.title}
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <div className="flex flex-col space-y-2 pl-6">
-                          {item.submenu.map((subItem, subIndex) => (
+          <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6 text-dark" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full p-0">
+              <div className="h-full flex flex-col">
+                {/* Menu principal */}
+                <div className={`flex-1 overflow-y-auto ${activeSubmenu ? 'hidden' : 'block'}`}>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      {mobileMenuItems.map((item, index) => (
+                        <div key={index} className="py-2">
+                          {item.submenu ? (
+                            <button
+                              onClick={() => handleMenuItemClick(item)}
+                              className="flex items-center justify-between w-full text-lg font-medium text-gray-900"
+                            >
+                              {item.title}
+                              <ChevronDown className="h-5 w-5" />
+                            </button>
+                          ) : (
                             <Link
-                              key={subIndex}
+                              to={item.path}
+                              onClick={() => handleMenuItemClick(item)}
+                              className="block text-lg font-medium text-gray-900"
+                            >
+                              {item.title}
+                            </Link>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sous-menus */}
+                {activeSubmenu && (
+                  <div className="absolute inset-0 bg-white">
+                    <div className="p-6">
+                      <button
+                        onClick={() => setActiveSubmenu(null)}
+                        className="flex items-center text-gray-600 mb-6"
+                      >
+                        <ArrowLeft className="h-5 w-5 mr-2" />
+                        Retour
+                      </button>
+                      <h2 className="text-xl font-semibold mb-4">{activeSubmenu}</h2>
+                      <div className="space-y-4">
+                        {mobileMenuItems
+                          .find(item => item.title === activeSubmenu)
+                          ?.submenu?.map((subItem, index) => (
+                            <Link
+                              key={index}
                               to={subItem.path}
-                              className="text-sm text-gray-600 hover:text-emerald py-2"
-                              onClick={() => setIsMenuOpen(false)}
+                              onClick={() => {
+                                setIsMenuOpen(false);
+                                setActiveSubmenu(null);
+                              }}
+                              className="block py-2 text-lg text-gray-900"
                             >
                               {subItem.name}
                             </Link>
                           ))}
-                        </div>
-                      </AccordionContent>
-                    </>
-                  ) : (
-                    <div className="px-4 py-2">
-                      <Link
-                        to={item.path}
-                        className="text-dark hover:text-emerald"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {item.title}
-                      </Link>
+                      </div>
                     </div>
-                  )}
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </nav>
-        )}
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
       <AuthDialog
         isOpen={isAuthDialogOpen}
