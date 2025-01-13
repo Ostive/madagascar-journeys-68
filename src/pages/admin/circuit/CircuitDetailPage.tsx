@@ -12,12 +12,11 @@ import { Database } from "@/integrations/supabase/types";
 
 type CircuitRow = Database['public']['Tables']['circuits']['Row'];
 type ReviewRow = Database['public']['Tables']['reviews']['Row'];
-type ReservationRow = Database['public']['Tables']['reservation_requests']['Row'];
 type MediaRow = Database['public']['Tables']['media']['Row'];
+type ReservationRow = Database['public']['Tables']['reservation_requests']['Row'];
 
 interface Circuit extends CircuitRow {
   reviews: ReviewRow[];
-  media: MediaRow[];
 }
 
 const CircuitDetailPage = () => {
@@ -32,8 +31,7 @@ const CircuitDetailPage = () => {
         .from('circuits')
         .select(`
           *,
-          reviews (*),
-          media (*)
+          reviews (*)
         `)
         .eq('id', parseInt(id || '0'))
         .single();
@@ -51,6 +49,25 @@ const CircuitDetailPage = () => {
     },
   });
 
+  const { data: mediaItems, isLoading: isLoadingMedia } = useQuery({
+    queryKey: ['circuit-media', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('media')
+        .select('*')
+        .eq('reference_type', 'circuit')
+        .eq('reference_id', parseInt(id || '0'));
+
+      if (error) {
+        console.error('Error fetching media:', error);
+        return [];
+      }
+
+      return data as MediaRow[];
+    },
+    enabled: !!id,
+  });
+
   const { data: reservations, isLoading: isLoadingReservations } = useQuery({
     queryKey: ['circuit-reservations', id],
     queryFn: async () => {
@@ -65,12 +82,12 @@ const CircuitDetailPage = () => {
         return [];
       }
 
-      return data;
+      return data as ReservationRow[];
     },
     enabled: !!id,
   });
 
-  const isLoading = isLoadingCircuit || isLoadingReservations;
+  const isLoading = isLoadingCircuit || isLoadingReservations || isLoadingMedia;
 
   if (isLoading) {
     return (
@@ -113,7 +130,7 @@ const CircuitDetailPage = () => {
 
   const galleryImages = [
     circuit.main_image,
-    ...(circuit.media?.map(m => m.media_url) || [])
+    ...(mediaItems?.map(m => m.media_url) || [])
   ].filter(Boolean) as string[];
 
   return (
