@@ -7,8 +7,6 @@ import { Plus, Trash2 } from "lucide-react";
 
 interface ItineraryDay {
   day_number: number;
-  title: string;
-  description: string;
   activities?: string;
   travel_duration?: string;
 }
@@ -21,16 +19,12 @@ interface CircuitItineraryProps {
 const CircuitItinerary = ({ itinerary, onItineraryChange }: CircuitItineraryProps) => {
   const [newDay, setNewDay] = useState<ItineraryDay>({
     day_number: itinerary.length + 1,
-    title: "",
-    description: "",
   });
 
   const handleAddDay = () => {
     onItineraryChange([...itinerary, newDay]);
     setNewDay({
       day_number: itinerary.length + 2,
-      title: "",
-      description: "",
     });
   };
 
@@ -89,36 +83,16 @@ const CircuitItinerary = ({ itinerary, onItineraryChange }: CircuitItineraryProp
 
             <div className="space-y-4">
               <div>
-                <Label>Titre</Label>
-                <Input
-                  value={day.title}
-                  onChange={(e) => handleDayChange(day.day_number, "title", e.target.value)}
-                  placeholder="Titre du jour"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label>Description</Label>
+                <Label>Activités</Label>
                 <Textarea
-                  value={day.description}
-                  onChange={(e) => handleDayChange(day.day_number, "description", e.target.value)}
-                  placeholder="Description détaillée des activités"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label>Activités (optionnel)</Label>
-                <Input
                   value={day.activities || ""}
                   onChange={(e) => handleDayChange(day.day_number, "activities", e.target.value)}
-                  placeholder="Liste des activités"
+                  placeholder="Description détaillée des activités"
                 />
               </div>
 
               <div>
-                <Label>Durée du trajet (optionnel)</Label>
+                <Label>Durée du trajet</Label>
                 <Input
                   value={day.travel_duration || ""}
                   onChange={(e) => handleDayChange(day.day_number, "travel_duration", e.target.value)}
