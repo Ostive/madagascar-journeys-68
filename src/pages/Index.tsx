@@ -26,7 +26,7 @@ const Index = () => {
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1, 1]);
 
   return (
-    <div className="" ref={containerRef}>
+    <div className="min-h-screen w-full" ref={containerRef}>
       <TopBar />
       <Header />
       <div className="p-14" />
