@@ -11,7 +11,7 @@ import CircuitDetail from "@/pages/CircuitDetail";
 import Quiz from "@/pages/Quiz";
 import Reservation from "@/pages/Reservation";
 import AdminAuth from "@/pages/admin/AdminAuth";
-import AdminLayout from "@/components/layouts/AdminLayout";
+import { AdminLayout } from "@/components/layouts/AdminLayout";
 import Dashboard from "@/pages/admin/Dashboard";
 import AdminDestination from "@/pages/admin/AdminDestination";
 import AdminCircuit from "@/pages/admin/AdminCircuit";
