@@ -24,7 +24,6 @@ const BlogSection = () => {
 
         <div className="mt-12 text-center">
           <Link to="/blog">
-          /
             <Button
               variant="outline"
               className="group flex items-center gap-2 transition-all duration-300 hover:bg-emerald hover:text-white"
