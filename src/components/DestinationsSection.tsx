@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { destinations } from "@/data/data";
 import DestinationCard from "./cards/DestinationCard";
+import { ArrowRight } from "lucide-react";
 
 const DestinationsSection = () => {
   return (
@@ -20,16 +21,18 @@ const DestinationsSection = () => {
           )).filter((_, index) => index < 4)}
         </div>
 
-        <div className="mt-12 text-center">
+        <div className="mt-12 flex justify-center">
           <Link to="/destinations">
             <Button
               variant="outline"
-              className="hover:bg-emerald hover:text-white"
+              className="group flex items-center gap-2 transition-all duration-300 hover:bg-emerald hover:text-white"
             >
               Voir toutes les destinations
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>
           </Link>
         </div>
+
       </div>
     </section>
   );
