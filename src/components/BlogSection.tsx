@@ -26,7 +26,7 @@ const BlogSection = () => {
           <Link to="/blog">
             <Button
               variant="outline"
-              className="group flex items-center gap-2 transition-all duration-300 hover:bg-emerald hover:text-white"
+              className="group flex justify-items-center items-center gap-2 transition-all duration-300 hover:bg-emerald hover:text-white"
             >
               Voir tous les articles
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
