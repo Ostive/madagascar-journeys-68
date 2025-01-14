@@ -2,6 +2,7 @@ import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { blogPosts } from "@/data/blog";
 import BlogCard from "./cards/BlogCard";
+import { ArrowRight } from 'lucide-react'
 
 const BlogSection = () => {
   return (
@@ -25,9 +26,10 @@ const BlogSection = () => {
           <Link to="/blog">
             <Button
               variant="outline"
-              className="hover:bg-emerald hover:text-white"
+              className="group flex items-center gap-2 transition-all duration-300 hover:bg-emerald hover:text-white"
             >
               Voir tous les articles
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>
           </Link>
         </div>
