@@ -42,15 +42,19 @@ const CreateCircuit = () => {
   });
 
   const [itinerary, setItinerary] = useState<ItineraryDay[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
+      setIsSubmitting(true);
+      
       // First, create the circuit
       const { data: circuitData, error: circuitError } = await supabase
         .from('circuits')
         .insert([{
           ...data,
           rating: 0,
+          user_id: (await supabase.auth.getUser()).data.user?.id,
         }])
         .select()
         .single();
@@ -70,6 +74,8 @@ const CreateCircuit = () => {
         
         if (itineraryError) throw itineraryError;
       }
+
+      return circuitData;
     },
     onSuccess: () => {
       toast({
@@ -86,6 +92,9 @@ const CreateCircuit = () => {
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      setIsSubmitting(false);
+    },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -97,8 +106,18 @@ const CreateCircuit = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (itinerary.length === 0) {
+      toast({
+        title: "Attention",
+        description: "Veuillez ajouter au moins un jour à l'itinéraire.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     createMutation.mutate(formData);
   };
 
@@ -152,9 +171,9 @@ const CreateCircuit = () => {
         <Button
           type="submit"
           className="w-full"
-          disabled={createMutation.isPending}
+          disabled={isSubmitting}
         >
-          {createMutation.isPending ? "Création en cours..." : "Créer le circuit"}
+          {isSubmitting ? "Création en cours..." : "Créer le circuit"}
         </Button>
       </form>
     </div>

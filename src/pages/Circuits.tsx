@@ -6,13 +6,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { circuits } from "@/data/data";
 import TopBar from "@/components/TopBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CircuitCard from "@/components/cards/CircuitCard";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const CircuitsPage = () => {
+  const { toast } = useToast();
+  
+  const { data: circuits, isLoading } = useQuery({
+    queryKey: ['circuits'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('circuits')
+        .select('*')
+        .eq('enabled', true)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Impossible de charger les circuits",
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      return data;
+    },
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
       <TopBar />
@@ -82,11 +108,15 @@ const CircuitsPage = () => {
             </div>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
-            {circuits.map((circuit) => (
-              <CircuitCard key={circuit.id} circuit={circuit} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="text-center py-8">Chargement des circuits...</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
+              {circuits?.map((circuit) => (
+                <CircuitCard key={circuit.id} circuit={circuit} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <Footer />

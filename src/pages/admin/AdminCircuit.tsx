@@ -24,18 +24,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const AdminCircuit = () => {
-  const [circuits, setCircuits] = useState<Circuit[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Check if user is admin
   useEffect(() => {
     const checkAdmin = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user || user.email !== 'admin@example.com') {
+      if (!user) {
         toast({
           title: "Accès refusé",
           description: "Vous n'avez pas les droits d'accès à cette page.",
@@ -49,53 +49,57 @@ const AdminCircuit = () => {
   }, [toast, navigate]);
 
   // Fetch circuits
-  useEffect(() => {
-    const fetchCircuits = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('circuits')
-          .select('*')
-          .order('id', { ascending: false });
+  const { data: circuits, isLoading } = useQuery({
+    queryKey: ['admin-circuits'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('circuits')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        setCircuits(data || []);
-      } catch (error) {
-        console.error('Error fetching circuits:', error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les circuits.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      if (error) throw error;
+      return data;
+    },
+  });
 
-    fetchCircuits();
-  }, [toast]);
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      // First delete related itineraries
+      const { error: itineraryError } = await supabase
+        .from('itineraries')
+        .delete()
+        .eq('circuit_id', id);
 
-  const handleDelete = async (id: number) => {
-    try {
+      if (itineraryError) throw itineraryError;
+
+      // Then delete the circuit
       const { error } = await supabase
         .from('circuits')
         .delete()
         .eq('id', id);
 
       if (error) throw error;
-
-      setCircuits(circuits.filter(circuit => circuit.id !== id));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-circuits'] });
       toast({
         title: "Circuit supprimé",
         description: "Le circuit a été supprimé avec succès.",
       });
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('Error deleting circuit:', error);
       toast({
         title: "Erreur",
         description: "Impossible de supprimer le circuit.",
         variant: "destructive",
       });
-    }
+    },
+  });
+
+  const handleDelete = async (id: number) => {
+    deleteMutation.mutate(id);
   };
 
   const formatDate = (dateString: string | Date | undefined) => {
@@ -132,7 +136,7 @@ const AdminCircuit = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {circuits.map((circuit) => (
+            {circuits?.map((circuit) => (
               <TableRow key={circuit.id}>
                 <TableCell>{circuit.name}</TableCell>
                 <TableCell className="max-w-md truncate">
