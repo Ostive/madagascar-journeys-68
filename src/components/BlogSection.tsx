@@ -1,35 +1,52 @@
+import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
-import { blogPosts } from "@/data/blog";
 import BlogCard from "./cards/BlogCard";
+import { blogPosts } from "@/data/blog";
 
-const BlogSection = () => {
+export const BlogSection = () => {
   return (
-    <section className="py-20 bg-white" id="blog">
+    <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-poppins font-bold text-dark text-center mb-4">
-          Blog & Actualités
-        </h2>
-        <p className="text-lg text-dark/70 text-center mb-12 font-opensans">
-          Restez informés des dernières actualités et découvrez nos conseils de
-          voyage
-        </p>
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+          <div className="flex-1">
+            <h2 className="text-3xl font-bold mb-4">Notre Blog</h2>
+            <p className="text-gray-600 max-w-2xl">
+              Découvrez nos derniers articles et conseils pour votre voyage à Madagascar
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            asChild
+            className="hidden md:flex items-center gap-2 mt-4 md:mt-0 hover:bg-emerald hover:text-white"
+          >
+            <Link to="/blog" className="flex items-center gap-2">
+              Tous les articles
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
-          {blogPosts.map((post) => (
+        {/* Blog Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {blogPosts.slice(0, 4).map((post) => (
             <BlogCard key={post.title} post={post} />
           ))}
         </div>
 
-        <div className="mt-12 text-center">
-          <Link to="/blog">
-            <Button
-              variant="outline"
-              className="hover:bg-emerald hover:text-white"
-            >
-              Voir tous les articles
-            </Button>
-          </Link>
+        {/* Mobile Button */}
+        <div className="mt-8 text-center md:hidden">
+          <Button
+            variant="outline"
+            asChild
+            className="w-full flex items-center justify-center gap-2 hover:bg-emerald hover:text-white"
+          >
+            <Link to="/blog" className="flex items-center gap-2">
+              Tous les articles
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
