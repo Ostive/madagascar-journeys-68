@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, LogOut, ChevronDown, ArrowLeft } from "lucide-react";
+import { Menu, X, LogOut, ChevronDown, ArrowLeft, Palmtree, Mountain, Building, MapPin, BookOpen, Compass, Bell } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { AuthDialog } from "./auth/AuthDialog";
@@ -32,31 +32,31 @@ const Header = () => {
         { 
           name: "Nord", 
           path: "/destinations?region=nord",
-          image: "https://images.unsplash.com/photo-1469041797191-50ace28483c3?auto=format&fit=crop&w=800&q=80",
+          icon: <Palmtree className="h-6 w-6" />,
           description: "Découvrez les plages paradisiaques et les îles du Nord"
         },
         { 
           name: "Sud", 
           path: "/destinations?region=sud",
-          image: "https://images.unsplash.com/photo-1493962853295-0fd70327578a?auto=format&fit=crop&w=800&q=80",
+          icon: <Mountain className="h-6 w-6" />,
           description: "Explorez les parcs nationaux et les paysages uniques du Sud"
         },
         { 
           name: "Est", 
           path: "/destinations?region=est",
-          image: "https://images.unsplash.com/photo-1485833077593-4278bba3f11f?auto=format&fit=crop&w=800&q=80",
+          icon: <Palmtree className="h-6 w-6" />,
           description: "Visitez les forêts tropicales et les côtes sauvages de l'Est"
         },
         { 
           name: "Ouest", 
           path: "/destinations?region=ouest",
-          image: "https://images.unsplash.com/photo-1452378174528-3090a4bba7b2?auto=format&fit=crop&w=800&q=80",
+          icon: <Mountain className="h-6 w-6" />,
           description: "Admirez les baobabs et les formations rocheuses de l'Ouest"
         },
         { 
           name: "Centre", 
           path: "/destinations?region=centre",
-          image: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=800&q=80",
+          icon: <Building className="h-6 w-6" />,
           description: "Découvrez la culture et l'histoire au cœur de Madagascar"
         },
       ],
@@ -65,19 +65,19 @@ const Header = () => {
       title: "Circuits",
       path: "/circuits",
       submenu: [
-        { name: "Courts séjours", path: "/circuits?duration=court" },
-        { name: "Circuits d'une semaine", path: "/circuits?duration=semaine" },
-        { name: "Grands circuits", path: "/circuits?duration=long" },
+        { name: "Courts séjours", icon: <MapPin className="h-6 w-6" />, path: "/circuits?duration=court" },
+        { name: "Circuits d'une semaine", icon: <MapPin className="h-6 w-6" />, path: "/circuits?duration=semaine" },
+        { name: "Grands circuits", icon: <MapPin className="h-6 w-6" />, path: "/circuits?duration=long" },
       ],
     },
     {
       title: "Blog",
       path: "/blog",
       submenu: [
-        { name: "Conseils pratiques", path: "/blog/preparer-voyage" },
-        { name: "Guides des régions", path: "/blog/explorer-nord" },
-        { name: "Inspirations", path: "/blog/top-plages" },
-        { name: "Actualités", path: "/blog/evenements" },
+        { name: "Conseils pratiques", icon: <BookOpen className="h-6 w-6" />, path: "/blog/preparer-voyage" },
+        { name: "Guides des régions", icon: <MapPin className="h-6 w-6" />, path: "/blog/explorer-nord" },
+        { name: "Inspirations", icon: <Compass className="h-6 w-6" />, path: "/blog/top-plages" },
+        { name: "Actualités", icon: <Bell className="h-6 w-6" />, path: "/blog/evenements" },
       ],
     },
     {
@@ -222,31 +222,15 @@ const Header = () => {
                               }}
                               className="block"
                             >
-                              {'image' in subItem ? (
-                                <div className="relative group rounded-lg overflow-hidden">
-                                  <div className="aspect-[4/3]">
-                                    <img
-                                      src={subItem.image}
-                                      alt={subItem.name}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                  <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-4">
-                                    <h3 className="text-white font-medium text-lg mb-1">
-                                      {subItem.name}
-                                    </h3>
-                                    {'description' in subItem && (
-                                      <p className="text-white/90 text-sm line-clamp-2">
-                                        {subItem.description}
-                                      </p>
-                                    )}
-                                  </div>
+                              <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100">
+                                {'icon' in subItem && subItem.icon}
+                                <div>
+                                  <h3 className="text-lg font-medium">{subItem.name}</h3>
+                                  {'description' in subItem && (
+                                    <p className="text-sm text-gray-600">{subItem.description}</p>
+                                  )}
                                 </div>
-                              ) : (
-                                <span className="py-2 text-lg text-gray-900">
-                                  {subItem.name}
-                                </span>
-                              )}
+                              </div>
                             </Link>
                           ))}
                       </div>
