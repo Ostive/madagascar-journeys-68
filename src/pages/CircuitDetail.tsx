@@ -15,6 +15,7 @@ import CircuitPlanTab from "@/components/circuit/tabs/CircuitPlanTab";
 import LocationTab from "@/components/circuit/tabs/LocationTab";
 import GalleryTab from "@/components/circuit/tabs/GalleryTab";
 import ReviewsTab from "@/components/circuit/tabs/ReviewsTab";
+import GalleryGrid from "@/components/GaleryGrid";
 
 const CircuitDetail = () => {
   const { id } = useParams();
@@ -162,6 +163,14 @@ const CircuitDetail = () => {
           <h1 className="text-3xl font-bold">{circuit?.name}</h1>
         </motion.div>
 
+        {/* Main Gallery */}
+        <div className="mb-8">
+          <GalleryGrid 
+            images={[circuit?.main_image, ...(circuit?.gallery || [])].filter(Boolean)}
+            title={circuit?.name || "Circuit Gallery"}
+          />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <Card>
@@ -170,7 +179,7 @@ const CircuitDetail = () => {
                   <TabsTrigger value="information">Information</TabsTrigger>
                   <TabsTrigger value="circuit-plan">Circuit Plan</TabsTrigger>
                   <TabsTrigger value="location">Location</TabsTrigger>
-                  <TabsTrigger value="gallery">Gallery</TabsTrigger>
+                  <TabsTrigger value="gallery">Photos des voyageurs</TabsTrigger>
                   <TabsTrigger value="reviews">Reviews</TabsTrigger>
                 </TabsList>
                 <TabsContent value="information">
@@ -184,8 +193,8 @@ const CircuitDetail = () => {
                 </TabsContent>
                 <TabsContent value="gallery">
                   <GalleryTab 
-                    images={[circuit?.main_image, ...(circuit?.gallery || [])].filter(Boolean)} 
-                    title={circuit?.name} 
+                    images={[]} // This will be populated with traveler photos later
+                    title="Photos des voyageurs" 
                   />
                 </TabsContent>
                 <TabsContent value="reviews">
