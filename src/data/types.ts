@@ -56,6 +56,7 @@ export interface Circuit {
   not_included?: string[];
   created_at?: string | Date;
   updated_at?: string | Date;
+  tour_location?: string;
   itinerary?: Array<{
     day: number;
     title: string;
