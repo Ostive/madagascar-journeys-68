@@ -1,148 +1,136 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "lucide-react";
+import { motion } from "framer-motion";
+
+const partners = [
+  {
+    name: "Air Madagascar",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Air_Madagascar_logo.svg/2560px-Air_Madagascar_logo.svg.png",
+    category: "Transport",
+  },
+  {
+    name: "Office National du Tourisme",
+    logo: "https://www.madagascar-tourisme.com/wp-content/themes/ont/images/logo-ont.png",
+    category: "Tourisme",
+  },
+  {
+    name: "Parc National Madagascar",
+    logo: "https://www.parcs-madagascar.com/wordpress/wp-content/uploads/2016/06/Madagascar-National-Parks.png",
+    category: "Conservation",
+  },
+  {
+    name: "Ministère du Tourisme",
+    logo: "https://www.tourisme.gov.mg/wp-content/uploads/2019/07/logo-ministere-tourisme-madagascar.png",
+    category: "Gouvernement",
+  },
+];
+
+const testimonials = [
+  {
+    quote: "Une collaboration exceptionnelle qui nous permet d'offrir des expériences uniques à nos clients.",
+    author: "Jean Dupont",
+    role: "Directeur Commercial",
+    company: "Air Madagascar",
+  },
+  {
+    quote: "Madagascar Journeys est un partenaire de confiance qui partage notre vision du tourisme durable.",
+    author: "Marie Robert",
+    role: "Responsable Partenariats",
+    company: "Office National du Tourisme",
+  },
+];
 
 const PartnersSection = () => {
-  const partners = [
-    {
-      id: 1,
-      name: "Air Madagascar",
-      logo: "https://madagascar-tourisme.com/wp-content/uploads/2024/04/Logo-Madagascar-Airlines-300x145.png",
-      description: "Compagnie aérienne nationale",
-      url: "https://www.airmadagascar.com"
-    },
-    {
-      id: 2,
-      name: "Office National du Tourisme",
-      logo: "https://media.licdn.com/dms/image/v2/C4D0BAQEpTlickDhtIA/company-logo_200_200/company-logo_200_200/0/1675426618991/office_national_du_tourisme_de_madagascar_logo?e=2147483647&v=beta&t=ilIFZVDP6rAxdFX0s1Rzg7RY8C8VycKDMGITIPYHInE",
-      description: "Promotion du tourisme",
-      url: "https://www.tourisme.gov.mg"
-    },
-    {
-      id: 3,
-      name: "Parc National Madagascar",
-      logo: "https://www.parcs-madagascar.com/images/mnp.png",
-      description: "Gestion des parcs nationaux",
-      url: "https://www.parcs-madagascar.com"
-    },
-    {
-      id: 4,
-      name: "Association des Hôteliers",
-      logo: "https://fhorm.mg/wp-content/uploads/2020/07/cropped-FHORM-logo-VF-2-01.png",
-      description: "Hébergement de qualité",
-      url: "https://www.hotels-madagascar.mg"
-    }
-  ];
-
   return (
-    <section className="py-16 bg-white overflow-hidden">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-poppins font-bold text-dark text-center mb-4">
-          Nos Partenaires
-        </h2>
-        <p className="text-lg text-dark/70 text-center mb-12 font-opensans">
-          Abonnez-vous à notre newsletter pour rester informé de nos actualités et bénéficier d'offres exclusives.
-        </p>
-
-        <div className="relative">
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10" />
-
-          <div className="overflow-hidden">
-            <div 
-              className="flex animate-marquee"
-              style={{
-                animation: 'scroll 30s linear infinite',
-                width: 'fit-content'
-              }}
+    <div className="bg-gray-50/50">
+      <div className="container mx-auto px-4 py-24">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-20">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
             >
-              {partners.map((partner, index) => (
-                <a
-                  key={`${partner.id}-first-${index}`}
-                  href={partner.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-none w-72 px-4 group"
-                >
-                  <Card className="h-64 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                    <CardContent className="p-4 h-full flex flex-col">
-                      <div className="h-48 mb-3 flex items-center justify-center bg-gray-50 rounded-lg p-3 group-hover:bg-gray-100 transition-colors duration-300">
-                        <div className="relative w-full h-full">
-                          <img
-                            src={partner.logo}
-                            alt={`${partner.name} logo`}
-                            className="absolute inset-0 w-full h-full object-contain"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col flex-grow justify-between">
-                        <div className="text-center">
-                          <h3 className="font-semibold text-lg mb-1 line-clamp-1">{partner.name}</h3>
-                          <p className="text-gray-600 text-sm line-clamp-2">{partner.description}</p>
-                        </div>
-                        <div className="flex items-center justify-center text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-2">
-                          <span className="mr-2 text-sm">Visiter le site</span>
-                          <Link size={16} />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </a>
-              ))}
-              {partners.map((partner, index) => (
-                <a
-                  key={`${partner.id}-second-${index}`}
-                  href={partner.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-none w-72 px-4 group"
-                >
-                  <Card className="h-64 hover:shadow-lg transition-all duration-300 transform hover:scale-105 border-none">
-                    <CardContent className="p-6 h-full flex flex-col">
-                      <div className="h-28 mb-3 flex items-center justify-center bg-gray-50 rounded-lg p-3 group-hover:bg-gray-100 transition-colors duration-300">
-                        <div className="relative w-full h-full">
-                          <img
-                            src={partner.logo}
-                            alt={`${partner.name} logo`}
-                            className="absolute inset-0 w-full h-full object-contain"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col flex-grow justify-between">
-                        <div className="text-center">
-                          <h3 className="font-semibold text-lg mb-1 line-clamp-1">{partner.name}</h3>
-                          <p className="text-gray-600 text-sm line-clamp-2">{partner.description}</p>
-                        </div>
-                        <div className="flex items-center justify-center text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-2">
-                          <span className="mr-2 text-sm">Visiter le site</span>
-                          <Link size={16} />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </a>
-              ))}
-            </div>
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Nos Partenaires
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Nous collaborons avec les meilleurs acteurs du tourisme pour vous offrir une expérience exceptionnelle
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Partners Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
+            {partners.map((partner, index) => (
+              <motion.div
+                key={partner.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                className="group"
+              >
+                <div className="bg-white rounded-3xl p-8 h-full border border-gray-100 hover:border-emerald-200 transition-colors shadow-lg hover:shadow-xl">
+                  <div className="aspect-[3/2] relative flex items-center justify-center">
+                    <img
+                      src={partner.logo}
+                      alt={partner.name}
+                      className="max-w-[80%] max-h-[80%] object-contain transition-opacity group-hover:opacity-80"
+                    />
+                  </div>
+                  <div className="text-center mt-4">
+                    <div className="text-sm font-medium text-emerald-600">
+                      {partner.category}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Testimonials */}
+          <div className="grid md:grid-cols-2 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={testimonial.author}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div className="flex flex-col h-full">
+                  <div className="mb-6">
+                    <svg
+                      className="h-8 w-8 text-emerald-400"
+                      fill="currentColor"
+                      viewBox="0 0 32 32"
+                    >
+                      <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
+                    </svg>
+                  </div>
+                  <blockquote className="flex-1">
+                    <p className="text-lg text-gray-600 italic mb-4">
+                      {testimonial.quote}
+                    </p>
+                  </blockquote>
+                  <footer className="mt-4">
+                    <div className="font-medium text-gray-900">
+                      {testimonial.author}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {testimonial.role} • {testimonial.company}
+                    </div>
+                  </footer>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
-
-      <style>
-        {`
-          @keyframes scroll {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-          
-          .animate-marquee:hover {
-            animation-play-state: paused;
-          }
-        `}
-      </style>
-    </section>
+    </div>
   );
 };
 

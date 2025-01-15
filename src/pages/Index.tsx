@@ -1,7 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Header from "@/components/Header";
-import TopBar from "@/components/TopBar";
 import HeroSection from "@/components/HeroSection";
 import InspireMeSection from "@/components/InspireMeSection";
 import DestinationsSection from "@/components/DestinationsSection";
@@ -22,65 +21,82 @@ const Index = () => {
     offset: ["start start", "end end"]
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
-    <div className="min-h-screen" ref={containerRef}>
-      <TopBar />
+    <div className="relative min-h-screen" ref={containerRef}>
       <Header />
-      <div className="p-14" />
       
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
+      {/* Hero Section with Parallax */}
+      <motion.div style={{ opacity }} className="relative z-0">
         <HeroSection />
       </motion.div>
 
+      {/* Main Content */}
       <motion.div
-        style={{ y, opacity }}
-        className="relative z-10 bg-white"
+        className="relative z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <div className="md:p-14" />
-        <AnimatedSection>
-          <InspireMeSection />
-        </AnimatedSection>
+        {/* Curved Separator */}
+        <div className="absolute -top-20 left-0 right-0 h-20 bg-white">
+          <svg
+            className="absolute -top-px left-0 right-0 h-20 w-full text-white"
+            preserveAspectRatio="none"
+            viewBox="0 0 1440 48"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M0 48h1440V0c-211.52 37.03-421.507 51.137-629.96 42.32C601.587 33.503 385.353 13.367 0 0v48z" />
+          </svg>
+        </div>
 
-        <AnimatedSection>
-          <DestinationsSection />
-        </AnimatedSection>
+        {/* Content Sections */}
+        <div className="bg-white">
+          <div className="space-y-24 pb-24">
+            <AnimatedSection className="pt-12">
+              <InspireMeSection />
+            </AnimatedSection>
 
-        <AnimatedSection>
-          <CircuitsSection />
-        </AnimatedSection>
+            <AnimatedSection>
+              <DestinationsSection />
+            </AnimatedSection>
 
-        <AnimatedSection>
-          <WhyUsSection />
-        </AnimatedSection>
+            <AnimatedSection>
+              <CircuitsSection />
+            </AnimatedSection>
 
-        <AnimatedSection>
-          <PartnersSection />
-        </AnimatedSection>
+            <AnimatedSection>
+              <WhyUsSection />
+            </AnimatedSection>
 
-        <AnimatedSection>
-          <BlogSection />
-        </AnimatedSection>
+            {/* Gradient Background Section */}
+            <div className="relative py-24 bg-gradient-to-b from-emerald-50 to-white">
+              <AnimatedSection>
+                <PartnersSection />
+              </AnimatedSection>
 
-        <AnimatedSection>
-          <NewsletterSection />
-        </AnimatedSection>
+              <AnimatedSection>
+                <BlogSection />
+              </AnimatedSection>
+            </div>
 
-        <AnimatedSection>
-          <FAQSection />
-        </AnimatedSection>
+            <AnimatedSection>
+              <NewsletterSection />
+            </AnimatedSection>
 
-        <AnimatedSection>
-          <ContactSection />
-        </AnimatedSection>
+            <AnimatedSection>
+              <FAQSection />
+            </AnimatedSection>
 
-        <Footer />
+            <AnimatedSection>
+              <ContactSection />
+            </AnimatedSection>
+          </div>
+
+          <Footer />
+        </div>
       </motion.div>
     </div>
   );

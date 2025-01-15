@@ -1,74 +1,78 @@
+import { Link } from "react-router-dom";
 import {
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuTrigger,
+  NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
 import { BookOpen, MapPin, Compass, Bell } from "lucide-react";
-import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
-const categories = [
-  {
-    title: "Conseils pratiques",
-    items: [
-      { name: "Préparer son voyage", path: "/blog/preparer-voyage" },
-      { name: "Les indispensables", path: "/blog/indispensables" },
-    ],
-    icon: BookOpen,
-  },
-  {
-    title: "Guides des régions",
-    items: [
-      { name: "Explorer le Nord", path: "/blog/explorer-nord" },
-      { name: "Découverte du Sud", path: "/blog/decouverte-sud" },
-    ],
-    icon: MapPin,
-  },
-  {
-    title: "Inspirations",
-    items: [
-      { name: "Top 10 des plages", path: "/blog/top-plages" },
-      { name: "Meilleures expériences", path: "/blog/experiences" },
-    ],
-    icon: Compass,
-  },
-  {
-    title: "Actualités",
-    items: [
-      { name: "Événements locaux", path: "/blog/evenements" },
-      { name: "Nouveautés", path: "/blog/nouveautes" },
-    ],
-    icon: Bell,
-  },
-];
-
-export function BlogMenu() {
+export const BlogMenu = () => {
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger>Blog</NavigationMenuTrigger>
+      <NavigationMenuTrigger
+        className={cn(
+          "px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-transparent",
+          "text-white/90 hover:text-white hover:bg-white/10",
+          "data-[state=open]:bg-white/10 data-[state=open]:text-white"
+        )}
+      >
+        Blog
+      </NavigationMenuTrigger>
       <NavigationMenuContent>
-        <div className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
-          {categories.map(({ title, items, icon: Icon }) => (
-            <div key={title} className="row-span-3">
-              <div className="mb-3 flex items-center gap-2 text-sm font-medium leading-none">
-                <Icon className="h-4 w-4" />
-                {title}
-              </div>
-              <div className="flex flex-col gap-2">
-                {items.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                  >
-                    <div className="text-sm font-medium leading-none">{item.name}</div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
+        <div className="w-[400px] p-3 backdrop-blur-xl bg-black/20">
+          <div className="grid gap-2">
+            {[
+              {
+                title: "Conseils pratiques",
+                description: "Préparez votre voyage à Madagascar",
+                icon: <BookOpen className="h-5 w-5" />,
+                href: "/blog/preparer-voyage",
+              },
+              {
+                title: "Guides des régions",
+                description: "Découvrez nos guides détaillés",
+                icon: <MapPin className="h-5 w-5" />,
+                href: "/blog/explorer-nord",
+              },
+              {
+                title: "Inspirations",
+                description: "Idées et suggestions de voyages",
+                icon: <Compass className="h-5 w-5" />,
+                href: "/blog/top-plages",
+              },
+              {
+                title: "Actualités",
+                description: "Les dernières nouvelles touristiques",
+                icon: <Bell className="h-5 w-5" />,
+                href: "/blog/evenements",
+              },
+            ].map((item) => (
+              <Link
+                key={item.title}
+                to={item.href}
+                className={cn(
+                  "flex items-start space-x-3 rounded-lg p-3",
+                  "bg-white/5 hover:bg-white/10 transition-colors",
+                  "group"
+                )}
+              >
+                <div className="mt-1 rounded-lg bg-white/10 p-1.5 group-hover:bg-white/20 transition-colors">
+                  {item.icon}
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-sm font-medium text-white group-hover:text-white/90">
+                    {item.title}
+                  </h4>
+                  <p className="text-xs text-white/70 group-hover:text-white/80">
+                    {item.description}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </NavigationMenuContent>
     </NavigationMenuItem>
   );
-}
+};

@@ -22,12 +22,14 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="relative h-screen pb-24 pt-14 md:pt-0">
-      <HeroBackground images={images} currentImage={currentImage} />
-      <div className="relative container mx-auto px-4 h-full flex flex-col items-center justify-center">
+    <section className="relative w-full h-[100vh] flex items-stretch overflow-hidden">
+      <div className="absolute inset-0">
+        <HeroBackground images={images} currentImage={currentImage} />
+      </div>
+      <div className="relative z-20 w-full flex items-center">
         <HeroContent />
       </div>
-    </div>
+    </section>
   );
 };
 
