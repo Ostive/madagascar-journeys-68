@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { Star, MapPin, Clock, Calendar, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Circuit } from "@/data/types";
 
@@ -15,47 +15,76 @@ const CircuitCard = ({
   className = "",
   compact = false
 }: CircuitCardProps) => {
+  const [isLiked, setIsLiked] = useState(false);
+  const [likes, setLikes] = useState(0);
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsLiked(!isLiked);
+    setLikes(isLiked ? likes - 1 : likes + 1);
+  };
+
   return (
     <Link to={`/circuit/${circuit.id}`}>
-      <Card 
-        className={`relative w-72 h-96 overflow-hidden cursor-pointer group hover:scale-[1.02] transition-transform ${className}`}
-      >
-        {/* Background Image */}
-        <img
-          src={circuit.main_image}
-          alt={circuit.name}
-          className="absolute w-full h-full object-cover"
-        />
-        
-        {/* Dark Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
-
-        {/* Top Content */}
-        <div className="absolute top-3 left-3 right-3 flex justify-between items-start text-white">
-          <span className="text-sm bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-            {`${circuit.duration_days} jours`}
-          </span>
-          <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-sm">{circuit.rating}</span>
-          </div>
+      <div className={`w-full max-w-md ${className}`}>
+        {/* Image Section */}
+        <div className="relative w-full aspect-[3/2] mb-3">
+          <img
+            src={circuit.main_image || "/placeholder.svg"}
+            alt={`Vue de ${circuit.name}`}
+            className="rounded-2xl object-cover w-full h-full"
+          />
+          <button 
+            onClick={handleLike}
+            className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+            aria-label={isLiked ? "Unlike" : "Like"}
+          >
+            <Heart className={`w-5 h-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
+          </button>
         </div>
 
-        {/* Bottom Content */}
-        <div className="absolute bottom-3 left-3 right-3 text-white">
-          <div className="text-xs mb-1 opacity-90">
-            {circuit.date_range}
-          </div>
-          <div className="flex justify-between items-end">
-            <h3 className="text-lg font-semibold">
+        {/* Content Section */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-start">
+            <h3 className="text-lg font-semibold text-gray-900">
               {circuit.name}
             </h3>
-            <div className="text-xl font-bold">
-              ${circuit.price}
+            <div className="flex items-center gap-1">
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <span className="text-sm font-medium text-gray-700">
+                {circuit.rating?.toFixed(1) || "4.5"}
+              </span>
+              <span className="text-sm text-gray-500">(24)</span>
+            </div>
+          </div>
+          
+          <p className="text-sm text-gray-500 flex items-center gap-1">
+            <MapPin className="w-4 h-4" />
+            {circuit.tour_location || "Madagascar"}
+          </p>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Clock className="w-5 h-5 text-gray-500" />
+                <span className="text-sm text-gray-700">
+                  {circuit.duration_days} jours
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-gray-500" />
+                <span className="text-sm text-gray-700">
+                  {circuit.date_range || "Toute l'année"}
+                </span>
+              </div>
+            </div>
+            <div>
+              <span className="font-bold text-lg">${circuit.price}</span>
+              <span className="text-sm text-gray-500">/pers.</span>
             </div>
           </div>
         </div>
-      </Card>
+      </div>
     </Link>
   );
 };
