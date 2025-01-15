@@ -11,7 +11,7 @@ const LocationTab = ({ circuit }: LocationTabProps) => {
   const locations = [
     {
       name: "Starting Point",
-      coordinates: [47.5162, -18.8792],
+      coordinates: [47.5162, -18.8792] as [number, number], // Explicitly type as tuple
       day: 1
     },
     // Add more locations based on the itinerary

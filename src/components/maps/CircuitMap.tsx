@@ -4,7 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface Location {
   name: string;
-  coordinates: [number, number];
+  coordinates: [number, number]; // This enforces exactly 2 numbers
   day: number;
 }
 

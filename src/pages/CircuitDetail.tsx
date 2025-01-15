@@ -28,13 +28,26 @@ const CircuitDetail = () => {
         .from('circuits')
         .select(`
           *,
-          reviews (*)
+          reviews (*),
+          itineraries (
+            day_number,
+            activities
+          )
         `)
         .ilike('name', id?.replace(/-/g, ' ') || '')
         .maybeSingle();
 
       if (circuitByName) {
-        return circuitByName;
+        // Transform itineraries into the expected format
+        const transformedCircuit = {
+          ...circuitByName,
+          itinerary: circuitByName.itineraries?.map((item: any) => ({
+            day: item.day_number,
+            title: `Day ${item.day_number}`,
+            description: item.activities || ''
+          })) || []
+        };
+        return transformedCircuit;
       }
 
       const numericId = parseInt(id || '');
@@ -43,7 +56,11 @@ const CircuitDetail = () => {
           .from('circuits')
           .select(`
             *,
-            reviews (*)
+            reviews (*),
+            itineraries (
+              day_number,
+              activities
+            )
           `)
           .eq('id', numericId)
           .maybeSingle();
@@ -68,7 +85,16 @@ const CircuitDetail = () => {
           throw new Error("Circuit not found");
         }
 
-        return circuitById;
+        // Transform itineraries into the expected format
+        const transformedCircuit = {
+          ...circuitById,
+          itinerary: circuitById.itineraries?.map((item: any) => ({
+            day: item.day_number,
+            title: `Day ${item.day_number}`,
+            description: item.activities || ''
+          })) || []
+        };
+        return transformedCircuit;
       }
 
       toast({
@@ -133,7 +159,7 @@ const CircuitDetail = () => {
           transition={{ duration: 0.5 }}
           className="space-y-4 my-6"
         >
-          <h1 className="text-3xl font-bold">{circuit.name}</h1>
+          <h1 className="text-3xl font-bold">{circuit?.name}</h1>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -151,19 +177,19 @@ const CircuitDetail = () => {
                   <InformationTab circuit={circuit} />
                 </TabsContent>
                 <TabsContent value="circuit-plan">
-                  <CircuitPlanTab itinerary={circuit.itinerary || []} />
+                  <CircuitPlanTab itinerary={circuit?.itinerary || []} />
                 </TabsContent>
                 <TabsContent value="location">
                   <LocationTab circuit={circuit} />
                 </TabsContent>
                 <TabsContent value="gallery">
                   <GalleryTab 
-                    images={[circuit.main_image, ...(circuit.gallery || [])].filter(Boolean)} 
-                    title={circuit.name} 
+                    images={[circuit?.main_image, ...(circuit?.gallery || [])].filter(Boolean)} 
+                    title={circuit?.name} 
                   />
                 </TabsContent>
                 <TabsContent value="reviews">
-                  <ReviewsTab reviews={circuit.reviews || []} averageRating={averageRating} />
+                  <ReviewsTab reviews={circuit?.reviews || []} averageRating={circuit?.rating || 0} />
                 </TabsContent>
               </Tabs>
             </Card>
@@ -177,9 +203,9 @@ const CircuitDetail = () => {
               className="sticky top-24"
             >
               <ReservationCard
-                price={circuit.price?.toString() || "0"}
-                duration={`${circuit.duration_days} jours`}
-                persons={circuit.persons || "2-8 personnes"}
+                price={circuit?.price?.toString() || "0"}
+                duration={`${circuit?.duration_days} jours`}
+                persons={circuit?.persons || "2-8 personnes"}
               />
             </motion.div>
           </div>
