@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 interface Location {
   name: string;
@@ -13,26 +13,26 @@ interface CircuitMapProps {
   className?: string;
 }
 
+const MADAGASCAR_CENTER: [number, number] = [47.5162, -18.8792];
+const DEFAULT_ZOOM = 5;
+
 const CircuitMap = ({ locations = [], className = "" }: CircuitMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<maplibregl.Map | null>(null);
 
   useEffect(() => {
     if (!mapContainer.current) return;
-
-    // Using a free and open source alternative: MapTiler
-    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN || '';
     
     try {
-      map.current = new mapboxgl.Map({
+      map.current = new maplibregl.Map({
         container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/light-v11',
-        center: [47.5162, -18.8792], // Madagascar center
-        zoom: 5
+        style: 'https://tiles.openfreemap.org/styles/liberty',
+        center: MADAGASCAR_CENTER,
+        zoom: DEFAULT_ZOOM
       });
 
       // Add navigation controls
-      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
 
       // Add markers and connect them
       if (locations.length > 0) {
@@ -48,9 +48,9 @@ const CircuitMap = ({ locations = [], className = "" }: CircuitMapProps) => {
           el.style.borderRadius = '50%';
           el.style.border = '2px solid white';
           
-          new mapboxgl.Marker(el)
+          new maplibregl.Marker(el)
             .setLngLat(location.coordinates)
-            .setPopup(new mapboxgl.Popup().setHTML(`
+            .setPopup(new maplibregl.Popup().setHTML(`
               <h3 class="font-bold">Day ${location.day}</h3>
               <p>${location.name}</p>
             `))
@@ -89,7 +89,7 @@ const CircuitMap = ({ locations = [], className = "" }: CircuitMapProps) => {
             });
 
             // Fit bounds to show all markers
-            const bounds = new mapboxgl.LngLatBounds();
+            const bounds = new maplibregl.LngLatBounds();
             coordinates.forEach(coord => bounds.extend(coord));
             map.current.fitBounds(bounds, { padding: 50 });
           });
