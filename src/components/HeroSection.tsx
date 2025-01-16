@@ -22,7 +22,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative w-full h-[100vh] flex items-stretch overflow-hidden">
+    <section className="relative w-full h-[110vh] flex items-stretch overflow-hidden">
       <div className="absolute inset-0">
         <HeroBackground images={images} currentImage={currentImage} />
       </div>

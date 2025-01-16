@@ -26,7 +26,6 @@ const Index = () => {
   return (
     <div className="relative min-h-screen" ref={containerRef}>
       <Header />
-      
       {/* Hero Section with Parallax */}
       <motion.div style={{ opacity }} className="relative z-0">
         <HeroSection />

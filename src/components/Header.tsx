@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X, LogOut, ChevronDown, ArrowLeft, Palmtree, Mountain, Building, MapPin, BookOpen, Compass, Bell } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button, type ButtonProps } from "./ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { AuthDialog } from "./auth/AuthDialog";
 import { useAuth } from "./auth/AuthProvider";
@@ -98,7 +98,18 @@ const Header = () => {
     },
   ];
 
-  const handleMenuItemClick = (item: any) => {
+  interface MenuItem {
+    title: string;
+    path: string;
+    submenu?: {
+      name: string;
+      path: string;
+      icon?: JSX.Element;
+      description?: string;
+    }[];
+  }
+
+  const handleMenuItemClick = (item: MenuItem) => {
     if (item.submenu) {
       setActiveSubmenu(item.title);
     } else {
@@ -108,20 +119,22 @@ const Header = () => {
   };
 
   return (
-    <header 
+    <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isHomePage 
-          ? isScrolled 
-            ? 'bg-black/50 backdrop-blur-sm' 
-            : 'bg-transparent'
-          : 'bg-gray-900'
+        isHomePage
+          ? isScrolled
+            ? "bg-black/50 backdrop-blur-sm"
+            : "bg-transparent"
+          : "bg-gray-900"
       }`}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <span className="text-xl font-bold text-white">Madagascar Journeys</span>
+            <span className="text-xl font-bold text-white">
+              Madagascar Journeys
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -131,44 +144,59 @@ const Header = () => {
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
-            {user ? (
+            {!user && (
+              <Button 
+                onClick={() => setIsAuthDialogOpen(true)}
+                className="bg-transparent border-none text-white/90 hover:bg-white/5 hover:text-white"
+              >
+                Se connecter
+              </Button>
+            )}
+            {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button className="relative h-8 w-8 rounded-full bg-transparent border-none hover:bg-white/5">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.photoURL || undefined} alt={user.displayName || "User"} />
-                      <AvatarFallback>{user.displayName?.[0] || "U"}</AvatarFallback>
+                      <AvatarImage
+                        src={user.photoURL || undefined}
+                        alt={user.displayName || "User"}
+                      />
+                      <AvatarFallback>
+                        {user.displayName?.[0] || "U"}
+                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 backdrop-blur-xl bg-black/20 border-white/10">
-                  <DropdownMenuItem className="text-white/90 focus:text-white focus:bg-white/10" onClick={signOut}>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 backdrop-blur-xl bg-black/20 border-white/10"
+                >
+                  <DropdownMenuItem
+                    className="text-white/90 focus:text-white focus:bg-white/10"
+                    onClick={signOut}
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Se déconnecter</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
-              <Button
-                variant="ghost"
-                className="text-white/90 hover:text-white hover:bg-white/10"
-                onClick={() => setIsAuthDialogOpen(true)}
-              >
-                Se connecter
-              </Button>
             )}
 
             {/* Mobile Menu Button */}
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" className="lg:hidden text-white/90 hover:text-white hover:bg-white/10">
+                <Button className="lg:hidden bg-transparent border-none text-white/90 hover:bg-white/5 hover:text-white">
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-full sm:w-96 backdrop-blur-xl bg-black/20 border-white/10">
+              <SheetContent className="w-full sm:w-96 backdrop-blur-xl bg-black/20 border-white/10">
                 <div className="h-full flex flex-col">
                   {/* Main Menu */}
-                  <div className={`flex-1 overflow-y-auto ${activeSubmenu ? 'hidden' : 'block'}`}>
+                  <div
+                    className={`flex-1 overflow-y-auto ${
+                      activeSubmenu ? "hidden" : "block"
+                    }`}
+                  >
                     <div className="p-6">
                       <div className="space-y-4">
                         {mobileMenuItems.map((item, index) => (
@@ -243,7 +271,10 @@ const Header = () => {
         </div>
       </div>
 
-      <AuthDialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen} />
+      <AuthDialog
+        isOpen={isAuthDialogOpen}
+        onClose={() => setIsAuthDialogOpen(false)}
+      />
     </header>
   );
 };

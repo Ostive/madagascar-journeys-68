@@ -12,6 +12,7 @@ import Quiz from "@/pages/Quiz";
 import Reservation from "@/pages/Reservation";
 import AdminAuth from "@/pages/admin/AdminAuth";
 import { AdminLayout } from "@/components/layouts/AdminLayout";
+import { MainLayout } from "@/components/layouts/MainLayout";
 import Dashboard from "@/pages/admin/Dashboard";
 import AdminDestination from "@/pages/admin/AdminDestination";
 import AdminCircuit from "@/pages/admin/AdminCircuit";
@@ -27,6 +28,7 @@ import CreateBlog from "@/pages/admin/forms/CreateBlog";
 import HomeSettings from "@/pages/admin/settings/HomeSettings";
 import OptionsSettings from "@/pages/admin/settings/OptionsSettings";
 import CircuitDetailPage from "@/pages/admin/circuit/CircuitDetailPage";
+import MentionsLegales from "@/pages/legal/MentionsLegales";
 
 import "./App.css";
 
@@ -34,17 +36,20 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:id" element={<BlogDetail />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/destinations" element={<Destinations />} />
-        <Route path="/destination/:id" element={<DestinationDetail />} />
-        <Route path="/circuits" element={<Circuits />} />
-        <Route path="/circuit/:id" element={<CircuitDetail />} />
-        <Route path="/quiz" element={<Quiz />} />
-        <Route path="/reservation" element={<Reservation />} />
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Index />} />
+          <Route path="about" element={<AboutUs />} />
+          <Route path="blog" element={<Blog />} />
+          <Route path="blog/:id" element={<BlogDetail />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="destinations" element={<Destinations />} />
+          <Route path="destination/:id" element={<DestinationDetail />} />
+          <Route path="circuits" element={<Circuits />} />
+          <Route path="circuit/:id" element={<CircuitDetail />} />
+          <Route path="quiz" element={<Quiz />} />
+          <Route path="reservation" element={<Reservation />} />
+          <Route path="mentions-legales" element={<MentionsLegales />} />
+        </Route>
 
         {/* Admin routes */}
         <Route path="/admin/login" element={<AdminAuth />} />

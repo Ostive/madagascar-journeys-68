@@ -139,13 +139,14 @@ const CircuitsPage = () => {
   ].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main>
-        {/* Hero Section */}
-        <section className="relative py-24 overflow-hidden">
-          {/* Background Pattern */}
-          <div className="absolute inset-0">
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <main>
+          {/* Hero Section */}
+          <section className="relative py-24 overflow-hidden">
+            <div className="absolute inset-0 bg-[url('/public/placeholder.svg')] bg-[length:100px_100px] opacity-5"></div>
+            {/* Background Pattern */}
+            <div className="absolute inset-0">
             <svg
               className="absolute right-0 top-0 h-[500px] w-[500px] transform translate-x-1/2 -translate-y-1/2 text-emerald-50"
               fill="currentColor"
@@ -393,7 +394,7 @@ const CircuitsPage = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12"
               >
                 {isLoading ? (
                   <div className="col-span-full flex items-center justify-center py-12">
