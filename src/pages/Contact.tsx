@@ -2,7 +2,6 @@ import React from "react";
 import Header from "@/components/Header";
 import TopBar from "@/components/TopBar";
 import ContactSection from "@/components/ContactSection";
-import Footer from "@/components/Footer";
 
 const Contact = () => {
   return (
@@ -22,7 +21,6 @@ const Contact = () => {
       </section>
 
       <ContactSection />
-      <Footer />
     </div>
   );
 };

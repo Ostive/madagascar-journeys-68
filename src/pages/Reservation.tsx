@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { destinations } from "@/data/destinations";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Header from "@/components/Header";
-import TopBar from "@/components/TopBar";
 import Footer from "@/components/Footer";
 import { ReservationForm } from "@/components/reservation/ReservationForm";
 
@@ -15,7 +15,6 @@ const Reservation = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TopBar />
       <Header />
       <div className="py-12">
         <div className="container mx-auto px-4">

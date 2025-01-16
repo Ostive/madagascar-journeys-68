@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import Header from "@/components/Header";
-import TopBar from "@/components/TopBar";
 import Footer from "@/components/Footer";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";

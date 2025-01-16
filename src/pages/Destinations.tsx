@@ -1,7 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { destinations } from "@/data/data";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import DestinationCard from "@/components/cards/DestinationCard";
 import { motion } from "framer-motion";
 import { SearchAndFilter, type FilterGroup } from "@/components/search/SearchAndFilter";
@@ -155,7 +154,6 @@ const DestinationsPage = () => {
         </section>
       </main>
 
-      <Footer />
     </div>
   );
 };

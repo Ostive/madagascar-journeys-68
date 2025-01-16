@@ -1,7 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Users, Award, BookOpen, History } from "lucide-react";
 import { AnimatedSection } from "@/components/sections/AnimatedSection";
 
@@ -462,7 +461,6 @@ const AboutUs = () => {
             </AnimatedSection>
           </div>
         </div>
-        <Footer />
       </motion.div>
     </div>
   );

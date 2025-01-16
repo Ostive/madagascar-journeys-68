@@ -29,6 +29,11 @@ import HomeSettings from "@/pages/admin/settings/HomeSettings";
 import OptionsSettings from "@/pages/admin/settings/OptionsSettings";
 import CircuitDetailPage from "@/pages/admin/circuit/CircuitDetailPage";
 import MentionsLegales from "@/pages/legal/MentionsLegales";
+import PolitiqueDeConfidentialite from "@/pages/legal/PolitiqueDeConfidentialite";
+import PolitiqueCookies from "@/pages/legal/PolitiqueCookies";
+import CGV from "@/pages/legal/CGV";
+import CGU from "@/pages/legal/CGU";
+import NotFoundPage from "@/pages/error/404";
 
 import "./App.css";
 
@@ -48,7 +53,15 @@ function App() {
           <Route path="circuit/:id" element={<CircuitDetail />} />
           <Route path="quiz" element={<Quiz />} />
           <Route path="reservation" element={<Reservation />} />
-          <Route path="mentions-legales" element={<MentionsLegales />} />
+          <Route path="legal">
+            <Route path="mentions-legales" element={<MentionsLegales />} />
+            <Route path="politique-de-confidentialite" element={<PolitiqueDeConfidentialite />} />
+            <Route path="politique-cookies" element={<PolitiqueCookies />} />
+            <Route path="cgv" element={<CGV />} />
+            <Route path="cgu" element={<CGU />} />
+          </Route>
+          {/* Catch-all route for 404 */}
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         {/* Admin routes */}

@@ -11,7 +11,6 @@ import PartnersSection from "@/components/PartnersSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import FAQSection from "@/components/FAQSection";
 import ContactSection from "@/components/ContactSection";
-import Footer from "@/components/Footer";
 import { AnimatedSection } from "@/components/sections/AnimatedSection";
 
 const Index = () => {
@@ -94,7 +93,6 @@ const Index = () => {
             </AnimatedSection>
           </div>
 
-          <Footer />
         </div>
       </motion.div>
     </div>

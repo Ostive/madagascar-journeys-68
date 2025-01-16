@@ -172,27 +172,43 @@ const Footer = () => {
                   <h3 className="text-lg font-semibold text-white">Légal</h3>
                   <ul className="mt-4 space-y-3">
                     <li>
-                      <Link
-                        to="/mentions-legales"
-                        className="text-gray-400 hover:text-emerald-400 transition-colors"
-                      >
+                        <Link
+                          to="/legal/mentions-legales"
+                          className="text-gray-400 hover:text-emerald-400 transition-colors"
+                        >
                         Mentions Légales
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        to="/confidentialite"
-                        className="text-gray-400 hover:text-emerald-400 transition-colors"
-                      >
+                        <Link
+                          to="/legal/politique-de-confidentialite"
+                          className="text-gray-400 hover:text-emerald-400 transition-colors"
+                        >
                         Politique de Confidentialité
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        to="/cgv"
-                        className="text-gray-400 hover:text-emerald-400 transition-colors"
-                      >
+                        <Link
+                          to="/legal/politique-cookies"
+                          className="text-gray-400 hover:text-emerald-400 transition-colors"
+                        >
+                        Politique des Cookies
+                      </Link>
+                    </li>
+                    <li>
+                        <Link
+                          to="/legal/cgv"
+                          className="text-gray-400 hover:text-emerald-400 transition-colors"
+                        >
                         CGV
+                      </Link>
+                    </li>
+                    <li>
+                        <Link
+                          to="/legal/cgu"
+                          className="text-gray-400 hover:text-emerald-400 transition-colors"
+                        >
+                        CGU
                       </Link>
                     </li>
                   </ul>

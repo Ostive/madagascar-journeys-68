@@ -3,8 +3,6 @@ import { destinations } from "@/data/destinations";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Check, X } from "lucide-react";
 import Header from "@/components/Header";
-import TopBar from "@/components/TopBar";
-import Footer from "@/components/Footer";
 import DestinationCard from "@/components/cards/DestinationCard";
 import FAQ from "@/components/FAQ";
 import CardCarousel from "@/components/CardCarousel";
@@ -47,7 +45,6 @@ const DestinationDetail = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TopBar />
       <Header />
       <div className="p-8 md:p-14" />
 
@@ -163,7 +160,6 @@ const DestinationDetail = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };
