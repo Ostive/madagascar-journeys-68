@@ -2,6 +2,57 @@ import { useParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+interface Circuit {
+  id: number;
+  name: string;
+  description: string;
+  duration_days: number;
+  price: number;
+  short_description?: string;
+  long_description?: string;
+  persons?: string;
+  rating?: number;
+  date_range?: string;
+  main_image?: string;
+  difficulty?: string;
+  user_id?: string;
+  gallery?: string[];
+  included?: string[];
+  not_included?: string[];
+  created_at?: string | Date;
+  updated_at?: string | Date;
+  tour_location?: string;
+  itinerary?: Array<{
+    day: number;
+    title: string;
+    description: string;
+  }>;
+  reviews?: {
+    id: number;
+    rating: number;
+    review_text: string;
+    traveler_name: string;
+    circuit_id: number;
+  }[];
+  highlights?: string[];
+  departure_location?: string;
+  departure_time?: string;
+  itineraries?: {
+    day_number: number;
+    activities: string;
+  }[];
+}
+
+interface ReservationCardProps {
+  price: string;
+  duration?: string;
+  persons?: string;
+  bestTimeToVisit?: string;
+  title?: string;
+  description?: string;
+  destinationId?: string;
+}
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -23,7 +74,8 @@ const CircuitDetail = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const { data: circuit, isLoading } = useQuery({
+  const [activeTab, setActiveTab] = useState('information');
+  const { data: circuit, isLoading } = useQuery<Circuit>({
     queryKey: ['circuit', id],
     queryFn: async () => {
       const { data: circuitByName, error: nameError } = await supabase
@@ -43,7 +95,7 @@ const CircuitDetail = () => {
         // Transform itineraries into the expected format
         const transformedCircuit = {
           ...circuitByName,
-          itinerary: circuitByName.itineraries?.map((item: any) => ({
+          itinerary: circuitByName.itineraries?.map((item) => ({
             day: item.day_number,
             title: `Day ${item.day_number}`,
             description: item.activities || ''
@@ -90,7 +142,7 @@ const CircuitDetail = () => {
         // Transform itineraries into the expected format
         const transformedCircuit = {
           ...circuitById,
-          itinerary: circuitById.itineraries?.map((item: any) => ({
+          itinerary: circuitById.itineraries?.map((item) => ({
             day: item.day_number,
             title: `Day ${item.day_number}`,
             description: item.activities || ''
@@ -111,8 +163,7 @@ const CircuitDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white">
-        <TopBar />
+      <div className="min-h-screen bg-white pt-16">
         <Header />
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="animate-pulse">
@@ -131,8 +182,7 @@ const CircuitDetail = () => {
 
   if (!circuit) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <TopBar />
+      <div className="min-h-screen bg-gray-50 pt-16">
         <Header />
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="text-center">
@@ -144,16 +194,13 @@ const CircuitDetail = () => {
     );
   }
 
-  const averageRating = circuit.reviews?.length
-    ? circuit.reviews.reduce((acc: number, review: any) => acc + (review.rating || 0), 0) / circuit.reviews.length
+  const averageRating = circuit?.reviews?.length
+    ? circuit.reviews.reduce((acc, review) => acc + (review.rating || 0), 0) / circuit.reviews.length
     : 0;
 
-  const [activeTab, setActiveTab] = useState('information');
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <TopBar />
-      <Header />
+      <div className="min-h-screen bg-gray-50">
+        <Header />
 
       {/* Hero Section with Parallax Effect */}
       <div className="relative h-[60vh] overflow-hidden">
@@ -180,7 +227,7 @@ const CircuitDetail = () => {
                 {averageRating.toFixed(1)}
               </span>
               <span>•</span>
-              <span>{circuit?.duration} jours</span>
+              <span>{circuit?.duration_days} jours</span>
               <span>•</span>
               <span>{circuit?.difficulty}</span>
             </div>
@@ -273,7 +320,15 @@ const CircuitDetail = () => {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-24">
-              <ReservationCard circuit={circuit} />
+              {circuit && (
+                <ReservationCard 
+                  price={circuit.price ? `€${circuit.price}` : 'Prix non disponible'}
+                  duration={circuit.duration_days ? `${circuit.duration_days} jours` : ''}
+                  title={circuit.name || ''}
+                  description={circuit.description || ''}
+                  destinationId={circuit.id?.toString() || ''}
+                />
+              )}
               
               {/* Quick Info Card */}
               <Card className="mt-6 p-6">
@@ -292,7 +347,6 @@ const CircuitDetail = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };

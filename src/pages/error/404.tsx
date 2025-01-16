@@ -53,7 +53,7 @@ const NotFoundPage = () => {
               <Input
                 type="text"
                 placeholder="Rechercher sur le site..."
-                className="pl-10 h-14 text-base shadow-sm"
+                className="pl-10 h-14 text-base shadow-sm rounded-3xl"
               />
             </div>
           </motion.div>
@@ -67,14 +67,14 @@ const NotFoundPage = () => {
           >
             <div className="flex gap-4 flex-wrap justify-center">
               <Button
-                className="bg-gradient-to-r from-emerald-400 to-teal-500 text-white h-12 px-6 text-base md:text-lg gap-2 font-medium rounded-lg transition-opacity hover:opacity-90"
+                className="bg-gradient-to-r from-emerald-400 to-teal-500 text-white h-12 px-6 text-base md:text-lg gap-2 font-medium rounded-3xl transition-opacity hover:opacity-90"
                 onClick={() => navigate(-1)}
               >
                 <ArrowLeft className="h-5 w-5" />
                 Retour
               </Button>
               <Button
-                className="bg-gradient-to-r from-emerald-400 to-teal-500 text-white h-12 px-6 text-base md:text-lg gap-2 font-medium rounded-lg transition-opacity hover:opacity-90"
+                className="bg-gradient-to-r from-emerald-400 to-teal-500 text-white h-12 px-6 text-base md:text-lg gap-2 font-medium rounded-3xl transition-opacity hover:opacity-90"
                 onClick={() => navigate("/")}
               >
                 <Home className="h-5 w-5" />
@@ -90,7 +90,7 @@ const NotFoundPage = () => {
               <Button
                 variant="outline"
                 onClick={() => navigate("/blog")}
-                className="gap-2 text-emerald-700 border-2 border-emerald-700 hover:bg-emerald-50 h-12 px-6 text-base font-medium rounded-lg transition-opacity hover:opacity-90"
+                className="gap-2 text-emerald-700 border-2 border-emerald-700 hover:bg-emerald-50 h-12 px-6 text-base font-medium rounded-3xl transition-opacity hover:opacity-90"
               >
                 <Rocket className="h-5 w-5" />
                 Découvrir le blog
@@ -98,7 +98,7 @@ const NotFoundPage = () => {
               <Button
                 variant="outline"
                 onClick={() => navigate("/destinations")}
-                className="gap-2 text-emerald-700 border-2 border-emerald-700 hover:bg-emerald-50 h-12 px-6 text-base font-medium rounded-lg transition-opacity hover:opacity-90"
+                className="gap-2 text-emerald-700 border-2 border-emerald-700 hover:bg-emerald-50 h-12 px-6 text-base font-medium rounded-3xl transition-opacity hover:opacity-90"
               >
                 <Compass className="h-5 w-5" />
                 Nos destinations
@@ -106,7 +106,7 @@ const NotFoundPage = () => {
               <Button
                 variant="outline"
                 onClick={() => navigate("/circuits")}
-                className="gap-2 text-emerald-700 border-2 border-emerald-700 hover:bg-emerald-50 h-12 px-6 text-base font-medium rounded-lg transition-opacity hover:opacity-90"
+                className="gap-2 text-emerald-700 border-2 border-emerald-700 hover:bg-emerald-50 h-12 px-6 text-base font-medium rounded-3xl transition-opacity hover:opacity-90"
               >
                 <Map className="h-5 w-5" />
                 Nos circuits
