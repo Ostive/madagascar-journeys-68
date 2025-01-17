@@ -18,6 +18,8 @@ const formSchema = z.object({
   activityLevel: z.string().optional()
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 type Option = {
   value: string;
   label: string;
@@ -215,7 +217,7 @@ export const RecommendationForm = () => {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [isInspireMode, setIsInspireMode] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       groupSize: "",
@@ -245,12 +247,11 @@ export const RecommendationForm = () => {
 
   const handleInspireMe = () => {
     setIsInspireMode(true);
-    // Show curated suggestions immediately
     console.log("Showing inspired suggestions");
   };
 
   const handleOptionSelect = (value: string) => {
-    const currentField = currentStep.field;
+    const currentField = currentStep.field as keyof FormValues;
     
     if (value === 'inspire') {
       if (currentField === 'interests') {
@@ -282,9 +283,8 @@ export const RecommendationForm = () => {
     }
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: FormValues) => {
     console.log(values);
-    // Show filtered results based on all criteria
     console.log("Showing filtered results");
   };
 
@@ -299,10 +299,14 @@ export const RecommendationForm = () => {
             Découvrez nos circuits les plus populaires
           </p>
         </div>
-        {/* Add your suggestions component here */}
       </div>
     );
   }
+
+  const currentFieldValue = form.watch(currentStep.field as keyof FormValues);
+  const isFieldValid = currentStep.multiple
+    ? (currentStep.field === 'region' ? selectedRegions.length > 0 : selectedInterests.length > 0)
+    : Boolean(currentFieldValue);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -377,7 +381,7 @@ export const RecommendationForm = () => {
                   "relative overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 bg-white/40 backdrop-blur-sm border-emerald-100 shadow-lg shadow-emerald-100/20",
                   (currentStep.multiple
                     ? (currentStep.field === 'region' ? selectedRegions.includes(option.value) : selectedInterests.includes(option.value))
-                    : form.watch(currentStep.field) === option.value)
+                    : currentFieldValue === option.value)
                     ? "ring-4 ring-emerald-500"
                     : ""
                 )}
@@ -420,11 +424,7 @@ export const RecommendationForm = () => {
         </Button>
         <Button
           onClick={handleNext}
-          disabled={
-            currentStep.multiple
-              ? (currentStep.field === 'region' ? selectedRegions.length === 0 : selectedInterests.length === 0)
-              : !form.watch(currentStep.field)
-          }
+          disabled={!isFieldValid}
           className="flex items-center gap-2 bg-gradient-to-r from-emerald-400 to-teal-500 text-white hover:opacity-90"
         >
           {isLastStep ? "Voir les résultats" : "Suivant"}
