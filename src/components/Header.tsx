@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Menu, X, LogOut, ChevronDown, ArrowLeft, Palmtree, Mountain, Building, MapPin, BookOpen, Compass, Bell, ChevronRight } from "lucide-react";
-import { Button, type ButtonProps } from "./ui/button";
+import { Menu, X, LogOut, ChevronDown, ArrowLeft, Palmtree, Mountain, Building, MapPin, BookOpen, Compass, Bell, ChevronRight, UserRound } from "lucide-react";
+import { Button } from "./ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { AuthDialog } from "./auth/AuthDialog";
 import { useAuth } from "./auth/AuthProvider";
@@ -16,6 +16,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { navigationConfig } from "@/components/navigation/config";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { useToast } from "./ui/use-toast";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,6 +26,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,6 +52,14 @@ const Header = () => {
       setIsMenuOpen(false);
       setActiveSubmenu(null);
     }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast({
+      title: "Déconnexion réussie",
+      description: "À bientôt !",
+    });
   };
 
   return (
@@ -93,20 +103,23 @@ const Header = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className={cn(
-                  "relative h-8 w-8 rounded-full border transition-all",
+                  "relative flex items-center gap-2 px-4 py-2 rounded-full transition-all",
                   isHomePage
                     ? "bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-500/30 hover:border-emerald-500/50"
                     : "bg-emerald-500/40 hover:bg-emerald-500/50 border-emerald-500/50 hover:border-emerald-500/70"
                 )}>
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-8 w-8 border-2 border-emerald-500/50">
                     <AvatarImage
-                      src={user.photoURL || undefined}
-                      alt={user.displayName || "User"}
+                      src={user.user_metadata?.avatar_url || undefined}
+                      alt={user.user_metadata?.full_name || "User"}
                     />
-                    <AvatarFallback>
-                      {user.displayName?.[0] || "U"}
+                    <AvatarFallback className="bg-emerald-600">
+                      <UserRound className="h-4 w-4 text-white" />
                     </AvatarFallback>
                   </Avatar>
+                  <span className="text-sm font-medium">
+                    {user.user_metadata?.full_name || user.email?.split('@')[0] || 'Utilisateur'}
+                  </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -125,7 +138,7 @@ const Header = () => {
                       ? "hover:bg-emerald-500/20 focus:bg-emerald-500/20"
                       : "hover:bg-emerald-500/40 focus:bg-emerald-500/40"
                   )}
-                  onClick={signOut}
+                  onClick={handleSignOut}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Se déconnecter</span>
