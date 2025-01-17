@@ -56,8 +56,10 @@ const Header = () => {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-[#0B1C2F]/95 backdrop-blur-lg shadow-lg" : "bg-transparent",
-        isHomePage ? "text-white" : "bg-[#0B1C2F]/95 backdrop-blur-lg shadow-lg"
+        isHomePage && !isScrolled
+          ? "bg-transparent"
+          : "bg-black/40 backdrop-blur-lg border-b border-white/10",
+        "text-white"
       )}
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -77,7 +79,12 @@ const Header = () => {
           {!user && (
             <Button 
               onClick={() => setIsAuthDialogOpen(true)}
-              className="bg-transparent border-none text-white/90 hover:bg-white/5 hover:text-white"
+              className={cn(
+                "text-white border transition-all",
+                isHomePage
+                  ? "border-none bg-gradient-to-r from-emerald-400 to-teal-500 text-white rounded-full hover:opacity-90 transition-opacity"
+                  : "bg-emerald-500/40 hover:bg-emerald-500/50 border-emerald-500/50 hover:border-emerald-500/70"
+              )}
             >
               Se connecter
             </Button>
@@ -85,7 +92,12 @@ const Header = () => {
           {user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="relative h-8 w-8 rounded-full bg-transparent border-none hover:bg-white/5">
+                <Button className={cn(
+                  "relative h-8 w-8 rounded-full border transition-all",
+                  isHomePage
+                    ? "bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-500/30 hover:border-emerald-500/50"
+                    : "bg-emerald-500/40 hover:bg-emerald-500/50 border-emerald-500/50 hover:border-emerald-500/70"
+                )}>
                   <Avatar className="h-8 w-8">
                     <AvatarImage
                       src={user.photoURL || undefined}
@@ -99,10 +111,20 @@ const Header = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="w-56 backdrop-blur-xl bg-black/20 border-white/10"
+                className={cn(
+                  "w-56 backdrop-blur-xl border transition-all",
+                  isHomePage
+                    ? "bg-white/5 border-emerald-500/20"
+                    : "bg-black/40 border-emerald-500/40"
+                )}
               >
                 <DropdownMenuItem
-                  className="text-white/90 focus:text-white focus:bg-white/10"
+                  className={cn(
+                    "text-white transition-all",
+                    isHomePage
+                      ? "hover:bg-emerald-500/20 focus:bg-emerald-500/20"
+                      : "hover:bg-emerald-500/40 focus:bg-emerald-500/40"
+                  )}
                   onClick={signOut}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
@@ -115,11 +137,21 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
-              <Button className="lg:hidden bg-transparent border-none text-white/90 hover:bg-white/5 hover:text-white">
+              <Button className={cn(
+                "lg:hidden text-white border transition-all",
+                isHomePage
+                  ? "bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-500/30 hover:border-emerald-500/50"
+                  : "bg-emerald-500/40 hover:bg-emerald-500/50 border-emerald-500/50 hover:border-emerald-500/70"
+              )}>
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full sm:w-[400px] bg-gray-900/95 backdrop-blur-xl border-white/10 p-0">
+            <SheetContent side="right" className={cn(
+              "w-full sm:w-[400px] backdrop-blur-xl p-0 border transition-all",
+              isHomePage
+                ? "bg-black/80 border-emerald-500/20"
+                : "bg-black/90 border-emerald-500/40"
+            )}>
               <div className="h-full flex flex-col">
                 {/* Main Menu */}
                 <div

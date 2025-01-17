@@ -34,6 +34,10 @@ import PolitiqueCookies from "@/pages/legal/PolitiqueCookies";
 import CGV from "@/pages/legal/CGV";
 import CGU from "@/pages/legal/CGU";
 import NotFoundPage from "@/pages/error/404";
+import InspirationPage from "@/pages/inspiration";
+import ThemesPage from "@/pages/inspiration/themes";
+import PopularPage from "@/pages/inspiration/popular";
+import SeasonsPage from "@/pages/inspiration/seasons";
 
 import "./App.css";
 
@@ -53,6 +57,14 @@ function App() {
           <Route path="circuit/:id" element={<CircuitDetail />} />
           <Route path="quiz" element={<Quiz />} />
           <Route path="reservation" element={<Reservation />} />
+          
+          {/* Inspiration Routes */}
+          <Route path="inspiration" element={<InspirationPage />} />
+          <Route path="inspiration/themes" element={<ThemesPage />} />
+          <Route path="inspiration/popular" element={<PopularPage />} />
+          <Route path="inspiration/seasons" element={<SeasonsPage />} />
+
+          {/* Legal Routes */}
           <Route path="legal">
             <Route path="mentions-legales" element={<MentionsLegales />} />
             <Route path="politique-de-confidentialite" element={<PolitiqueDeConfidentialite />} />

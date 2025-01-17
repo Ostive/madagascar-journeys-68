@@ -9,6 +9,7 @@ const experiences = [
     icon: Waves,
     image: "https://madagascar-tourisme.com/wp-content/uploads/2017/04/33879604103_f0de969da2_k.jpg",
     color: "from-blue-500 to-cyan-500",
+    path: "/inspiration/themes#beach"
   },
   {
     title: "Aventures en Nature",
@@ -16,6 +17,7 @@ const experiences = [
     icon: Mountain,
     image: "https://cedar-cdn-aws-webp.s3.eu-central-1.amazonaws.com/app/uploads/2020/10/24070404/Western-Madagascar-avenue-de-baobabs-SS-705245614-1920.jpg",
     color: "from-emerald-500 to-green-500",
+    path: "/inspiration/themes#nature"
   },
   {
     title: "Culture & Traditions",
@@ -23,6 +25,7 @@ const experiences = [
     icon: Palmtree,
     image: "https://static.edenviaggi.it/.imaging/default/dam/edenviaggi.it/img/escursioni/madagascar/1900x1070-.png/jcr:content.png",
     color: "from-orange-500 to-amber-500",
+    path: "/inspiration/themes#culture"
   },
   {
     title: "Couchers de Soleil",
@@ -30,6 +33,7 @@ const experiences = [
     icon: Sunset,
     image: "https://carter.eu/wp-content/uploads/2023/11/tsarabanjina-madagascar-aerial-view-20-1536x1024.jpg",
     color: "from-purple-500 to-pink-500",
+    path: "/inspiration/themes#adventure"
   },
 ];
 
@@ -79,7 +83,7 @@ const InspireMeSection = () => {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   whileHover={{ y: -5, transition: { duration: 0.2 } }}
                   className="group cursor-pointer"
-                  onClick={() => navigate('/experiences')}
+                  onClick={() => navigate(experience.path)}
                 >
                   <div className="relative h-[400px] rounded-3xl overflow-hidden shadow-lg">
                     {/* Background Image */}
@@ -128,7 +132,7 @@ const InspireMeSection = () => {
             className="text-center mt-16"
           >
             <button
-              onClick={() => navigate('/experiences')}
+              onClick={() => navigate('/inspiration/themes')}
               className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-full transition-colors duration-300"
             >
               Voir toutes les expériences

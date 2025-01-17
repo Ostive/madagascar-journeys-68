@@ -6,13 +6,14 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { navigationConfig } from "./config";
+import { ArrowRight } from "lucide-react";
 
-export const CircuitsMenu = () => {
-  const { circuits } = navigationConfig;
+export const InspirationMenu = () => {
+  const { inspiration } = navigationConfig;
 
   return (
-    <NavigationMenuItem className="relative">
-      <Link to={circuits.path}>
+    <NavigationMenuItem>
+      <Link to={inspiration.path}>
         <NavigationMenuTrigger
           className={cn(
             "px-4 py-2 text-sm font-medium rounded-full transition-colors bg-transparent",
@@ -21,13 +22,13 @@ export const CircuitsMenu = () => {
             "data-[state=open]:bg-white/10 data-[state=open]:text-white"
           )}
         >
-          {circuits.title}
+          {inspiration.title}
         </NavigationMenuTrigger>
       </Link>
       <NavigationMenuContent className="bg-transparent">
         <div className="w-[800px] relative">
           <div
-            className="absolute inset-0 bg-[url('https://madagascar-circuits-tours.com/wp-content/uploads/2024/11/Visiter-Madagascar-en-10-jours.jpg')] bg-cover bg-center backdrop-blur-lg"
+            className="absolute inset-0 bg-[url('https://eagjtgrzswxqaclxeuom.supabase.co/storage/v1/object/public/blog/inspirations.webp')] bg-cover bg-center backdrop-blur-lg"
             style={{
               backgroundColor: "rgba(0, 0, 0, 0.6)",
               backgroundBlendMode: "multiply",
@@ -35,7 +36,7 @@ export const CircuitsMenu = () => {
           />
           <div className="relative z-10 p-8">
             <div className="grid grid-cols-2 gap-6">
-              {circuits.submenu.map((item) => (
+              {inspiration.submenu?.map((item) => (
                 <Link
                   key={item.title}
                   to={item.path}
@@ -57,7 +58,7 @@ export const CircuitsMenu = () => {
                     <h4 className="text-sm font-medium text-white group-hover:text-emerald-400">
                       {item.title}
                     </h4>
-                    <p className="text-xs text-white/70 group-hover:text-white/90 line-clamp-2">
+                    <p className="text-sm text-white/70 group-hover:text-white/90 line-clamp-2">
                       {item.description}
                     </p>
                   </div>
@@ -66,11 +67,12 @@ export const CircuitsMenu = () => {
             </div>
             <div className="mt-8 flex justify-center">
               <Link
-                to={circuits.path}
+                to={inspiration.path}
                 className="px-8 py-3 text-base font-medium text-white bg-emerald-500 
                          rounded-full hover:bg-emerald-600 transition-all shadow-lg flex items-center"
               >
-                Voir tous les circuits
+                Laissez-vous inspirer
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </div>
           </div>

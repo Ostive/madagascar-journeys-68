@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CircuitCard } from "@/components/cards/CircuitCard";
+import CircuitCard from "@/components/cards/CircuitCard";
 import { seasonalCircuits } from "@/data/circuits";
 
 const seasons = [
@@ -34,14 +34,14 @@ const seasons = [
 
 export default function SeasonsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0B1C2F] to-[#1F3B60] pt-24">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 pt-24">
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent mb-4">
             Circuits par Saison
           </h1>
-          <p className="text-lg text-white/80 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Chaque saison à Madagascar offre une expérience unique. Découvrez les meilleurs
             moments pour visiter selon vos envies.
           </p>
@@ -50,67 +50,45 @@ export default function SeasonsPage() {
         {/* Seasons Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           {seasons.map((season) => (
-            <Card 
-              key={season.id}
-              className="bg-white/10 border-white/10 p-6 rounded-2xl"
-            >
-              <div className="relative h-48 mb-6 rounded-xl overflow-hidden">
+            <Card key={season.id} className="bg-white/40 backdrop-blur-sm border-emerald-100 shadow-lg shadow-emerald-100/20 p-6 rounded-2xl group overflow-hidden">
+              <div className="relative h-48 -mx-6 -mt-6 mb-6 overflow-hidden">
                 <img 
                   src={season.image} 
                   alt={season.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-black/40"></div>
-                <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                  <h3 className="text-2xl font-bold text-white">
-                    {season.name}
-                  </h3>
-                  <p className="text-white/80">
-                    {season.months}
-                  </p>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <h3 className="absolute bottom-4 left-6 text-2xl font-bold text-white">
+                  {season.name}
+                </h3>
               </div>
-              <p className="text-white/80 mb-4">
-                {season.description}
-              </p>
+              <div className="mb-4">
+                <p className="text-sm font-semibold bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent mb-2">
+                  {season.months}
+                </p>
+                <p className="text-gray-600">
+                  {season.description}
+                </p>
+              </div>
               <ul className="space-y-2 mb-6">
                 {season.highlights.map((highlight, index) => (
-                  <li key={index} className="flex items-center text-white/70">
-                    <span className="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>
+                  <li key={index} className="flex items-center text-gray-600">
+                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 mr-2" />
                     {highlight}
                   </li>
                 ))}
               </ul>
-              <Button className="w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-white hover:opacity-90">
+              <Button className="w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-white rounded-full border-none hover:opacity-90 transition-opacity">
                 Voir les circuits
               </Button>
             </Card>
           ))}
         </div>
 
-        {/* Circuits by Season */}
-        <div className="space-y-12">
-          {seasons.map((season) => (
-            <section key={season.id} className="space-y-6">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-2xl font-bold text-white">
-                    Circuits {season.name}
-                  </h2>
-                  <p className="text-white/60">
-                    {season.months}
-                  </p>
-                </div>
-                <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
-                  Voir tout
-                </Button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {seasonalCircuits[season.id]?.slice(0, 3).map((circuit) => (
-                  <CircuitCard key={circuit.id} circuit={circuit} />
-                ))}
-              </div>
-            </section>
+        {/* Circuits Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {seasonalCircuits.map((circuit) => (
+            <CircuitCard key={circuit.id} circuit={circuit} />
           ))}
         </div>
       </div>

@@ -8,6 +8,7 @@ import {
 import { DestinationsMenu } from "./DestinationsMenu";
 import { CircuitsMenu } from "./CircuitsMenu";
 import { BlogMenu } from "./BlogMenu";
+import { InspirationMenu } from "./InspirationMenu";
 import { cn } from "@/lib/utils";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { useState } from "react";
@@ -22,6 +23,8 @@ export const MainNavigation = () => {
         <NavigationMenuList className="gap-2">
           <DestinationsMenu />
           <CircuitsMenu />
+          <InspirationMenu />
+          <BlogMenu />
           <NavigationMenuItem>
             <Link to="/about">
               <NavigationMenuLink
@@ -36,7 +39,6 @@ export const MainNavigation = () => {
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
-          <BlogMenu />
           <NavigationMenuItem>
             <Link to="/contact">
               <NavigationMenuLink

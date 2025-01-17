@@ -132,3 +132,46 @@ export const circuits: Circuit[] = [
     difficulty: "Difficile"
   }
 ];
+
+export const seasonalCircuits: Circuit[] = circuits.filter(circuit => {
+  const currentDate = new Date();
+  const [startMonth, startDay] = circuit.date_range.split(' ')[1].split('-');
+  const [endMonth, endDay] = circuit.date_range.split(' ')[3].split('-');
+  
+  const startDate = new Date(currentDate.getFullYear(), 
+    new Date(Date.parse(`1 ${startMonth} 2023`)).getMonth(), 
+    parseInt(startDay));
+    
+  const endDate = new Date(currentDate.getFullYear(), 
+    new Date(Date.parse(`1 ${endMonth} 2023`)).getMonth(), 
+    parseInt(endDay));
+    
+  return currentDate >= startDate && currentDate <= endDate;
+});
+
+export const themeCircuits = {
+  nature: circuits.filter(circuit => 
+    circuit.description.toLowerCase().includes('parc') || 
+    circuit.description.toLowerCase().includes('faune') ||
+    circuit.description.toLowerCase().includes('nature')
+  ),
+  culture: circuits.filter(circuit => 
+    circuit.description.toLowerCase().includes('culture') || 
+    circuit.description.toLowerCase().includes('tradition') ||
+    circuit.description.toLowerCase().includes('village')
+  ),
+  adventure: circuits.filter(circuit => 
+    circuit.description.toLowerCase().includes('randonnée') || 
+    circuit.description.toLowerCase().includes('trek') ||
+    circuit.description.toLowerCase().includes('aventure')
+  ),
+  beach: circuits.filter(circuit => 
+    circuit.description.toLowerCase().includes('plage') || 
+    circuit.description.toLowerCase().includes('mer') ||
+    circuit.description.toLowerCase().includes('océan')
+  )
+};
+
+export const popularCircuits = circuits
+  .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+  .slice(0, 6);

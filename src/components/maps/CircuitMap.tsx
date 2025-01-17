@@ -2,111 +2,145 @@ import React, { useEffect, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-interface Location {
+interface City {
   name: string;
-  coordinates: [number, number]; // This enforces exactly 2 numbers
+  coordinates: [number, number];
   day: number;
 }
 
 interface CircuitMapProps {
-  locations?: Location[];
+  cities?: City[];
   className?: string;
 }
 
 const MADAGASCAR_CENTER: [number, number] = [47.5162, -18.8792];
 const DEFAULT_ZOOM = 5;
 
-const CircuitMap = ({ locations = [], className = "" }: CircuitMapProps) => {
+const CircuitMap = ({ cities = [], className = "" }: CircuitMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
+  const markers = useRef<maplibregl.Marker[]>([]);
 
+  // Initialize map
   useEffect(() => {
     if (!mapContainer.current) return;
-    
-    try {
-      map.current = new maplibregl.Map({
-        container: mapContainer.current,
-        style: 'https://tiles.openfreemap.org/styles/liberty',
-        center: MADAGASCAR_CENTER,
-        zoom: DEFAULT_ZOOM
-      });
 
-      // Add navigation controls
-      map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
+    map.current = new maplibregl.Map({
+      container: mapContainer.current,
+      style: 'https://tiles.openfreemap.org/styles/liberty',
+      center: MADAGASCAR_CENTER,
+      zoom: DEFAULT_ZOOM
+    });
 
-      // Add markers and connect them
-      if (locations.length > 0) {
-        const coordinates = locations.map(loc => loc.coordinates);
-        
-        // Add markers
-        locations.forEach((location) => {
-          const el = document.createElement('div');
-          el.className = 'marker';
-          el.style.backgroundColor = '#FF0000';
-          el.style.width = '20px';
-          el.style.height = '20px';
-          el.style.borderRadius = '50%';
-          el.style.border = '2px solid white';
-          
-          new maplibregl.Marker(el)
-            .setLngLat(location.coordinates)
-            .setPopup(new maplibregl.Popup().setHTML(`
-              <h3 class="font-bold">Day ${location.day}</h3>
-              <p>${location.name}</p>
-            `))
-            .addTo(map.current!);
-        });
-
-        // Add route line
-        if (map.current && coordinates.length > 1) {
-          map.current.on('load', () => {
-            if (!map.current) return;
-            
-            map.current.addSource('route', {
-              type: 'geojson',
-              data: {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                  type: 'LineString',
-                  coordinates: coordinates
-                }
-              }
-            });
-
-            map.current.addLayer({
-              id: 'route',
-              type: 'line',
-              source: 'route',
-              layout: {
-                'line-join': 'round',
-                'line-cap': 'round'
-              },
-              paint: {
-                'line-color': '#FF0000',
-                'line-width': 2
-              }
-            });
-
-            // Fit bounds to show all markers
-            const bounds = new maplibregl.LngLatBounds();
-            coordinates.forEach(coord => bounds.extend(coord));
-            map.current.fitBounds(bounds, { padding: 50 });
-          });
-        }
-      }
-    } catch (error) {
-      console.error('Error initializing map:', error);
-    }
+    map.current.addControl(new maplibregl.NavigationControl());
 
     return () => {
       map.current?.remove();
     };
-  }, [locations]);
+  }, []);
+
+  // Update markers and route when cities change
+  useEffect(() => {
+    if (!map.current) return;
+
+    // Clear existing markers
+    markers.current.forEach(marker => marker.remove());
+    markers.current = [];
+
+    // Remove existing route if it exists
+    if (map.current.getLayer('route')) {
+      map.current.removeLayer('route');
+    }
+    if (map.current.getSource('route')) {
+      map.current.removeSource('route');
+    }
+
+    // Add markers for each city
+    cities.forEach((city, index) => {
+      const el = document.createElement('div');
+      el.className = 'step-marker';
+      el.innerHTML = `${index + 1}`;
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat(city.coordinates)
+        .addTo(map.current!);
+
+      markers.current.push(marker);
+    });
+
+    // Add route line if there are at least 2 cities
+    if (cities.length >= 2) {
+      // Wait for map style to be loaded
+      if (map.current.isStyleLoaded()) {
+        addRoute();
+      } else {
+        map.current.once('style.load', addRoute);
+      }
+    }
+
+    function addRoute() {
+      if (!map.current) return;
+
+      map.current.addSource('route', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: cities.map(city => city.coordinates)
+          }
+        }
+      });
+
+      map.current.addLayer({
+        id: 'route',
+        type: 'line',
+        source: 'route',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#10b981',
+          'line-width': 3,
+          'line-dasharray': [2, 2]
+        }
+      });
+    }
+
+    // Fit bounds to show all markers
+    if (cities.length > 0) {
+      const bounds = new maplibregl.LngLatBounds();
+      cities.forEach(city => {
+        bounds.extend(city.coordinates);
+      });
+      map.current.fitBounds(bounds, {
+        padding: { top: 50, bottom: 50, left: 50, right: 50 },
+        duration: 1000
+      });
+    }
+  }, [cities]);
 
   return (
-    <div className={`relative ${className}`}>
-      <div ref={mapContainer} className="w-full h-[400px] rounded-lg" />
+    <div className={className}>
+      <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
+      <style jsx global>{`
+        .step-marker {
+          width: 24px;
+          height: 24px;
+          background-color: #10b981;
+          border: 2px solid white;
+          border-radius: 50%;
+          color: white;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+      `}</style>
     </div>
   );
 };

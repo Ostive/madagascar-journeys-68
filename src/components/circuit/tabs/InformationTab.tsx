@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock, Users, Gauge } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface InformationTabProps {
   circuit: any;
@@ -7,41 +7,64 @@ interface InformationTabProps {
 
 const InformationTab = ({ circuit }: InformationTabProps) => {
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Essential Information</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center gap-3">
-              <Clock className="w-5 h-5 text-gray-500" />
-              <div>
-                <p className="text-sm font-medium">Duration</p>
-                <p className="text-sm text-gray-500">{circuit.duration_days} days</p>
-              </div>
+    <div className="space-y-8">
+      <h2 className="text-2xl font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent">
+        Informations essentielles
+      </h2>
+
+      {/* Stats Grid */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+      >
+        <div className="p-6 rounded-2xl bg-white/80 backdrop-blur-md border border-emerald-100/20 shadow-lg shadow-emerald-100/10">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center">
+              <Clock className="w-6 h-6 text-emerald-600" />
             </div>
-            <div className="flex items-center gap-3">
-              <Users className="w-5 h-5 text-gray-500" />
-              <div>
-                <p className="text-sm font-medium">Group Size</p>
-                <p className="text-sm text-gray-500">{circuit.persons}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Gauge className="w-5 h-5 text-gray-500" />
-              <div>
-                <p className="text-sm font-medium">Difficulty</p>
-                <p className="text-sm text-gray-500">{circuit.difficulty}</p>
-              </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">Durée</p>
+              <p className="text-lg font-semibold text-gray-900">{circuit.duration_days} jours</p>
             </div>
           </div>
-          <div className="space-y-4">
-            <h3 className="font-medium">Description</h3>
-            <p className="text-sm text-gray-600">{circuit.long_description || circuit.description}</p>
+        </div>
+
+        <div className="p-6 rounded-2xl bg-white/80 backdrop-blur-md border border-emerald-100/20 shadow-lg shadow-emerald-100/10">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center">
+              <Users className="w-6 h-6 text-emerald-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">Taille du groupe</p>
+              <p className="text-lg font-semibold text-gray-900">{circuit.persons}</p>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+
+        <div className="p-6 rounded-2xl bg-white/80 backdrop-blur-md border border-emerald-100/20 shadow-lg shadow-emerald-100/10">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center">
+              <Gauge className="w-6 h-6 text-emerald-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">Difficulté</p>
+              <p className="text-lg font-semibold text-gray-900">{circuit.difficulty}</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Description */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="p-8 rounded-2xl bg-white/80 backdrop-blur-md border border-emerald-100/20 shadow-lg shadow-emerald-100/10"
+      >
+        <h3 className="text-xl font-semibold text-gray-900 mb-4">Description</h3>
+        <p className="text-gray-600 leading-relaxed">{circuit.long_description || circuit.description}</p>
+      </motion.div>
     </div>
   );
 };

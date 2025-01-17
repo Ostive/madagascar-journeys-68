@@ -31,6 +31,11 @@ interface NavigationConfig {
     title: string;
     path: string;
   };
+  inspiration: {
+    title: string;
+    path: string;
+    submenu: NavigationItem[];
+  };
 }
 
 export const navigationConfig: NavigationConfig = {
@@ -179,14 +184,6 @@ export const navigationConfig: NavigationConfig = {
         href: "/blog/explorer-nord",
       },
       {
-        title: "Inspirations",
-        name: "Inspirations",
-        description: "Des idées pour votre prochain voyage",
-        image: "https://eagjtgrzswxqaclxeuom.supabase.co/storage/v1/object/public/blog/inspirations.webp",
-        path: "/blog/top-plages",
-        href: "/blog/top-plages",
-      },
-      {
         title: "Actualités",
         name: "Actualités",
         description: "Les dernières nouvelles de Madagascar",
@@ -195,6 +192,36 @@ export const navigationConfig: NavigationConfig = {
         href: "/blog/evenements",
       },
     ],
+  },
+  inspiration: {
+    title: "Laissez-vous Inspirer",
+    path: "/inspiration",
+    submenu: [
+      {
+        title: "Circuits Populaires",
+        name: "popular",
+        description: "Découvrez nos circuits les plus appréciés",
+        path: "/inspiration/popular",
+        href: "/inspiration/popular",
+        image: "https://images.unsplash.com/photo-1625457674917-f632347961d1"
+      },
+      {
+        title: "Par Thèmes",
+        name: "themes",
+        description: "Explorez nos circuits par thématiques",
+        path: "/inspiration/themes",
+        href: "/inspiration/themes",
+        image: "https://images.unsplash.com/photo-1589197331516-4d84b72ebee3"
+      },
+      {
+        title: "Par Saison",
+        name: "seasons",
+        description: "Trouvez le meilleur moment pour votre voyage",
+        path: "/inspiration/seasons",
+        href: "/inspiration/seasons",
+        image: "https://images.unsplash.com/photo-1625457671853-5645c512f7e0"
+      }
+    ]
   },
   about: {
     title: "À propos",

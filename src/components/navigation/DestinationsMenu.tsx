@@ -26,12 +26,16 @@ export const DestinationsMenu = () => {
         {destinations.title}
       </NavigationMenuTrigger>
 
-      <NavigationMenuContent className="bg-transparent">
-        <div
-          className="w-[800px] overflow-hidden relative"
-        >
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-lg" />
-          
+      <NavigationMenuContent className="bg-transparent overflow-visible">
+        <div className="w-[800px] relative">
+          <div
+            className="absolute inset-0 bg-[url('https://cdn.futura-sciences.com/buildsv6/images/largeoriginal/b/0/0/b008bdeaa6_46273_mada-56.jpg')] bg-cover bg-center backdrop-blur-lg"
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              backgroundBlendMode: "multiply",
+            }}
+          />
+
           <div className="relative z-10 p-8">
             <div className="grid grid-cols-2 gap-6">
               {destinations.submenu.map((item) => (
