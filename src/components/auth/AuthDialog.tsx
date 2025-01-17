@@ -25,6 +25,28 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const { toast } = useToast();
 
+  const handleResetPassword = async (email: string) => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) throw error;
+      toast({
+        title: "Email envoyé",
+        description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe",
+        className: "bg-emerald-50 border-emerald-200",
+      });
+      setIsResetPassword(false);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'envoi de l'email",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const validateForm = (email: string, password: string) => {
     try {
       authSchema.parse({ email, password });
@@ -152,7 +174,9 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
                 >
                   <ResetPasswordForm
                     onBack={() => setIsResetPassword(false)}
+                    onSubmit={handleResetPassword}
                     loading={loading}
+                    errors={errors}
                   />
                 </motion.div>
               ) : (

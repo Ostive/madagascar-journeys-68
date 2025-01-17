@@ -1,13 +1,11 @@
 import React from "react";
 import Header from "@/components/Header";
-import TopBar from "@/components/TopBar";
 import ContactSection from "@/components/ContactSection";
 
 const Contact = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       <Header />
-      <TopBar />
       <div className="p-14" />
       <section className="bg-emerald/10 py-20">
         <div className="container mx-auto px-4">
