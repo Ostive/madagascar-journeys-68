@@ -23,7 +23,6 @@ const CircuitCard = ({
     rating: circuit.rating || 4.5,
     reviews: 24,
     nextDeparture: circuit.date_range || "Toute l'année",
-    highlights: circuit.highlights || [],
   };
 
   return (

@@ -125,22 +125,24 @@ const CircuitMap = ({ cities = [], className = "" }: CircuitMapProps) => {
   return (
     <div className={className}>
       <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
-      <style jsx global>{`
-        .step-marker {
-          width: 24px;
-          height: 24px;
-          background-color: #10b981;
-          border: 2px solid white;
-          border-radius: 50%;
-          color: white;
-          font-weight: bold;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-      `}</style>
+      <style>
+        {`
+          .step-marker {
+            width: 24px;
+            height: 24px;
+            background-color: #10b981;
+            border: 2px solid white;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          }
+        `}
+      </style>
     </div>
   );
 };

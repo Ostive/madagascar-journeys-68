@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { blogPosts } from "@/data/blog";
 import Header from "@/components/Header";
-import TopBar from "@/components/TopBar";
 import Footer from "@/components/Footer";
 import { Calendar, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";

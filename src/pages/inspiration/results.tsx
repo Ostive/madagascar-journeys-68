@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CircuitCard } from "@/components/cards/CircuitCard";
+import CircuitCard from "@/components/cards/CircuitCard"; // Updated import
 import { recommendCircuits } from "@/utils/recommendations";
 
 export default function RecommendationResultsPage() {
