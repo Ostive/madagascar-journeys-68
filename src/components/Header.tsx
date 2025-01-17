@@ -86,7 +86,7 @@ const Header = () => {
 
         {/* User Menu */}
         <div className="flex items-center space-x-4">
-          {!user && (
+          {!user ? (
             <Button 
               onClick={() => setIsAuthDialogOpen(true)}
               className={cn(
@@ -98,8 +98,7 @@ const Header = () => {
             >
               Se connecter
             </Button>
-          )}
-          {user && (
+          ) : (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className={cn(
