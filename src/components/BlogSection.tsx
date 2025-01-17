@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, User2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import BlogCard from "./cards/BlogCard";
 
 const blogPosts = [
   {
@@ -89,62 +90,11 @@ const BlogSection = () => {
           {/* Blog Posts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogPosts.map((post, index) => (
-              <motion.article
+              <BlogCard
                 key={post.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group cursor-pointer"
-                onClick={() => navigate('/blog-post')}
-              >
-                {/* Card */}
-                <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
-                  {/* Image */}
-                  <div className="relative h-[240px] overflow-hidden">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-sm font-medium text-emerald-600">
-                        {post.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    {/* Meta */}
-                    <div className="flex items-center text-gray-500 text-sm mb-4">
-                      <div className="flex items-center">
-                        <User2 className="h-4 w-4 mr-1" />
-                        {post.author}
-                      </div>
-                      <span className="mx-2">•</span>
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        {post.date}
-                      </div>
-                    </div>
-
-                    {/* Title & Excerpt */}
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">
-                      {post.title}
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      {post.excerpt}
-                    </p>
-
-                    {/* Read More Link */}
-                    <div className="flex items-center text-emerald-500 group-hover:text-emerald-600 transition-colors">
-                      <span className="text-sm font-medium">Lire l'article</span>
-                      <ArrowRight className="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </div>
-              </motion.article>
+                post={post}
+                index={index}
+              />
             ))}
           </div>
 

@@ -1,12 +1,13 @@
 import React from 'react';
-import { Card } from "@/components/ui/card";
-import { Calendar, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Calendar, User2, Clock, ArrowRight } from "lucide-react";
 import { BlogPost } from '@/data/types';
 
 interface BlogCardProps {
   post?: BlogPost;
   className?: string;
+  index?: number;
 }
 
 const samplePost: BlogPost = {
@@ -21,49 +22,81 @@ const samplePost: BlogPost = {
 
 const BlogCard = ({ 
   post = samplePost,
-  className = ""
+  className = "",
+  index = 0
 }: BlogCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <Link to={`/blog/${post.title.toLowerCase().replace(/\s+/g, '-')}`}>
-      <Card 
-        className={`relative w-72 h-96 overflow-hidden cursor-pointer group hover:scale-[1.02] transition-transform ${className}`}
-      >
-        {/* Background Image */}
+    <motion.article
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className={`group cursor-pointer bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 ${className}`}
+      onClick={() => navigate(`/blog/${post.title.toLowerCase().replace(/\s+/g, '-')}`)}
+    >
+      {/* Image Container */}
+      <div className="aspect-[16/10] overflow-hidden">
         <img
           src={post.image}
           alt={post.title}
-          className="absolute w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        
-        {/* Dark Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
+      </div>
 
-        {/* Top Content */}
-        <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
-          <span className="bg-emerald-600 text-white px-3 py-1 rounded-full text-sm">
+      {/* Content Container */}
+      <div className="p-6 space-y-4">
+        {/* Category and Date */}
+        <div className="flex items-center justify-between text-sm">
+          <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full font-medium">
             {post.category}
           </span>
-          <div className="flex items-center gap-1.5 bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
-            <Calendar className="w-4 h-4" />
+          <div className="flex items-center text-gray-500">
+            <Calendar className="w-4 h-4 mr-1" />
             {post.date}
           </div>
         </div>
 
-        {/* Bottom Content */}
-        <div className="absolute bottom-3 left-3 right-3 text-white">
-          <h3 className="text-lg font-semibold mb-2 line-clamp-2">
-            {post.title}
-          </h3>
-          <p className="text-sm opacity-90 line-clamp-2 mb-3">
-            {post.excerpt}
-          </p>
-          <div className="flex items-center text-sm font-semibold group-hover:gap-2 transition-all">
-            Lire la suite
-            <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+        {/* Title */}
+        <h3 className="text-xl font-bold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-2">
+          {post.title}
+        </h3>
+
+        {/* Excerpt */}
+        <p className="text-gray-600 line-clamp-2">
+          {post.excerpt}
+        </p>
+
+        {/* Author and Read Time */}
+        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+          <div className="flex items-center space-x-4">
+            {/* Author Avatar */}
+            <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
+              <img
+                src="/placeholder-avatar.jpg"
+                alt="Author"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {/* Author Info */}
+            <div>
+              <p className="font-medium text-gray-900">Marie Dupont</p>
+              <div className="flex items-center text-sm text-gray-500">
+                <Clock className="w-4 h-4 mr-1" />
+                5 min de lecture
+              </div>
+            </div>
+          </div>
+
+          {/* Read More */}
+          <div className="flex items-center text-emerald-600 font-medium group-hover:text-emerald-700">
+            <span className="mr-2">Lire</span>
+            <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
           </div>
         </div>
-      </Card>
-    </Link>
+      </div>
+    </motion.article>
   );
 };
 

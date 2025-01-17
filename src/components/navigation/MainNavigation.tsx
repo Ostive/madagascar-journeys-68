@@ -19,17 +19,16 @@ export const MainNavigation = () => {
   return (
     <>
       <NavigationMenu className="mx-6">
-        <NavigationMenuList className="gap-1">
-          <NavigationMenuItem>
-          </NavigationMenuItem>
+        <NavigationMenuList className="gap-2">
           <DestinationsMenu />
           <CircuitsMenu />
           <NavigationMenuItem>
             <Link to="/about">
               <NavigationMenuLink
                 className={cn(
-                  "px-3 py-2 text-sm font-medium rounded-lg transition-colors",
-                  "text-white/90 hover:text-white hover:bg-white/10",
+                  "px-3 py-2 text-sm font-medium rounded-full transition-colors",
+                  "text-white/80 hover:text-white",
+                  "hover:bg-white/10",
                   location.pathname === "/about" && "bg-white/10 text-white"
                 )}
               >
@@ -42,8 +41,9 @@ export const MainNavigation = () => {
             <Link to="/contact">
               <NavigationMenuLink
                 className={cn(
-                  "px-3 py-2 text-sm font-medium rounded-lg transition-colors",
-                  "text-white/90 hover:text-white hover:bg-white/10",
+                  "px-4 py-2 text-sm font-medium rounded-full transition-colors",
+                  "text-white/80 hover:text-white",
+                  "hover:bg-white/10",
                   location.pathname === "/contact" && "bg-white/10 text-white"
                 )}
               >

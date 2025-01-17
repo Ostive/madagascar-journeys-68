@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Users, Clock, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Card from "./shared/Card";
 
 const circuits = [
   {
@@ -9,6 +10,8 @@ const circuits = [
     groupSize: "4-12 personnes",
     startLocation: "Antananarivo",
     price: "2499€",
+    rating: 4.8,
+    reviews: 124,
     image: "https://madagascar-tourisme.com/wp-content/uploads/2017/04/33879604103_f0de969da2_k.jpg",
     highlights: [
       "Allée des Baobabs",
@@ -24,6 +27,8 @@ const circuits = [
     groupSize: "6-10 personnes",
     startLocation: "Majunga",
     price: "1899€",
+    rating: 4.6,
+    reviews: 89,
     image: "https://cedar-cdn-aws-webp.s3.eu-central-1.amazonaws.com/app/uploads/2020/10/24070404/Western-Madagascar-avenue-de-baobabs-SS-705245614-1920.jpg",
     highlights: [
       "Tsingy de Bemaraha",
@@ -39,6 +44,8 @@ const circuits = [
     groupSize: "4-8 personnes",
     startLocation: "Tuléar",
     price: "2099€",
+    rating: 4.9,
+    reviews: 156,
     image: "https://static.edenviaggi.it/.imaging/default/dam/edenviaggi.it/img/escursioni/madagascar/1900x1070-.png/jcr:content.png",
     highlights: [
       "Réserve de Berenty",
@@ -107,79 +114,16 @@ const CircuitsSection = () => {
           {/* Circuits Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {circuits.map((circuit, index) => (
-              <motion.div
+              <Card
                 key={circuit.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="group cursor-pointer bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+                type="circuit"
+                data={{
+                  ...circuit,
+                  location: circuit.startLocation
+                }}
+                index={index}
                 onClick={() => navigate('/circuit-details')}
-              >
-                {/* Image */}
-                <div className="relative h-[250px] overflow-hidden">
-                  <img
-                    src={circuit.image}
-                    alt={circuit.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-2xl font-bold text-white mb-2">
-                      {circuit.title}
-                    </h3>
-                    <div className="flex items-center text-white/90">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span className="text-sm">{circuit.startLocation}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  {/* Info Grid */}
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="flex items-center text-gray-600">
-                      <Clock className="h-4 w-4 text-emerald-500 mr-2" />
-                      <span className="text-sm">{circuit.duration}</span>
-                    </div>
-                    <div className="flex items-center text-gray-600">
-                      <Users className="h-4 w-4 text-emerald-500 mr-2" />
-                      <span className="text-sm">{circuit.groupSize}</span>
-                    </div>
-                    <div className="flex items-center text-gray-600 col-span-2">
-                      <Calendar className="h-4 w-4 text-emerald-500 mr-2" />
-                      <span className="text-sm">Prochain départ: {circuit.nextDeparture}</span>
-                    </div>
-                  </div>
-
-                  {/* Highlights */}
-                  <div className="mb-6">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-3">Points forts :</h4>
-                    <ul className="space-y-2">
-                      {circuit.highlights.map((highlight, i) => (
-                        <li key={i} className="flex items-start text-gray-600">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 mr-2" />
-                          <span className="text-sm">{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Price and CTA */}
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <div>
-                      <span className="text-sm text-gray-500">À partir de</span>
-                      <p className="text-2xl font-bold text-emerald-600">{circuit.price}</p>
-                    </div>
-                    <div className="flex items-center text-emerald-500 group-hover:text-emerald-600 transition-colors">
-                      <span className="text-sm font-medium">Réserver</span>
-                      <ArrowRight className="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              />
             ))}
           </div>
 

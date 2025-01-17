@@ -12,6 +12,7 @@ const HeroBackground = ({ images, currentImage }: HeroBackgroundProps) => {
       <div className="absolute inset-0 bg-black/40 z-10" />
       
       <AnimatePresence initial={false}>
+        
         <motion.div
           key={currentImage}
           initial={{ opacity: 0 }}

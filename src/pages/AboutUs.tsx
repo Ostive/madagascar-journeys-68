@@ -91,108 +91,120 @@ const AboutUs = () => {
       <motion.div className="relative z-10">
         <div className="bg-white">
           <div className="space-y-24 pb-24">
-            {/* Mission Section - Pattern Right */}
-            <AnimatedSection className="pt-12">
-              <section className="py-16 relative overflow-hidden bg-gray-50/50">
-                <div className="absolute inset-0 -z-10">
-                  <div className="absolute inset-y-0 right-0 w-1/2 bg-white rounded-l-[100px]" />
+            {/* Mission Section */}
+            <AnimatedSection>
+              <section className="relative py-24 overflow-hidden">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 z-0">
+                  <div className="absolute inset-y-0 left-0 w-1/2 bg-gray-50 rounded-r-[100px]" />
                 </div>
-                <div className="container mx-auto px-4">
-                  <div className="text-center max-w-3xl mx-auto mb-16">
-                    <span className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-4 block">
-                      Notre Mission
-                    </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                      Ce Qui Nous Guide
-                    </h2>
-                    <p className="text-xl text-gray-600">
-                      Découvrez notre engagement pour un tourisme responsable et authentique
-                    </p>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-12 items-stretch">
-                    <div className="space-y-6">
-                      <p className="text-dark/70 text-lg leading-relaxed font-opensans">
-                        Notre mission est de faire découvrir la beauté unique de
-                        Madagascar tout en préservant son environnement et en soutenant
-                        les communautés locales. Depuis notre création, nous avons:
-                      </p>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                        <div className="text-center p-6 bg-white rounded-xl shadow-sm">
-                          <div className="text-3xl font-poppins font-bold text-emerald mb-2">10+</div>
-                          <div className="text-dark/70 font-opensans">Années d'expérience</div>
-                        </div>
-                        <div className="text-center p-6 bg-white rounded-xl shadow-sm">
-                          <div className="text-3xl font-poppins font-bold text-emerald mb-2">500+</div>
-                          <div className="text-dark/70 font-opensans">Circuits organisés</div>
-                        </div>
-                        <div className="text-center p-6 bg-white rounded-xl shadow-sm">
-                          <div className="text-3xl font-poppins font-bold text-emerald mb-2">95%</div>
-                          <div className="text-dark/70 font-opensans">Clients satisfaits</div>
-                        </div>
-                        <div className="text-center p-6 bg-white rounded-xl shadow-sm">
-                          <div className="text-3xl font-poppins font-bold text-emerald mb-2">20+</div>
-                          <div className="text-dark/70 font-opensans">Communautés soutenues</div>
-                        </div>
-                      </div>
-                      <p className="text-dark/70 text-lg leading-relaxed font-opensans mb-6">
-                        Nous nous engageons à:
-                      </p>
-                      <ul className="space-y-6">
-                        <li className="flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                          <div className="p-3 bg-emerald/10 rounded-lg">
-                            <Award className="w-6 h-6 text-emerald" />
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-poppins font-semibold mb-1">
-                              Expériences authentiques
-                            </h3>
-                            <p className="text-dark/70 font-opensans">
-                              Offrir des voyages responsables et immersifs
-                            </p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                          <div className="p-3 bg-emerald/10 rounded-lg">
-                            <Award className="w-6 h-6 text-emerald" />
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-poppins font-semibold mb-1">
-                              Développement durable
-                            </h3>
-                            <p className="text-dark/70 font-opensans">
-                              Contribuer au bien-être des communautés locales
-                            </p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                          <div className="p-3 bg-emerald/10 rounded-lg">
-                            <Award className="w-6 h-6 text-emerald" />
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-poppins font-semibold mb-1">
-                              Protection de la biodiversité
-                            </h3>
-                            <p className="text-dark/70 font-opensans">
-                              Préserver les écosystèmes uniques de Madagascar
-                            </p>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="relative h-full rounded-2xl overflow-hidden shadow-lg">
-                      <img
-                        src="/lovable-uploads/about-us-mission.webp"
-                        alt="Mission Madagascar Travel"
-                        className="absolute inset-0 w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                      <div className="absolute bottom-8 left-8 right-8 text-white">
-                        <h3 className="text-2xl font-poppins font-bold mb-2">
-                          Explorez Madagascar
-                        </h3>
-                        <p className="font-opensans">
-                          Découvrez des paysages à couper le souffle
+
+                <div className="container relative z-10 mx-auto px-4">
+                  <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16">
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="inline-block"
+                      >
+                        <span className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-4 block">
+                          Notre Mission
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                          Ce Qui Nous Guide
+                        </h2>
+                        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                          Découvrez notre engagement pour un tourisme responsable et authentique
                         </p>
+                      </motion.div>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-12 items-stretch">
+                      <div className="space-y-6">
+                        <p className="text-dark/70 text-lg leading-relaxed font-opensans">
+                          Notre mission est de faire découvrir la beauté unique de
+                          Madagascar tout en préservant son environnement et en soutenant
+                          les communautés locales. Depuis notre création, nous avons:
+                        </p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                          <div className="text-center p-6 bg-white rounded-xl shadow-sm">
+                            <div className="text-3xl font-poppins font-bold text-emerald mb-2">10+</div>
+                            <div className="text-dark/70 font-opensans">Années d'expérience</div>
+                          </div>
+                          <div className="text-center p-6 bg-white rounded-xl shadow-sm">
+                            <div className="text-3xl font-poppins font-bold text-emerald mb-2">500+</div>
+                            <div className="text-dark/70 font-opensans">Circuits organisés</div>
+                          </div>
+                          <div className="text-center p-6 bg-white rounded-xl shadow-sm">
+                            <div className="text-3xl font-poppins font-bold text-emerald mb-2">95%</div>
+                            <div className="text-dark/70 font-opensans">Clients satisfaits</div>
+                          </div>
+                          <div className="text-center p-6 bg-white rounded-xl shadow-sm">
+                            <div className="text-3xl font-poppins font-bold text-emerald mb-2">20+</div>
+                            <div className="text-dark/70 font-opensans">Communautés soutenues</div>
+                          </div>
+                        </div>
+                        <p className="text-dark/70 text-lg leading-relaxed font-opensans mb-6">
+                          Nous nous engageons à:
+                        </p>
+                        <ul className="space-y-6">
+                          <li className="flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                            <div className="p-3 bg-emerald/10 rounded-lg">
+                              <Award className="w-6 h-6 text-emerald" />
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-poppins font-semibold mb-1">
+                                Expériences authentiques
+                              </h3>
+                              <p className="text-dark/70 font-opensans">
+                                Offrir des voyages responsables et immersifs
+                              </p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                            <div className="p-3 bg-emerald/10 rounded-lg">
+                              <Award className="w-6 h-6 text-emerald" />
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-poppins font-semibold mb-1">
+                                Développement durable
+                              </h3>
+                              <p className="text-dark/70 font-opensans">
+                                Contribuer au bien-être des communautés locales
+                              </p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                            <div className="p-3 bg-emerald/10 rounded-lg">
+                              <Award className="w-6 h-6 text-emerald" />
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-poppins font-semibold mb-1">
+                                Protection de la biodiversité
+                              </h3>
+                              <p className="text-dark/70 font-opensans">
+                                Préserver les écosystèmes uniques de Madagascar
+                              </p>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="relative h-full rounded-2xl overflow-hidden shadow-lg">
+                        <img
+                          src="/lovable-uploads/about-us-mission.webp"
+                          alt="Mission Madagascar Travel"
+                          className="absolute inset-0 w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                        <div className="absolute bottom-8 left-8 right-8 text-white">
+                          <h3 className="text-2xl font-poppins font-bold mb-2">
+                            Explorez Madagascar
+                          </h3>
+                          <p className="font-opensans">
+                            Découvrez des paysages à couper le souffle
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -200,13 +212,15 @@ const AboutUs = () => {
               </section>
             </AnimatedSection>
 
-            {/* Team Section - Pattern Left */}
+            {/* Team Section */}
             <AnimatedSection>
-              <section className="py-24 relative overflow-hidden">
-                <div className="absolute inset-0 -z-10">
-                  <div className="absolute inset-y-0 left-0 w-1/2 bg-gray-50 rounded-r-[100px]" />
+              <section className="relative py-24 overflow-hidden">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 z-0">
+                  <div className="absolute inset-y-0 right-0 w-1/2 bg-gray-50 rounded-l-[100px]" />
                 </div>
-                <div className="container mx-auto px-4">
+
+                <div className="container relative z-10 mx-auto px-4">
                   <div className="text-center max-w-3xl mx-auto mb-16">
                     <span className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-4 block">
                       Notre Équipe
@@ -248,13 +262,15 @@ const AboutUs = () => {
               </section>
             </AnimatedSection>
 
-            {/* History Section - Pattern Right */}
+            {/* History Section */}
             <AnimatedSection>
-              <section className="py-24 relative overflow-hidden bg-gray-50/50">
-                <div className="absolute inset-0 -z-10">
-                  <div className="absolute inset-y-0 right-0 w-1/2 bg-white rounded-l-[100px]" />
+              <section className="relative py-24 overflow-hidden">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 z-0">
+                  <div className="absolute inset-y-0 left-0 w-1/2 bg-gray-50 rounded-r-[100px]" />
                 </div>
-                <div className="container mx-auto px-4">
+
+                <div className="container relative z-10 mx-auto px-4">
                   <div className="text-center max-w-3xl mx-auto mb-16">
                     <span className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-4 block">
                       Notre Histoire
@@ -359,13 +375,15 @@ const AboutUs = () => {
               </section>
             </AnimatedSection>
 
-            {/* Testimonials Section - Pattern Left */}
+            {/* Testimonials Section */}
             <AnimatedSection>
-              <section className="py-24 relative overflow-hidden">
-                <div className="absolute inset-0 -z-10">
-                  <div className="absolute inset-y-0 left-0 w-1/2 bg-gray-50 rounded-r-[100px]" />
+              <section className="relative py-24 overflow-hidden">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 z-0">
+                  <div className="absolute inset-y-0 right-0 w-1/2 bg-gray-50 rounded-l-[100px]" />
                 </div>
-                <div className="container mx-auto px-4">
+
+                <div className="container relative z-10 mx-auto px-4">
                   <div className="text-center max-w-3xl mx-auto mb-16">
                     <span className="text-sm font-semibold text-emerald-600 tracking-wider uppercase mb-4 block">
                       Témoignages

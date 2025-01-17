@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { Star, MapPin, Clock, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Card from "./shared/Card";
 
 const destinations = [
   {
@@ -8,8 +9,9 @@ const destinations = [
     location: "Morondava",
     duration: "2-3 jours",
     rating: 4.9,
+    reviews: 234,
     image: "https://cedar-cdn-aws-webp.s3.eu-central-1.amazonaws.com/app/uploads/2020/10/24070404/Western-Madagascar-avenue-de-baobabs-SS-705245614-1920.jpg",
-    price: "À partir de 299€",
+    price: "299€",
     tags: ["Nature", "Photographie", "Culture"],
   },
   {
@@ -17,8 +19,9 @@ const destinations = [
     location: "Nord de Madagascar",
     duration: "5-7 jours",
     rating: 4.8,
+    reviews: 189,
     image: "https://madagascar-tourisme.com/wp-content/uploads/2017/04/33879604103_f0de969da2_k.jpg",
-    price: "À partir de 599€",
+    price: "599€",
     tags: ["Plages", "Snorkeling", "Détente"],
   },
   {
@@ -26,8 +29,9 @@ const destinations = [
     location: "Région Ihorombe",
     duration: "3-4 jours",
     rating: 4.7,
+    reviews: 156,
     image: "https://static.edenviaggi.it/.imaging/default/dam/edenviaggi.it/img/escursioni/madagascar/1900x1070-.png/jcr:content.png",
-    price: "À partir de 399€",
+    price: "399€",
     tags: ["Randonnée", "Nature", "Aventure"],
   },
 ];
@@ -68,69 +72,13 @@ const DestinationsSection = () => {
           {/* Destinations Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {destinations.map((destination, index) => (
-              <motion.div
+              <Card
                 key={destination.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group cursor-pointer"
+                type="destination"
+                data={destination}
+                index={index}
                 onClick={() => navigate('/destination-details')}
-              >
-                {/* Card */}
-                <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
-                  {/* Image */}
-                  <div className="relative h-[300px] overflow-hidden">
-                    <img
-                      src={destination.image}
-                      alt={destination.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md rounded-full py-2 px-4">
-                      <div className="flex items-center">
-                        <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                        <span className="text-sm font-medium">{destination.rating}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="flex items-center text-gray-500 text-sm mb-2">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span>{destination.location}</span>
-                      <span className="mx-2">•</span>
-                      <Clock className="h-4 w-4 mr-1" />
-                      <span>{destination.duration}</span>
-                    </div>
-
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">
-                      {destination.title}
-                    </h3>
-
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {destination.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs font-medium px-3 py-1 rounded-full bg-emerald-50 text-emerald-600"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-emerald-600">
-                        {destination.price}
-                      </span>
-                      <div className="flex items-center text-emerald-500 group-hover:text-emerald-600 transition-colors">
-                        <span className="text-sm font-medium">Découvrir</span>
-                        <ArrowRight className="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              />
             ))}
           </div>
 

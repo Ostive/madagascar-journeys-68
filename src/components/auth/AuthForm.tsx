@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
-import { z } from "zod";
+import { Loader2, Mail, Lock } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface AuthFormProps {
   isSignUp: boolean;
@@ -13,11 +13,6 @@ interface AuthFormProps {
   loading: boolean;
   errors: { email?: string; password?: string };
 }
-
-const authSchema = z.object({
-  email: z.string().email("Email invalide"),
-  password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
-});
 
 export const AuthForm = ({
   isSignUp,
@@ -29,6 +24,7 @@ export const AuthForm = ({
 }: AuthFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [focused, setFocused] = useState<"email" | "password" | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,44 +34,93 @@ export const AuthForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="votre@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <Label
+          htmlFor="email"
+          className="text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+          Email
+        </Label>
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Input
+            id="email"
+            type="email"
+            placeholder="votre@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onFocus={() => setFocused("email")}
+            onBlur={() => setFocused(null)}
+            className={`pl-10 h-11 ${
+              errors.email
+                ? "border-red-500 focus:ring-red-500"
+                : focused === "email"
+                ? "border-emerald-500 focus:ring-emerald-500"
+                : ""
+            }`}
+            required
+          />
+        </div>
         {errors.email && (
-          <p className="text-sm text-red-500">{errors.email}</p>
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-red-500"
+          >
+            {errors.email}
+          </motion.p>
         )}
       </div>
+
       <div className="space-y-2">
-        <Label htmlFor="password">Mot de passe</Label>
-        <Input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <Label
+          htmlFor="password"
+          className="text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+          Mot de passe
+        </Label>
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onFocus={() => setFocused("password")}
+            onBlur={() => setFocused(null)}
+            className={`pl-10 h-11 ${
+              errors.password
+                ? "border-red-500 focus:ring-red-500"
+                : focused === "password"
+                ? "border-emerald-500 focus:ring-emerald-500"
+                : ""
+            }`}
+            required
+          />
+        </div>
         {errors.password && (
-          <p className="text-sm text-red-500">{errors.password}</p>
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-red-500"
+          >
+            {errors.password}
+          </motion.p>
         )}
       </div>
+
       {!isSignUp && (
         <button
           type="button"
           onClick={onResetPassword}
-          className="text-sm text-emerald hover:underline"
+          className="text-sm text-emerald-600 hover:text-emerald-500 transition-colors"
         >
           Mot de passe oublié ?
         </button>
       )}
+
       <Button
         type="submit"
-        className="w-full bg-emerald hover:bg-emerald/90"
+        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white transition-colors h-11"
         disabled={loading}
       >
         {loading ? (
@@ -88,29 +133,16 @@ export const AuthForm = ({
       </Button>
 
       <div className="text-center text-sm">
-        {isSignUp ? (
-          <p>
-            Déjà un compte?{" "}
-            <button
-              type="button"
-              onClick={onToggleMode}
-              className="text-emerald hover:underline font-medium"
-            >
-              Se connecter
-            </button>
-          </p>
-        ) : (
-          <p>
-            Pas encore de compte?{" "}
-            <button
-              type="button"
-              onClick={onToggleMode}
-              className="text-emerald hover:underline font-medium"
-            >
-              S'inscrire
-            </button>
-          </p>
-        )}
+        <p className="text-gray-600 dark:text-gray-400">
+          {isSignUp ? "Déjà un compte?" : "Pas encore de compte?"}{" "}
+          <button
+            type="button"
+            onClick={onToggleMode}
+            className="text-emerald-600 hover:text-emerald-500 font-medium transition-colors"
+          >
+            {isSignUp ? "Se connecter" : "S'inscrire"}
+          </button>
+        </p>
       </div>
     </form>
   );
