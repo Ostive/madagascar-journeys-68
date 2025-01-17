@@ -42,7 +42,7 @@ export const ResetPasswordForm = ({
       </div>
       <Button
         type="submit"
-        className="w-full bg-emerald-500 hover:bg-emerald-600"
+        className="w-full bg-emerald hover:bg-emerald/90"
         disabled={loading}
       >
         {loading ? (
@@ -54,7 +54,7 @@ export const ResetPasswordForm = ({
       <button
         type="button"
         onClick={onBack}
-        className="w-full text-sm text-emerald-600 hover:underline"
+        className="w-full text-sm text-emerald hover:underline"
       >
         Retour à la connexion
       </button>

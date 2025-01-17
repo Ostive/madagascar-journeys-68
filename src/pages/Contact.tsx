@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "@/components/Header";
+import TopBar from "@/components/TopBar";
 import ContactSection from "@/components/ContactSection";
 
 const Contact = () => {

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { MainNavigation } from "./MainNavigation";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/components/auth/AuthProvider"; // Updated import path
+import { useAuth } from "@/hooks/useAuth";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { useState } from "react";
 
