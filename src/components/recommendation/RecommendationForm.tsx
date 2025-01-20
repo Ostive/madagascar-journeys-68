@@ -1,4 +1,3 @@
-<lov-code>
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -8,7 +7,6 @@ import * as z from "zod";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ArrowRight, ArrowLeft } from "lucide-react";
-import { Circuit } from "@/data/types";
 
 const formSchema = z.object({
   groupSize: z.string().min(1, "Veuillez sélectionner avec qui vous voyagez"),
@@ -20,196 +18,7 @@ const formSchema = z.object({
   activityLevel: z.string().optional()
 });
 
-type Option = {
-  value: string;
-  label: string;
-  description?: string;
-  image: string;
-};
-
-const durations: Option[] = [
-  {
-    value: "short",
-    label: "Court séjour",
-    description: "5-7 jours",
-    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "medium",
-    label: "Séjour moyen",
-    description: "8-14 jours",
-    image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "long",
-    label: "Long séjour",
-    description: "15+ jours",
-    image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "inspire",
-    label: "Inspirez-moi",
-    description: "Je ne sais pas encore",
-    image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&auto=format&fit=crop&q=60"
-  }
-];
-
-const interests: Option[] = [
-  {
-    value: "nature",
-    label: "Nature & Faune",
-    image: "https://images.unsplash.com/photo-1625457674917-f632347961d1?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "culture",
-    label: "Culture & Traditions",
-    image: "https://images.unsplash.com/photo-1589197331516-4d84b72ebee3?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "adventure",
-    label: "Aventure",
-    image: "https://images.unsplash.com/photo-1625457671853-5645c512f7e0?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "beach",
-    label: "Plages & Îles",
-    image: "https://images.unsplash.com/photo-1625457675650-d6a114727377?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "inspire",
-    label: "Inspirez-moi",
-    description: "Je suis ouvert à tout",
-    image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&auto=format&fit=crop&q=60"
-  }
-];
-
-const regions: Option[] = [
-  {
-    value: "north",
-    label: "Nord",
-    description: "Diego-Suarez, Nosy Be, Montagne d'Ambre",
-    image: "https://images.unsplash.com/photo-1625457674917-f632347961d1?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "east",
-    label: "Est",
-    description: "Sainte-Marie, Tamatave, Parc d'Andasibe",
-    image: "https://images.unsplash.com/photo-1589197331516-4d84b72ebee3?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "south",
-    label: "Sud",
-    description: "Fort-Dauphin, Parc de l'Isalo, Tuléar",
-    image: "https://images.unsplash.com/photo-1625457671853-5645c512f7e0?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "west",
-    label: "Ouest",
-    description: "Morondava, Allée des Baobabs, Tsingy",
-    image: "https://images.unsplash.com/photo-1625457675650-d6a114727377?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "center",
-    label: "Centre",
-    description: "Antananarivo, Antsirabe, Lac Tritriva",
-    image: "https://images.unsplash.com/photo-1589197331516-4d84b72ebee3?w=800&auto=format&fit=crop&q=60"
-  }
-];
-
-const seasons: Option[] = [
-  {
-    value: "apr_jun",
-    label: "Avril - Juin",
-    description: "Saison fraîche et sèche, idéale pour la randonnée",
-    image: "https://images.unsplash.com/photo-1625457671853-5645c512f7e0?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "jul_sep",
-    label: "Juillet - Septembre",
-    description: "Haute saison, baleines à bosse à Sainte-Marie",
-    image: "https://images.unsplash.com/photo-1472566316349-bce77aa2a778?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "oct_dec",
-    label: "Octobre - Décembre",
-    description: "Printemps malgache, chaleur modérée",
-    image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "jan_mar",
-    label: "Janvier - Mars",
-    description: "Saison des pluies, paysages verdoyants",
-    image: "https://images.unsplash.com/photo-1589197331516-4d84b72ebee3?w=800&auto=format&fit=crop&q=60"
-  }
-];
-
-const travelCompanions: Option[] = [
-  {
-    value: "solo",
-    label: "Solo",
-    description: "Voyage en solitaire",
-    image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "couple",
-    label: "En couple",
-    description: "Voyage romantique",
-    image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "family",
-    label: "En famille",
-    description: "Avec enfants",
-    image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "friends",
-    label: "Entre amis",
-    description: "Petit groupe",
-    image: "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    value: "group",
-    label: "Grand groupe",
-    description: "5+ personnes",
-    image: "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?w=800&auto=format&fit=crop&q=60"
-  }
-];
-
-const steps = [
-  {
-    title: "Avec qui partez-vous ?",
-    description: "Sélectionnez votre type de voyage",
-    field: "groupSize",
-    options: travelCompanions
-  },
-  {
-    title: "Quand souhaitez-vous partir ?",
-    description: "Choisissez la meilleure période pour votre voyage",
-    field: "seasonPreference",
-    options: seasons
-  },
-  {
-    title: "Quelle région vous intéresse ?",
-    description: "Sélectionnez la région que vous souhaitez découvrir",
-    field: "region",
-    options: regions,
-    multiple: true
-  },
-  {
-    title: "Durée",
-    description: "Combien de temps souhaitez-vous voyager ?",
-    field: "duration",
-    options: durations
-  },
-  {
-    title: "Centres d'intérêt",
-    description: "Que souhaitez-vous découvrir ?",
-    field: "interests",
-    options: interests,
-    multiple: true
-  }
-];
+type FormData = z.infer<typeof formSchema>;
 
 export const RecommendationForm = () => {
   const [step, setStep] = useState(0);
@@ -217,7 +26,7 @@ export const RecommendationForm = () => {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [isInspireMode, setIsInspireMode] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       groupSize: "",
@@ -230,41 +39,37 @@ export const RecommendationForm = () => {
     },
   });
 
-  const currentStep = steps[step];
-  const isLastStep = step === steps.length - 1;
-
   const handleNext = () => {
-    if (isLastStep) {
-      form.handleSubmit(onSubmit)();
-    } else {
-      setStep((prev) => prev + 1);
+    if (step < steps.length - 1) {
+      setStep(step + 1);
     }
   };
 
   const handleBack = () => {
-    setStep((prev) => prev - 1);
+    if (step > 0) {
+      setStep(step - 1);
+    }
   };
 
   const handleInspireMe = () => {
     setIsInspireMode(true);
-    console.log("Showing inspired suggestions");
   };
 
   const handleOptionSelect = (value: string) => {
-    const currentField = currentStep.field;
+    const currentField = steps[step].field;
     
     if (value === 'inspire') {
       if (currentField === 'interests') {
         setSelectedInterests([value]);
         form.setValue('interests', [value]);
       } else {
-        form.setValue(currentField, value);
+        form.setValue(currentField as keyof FormData, value);
       }
       handleNext();
       return;
     }
 
-    if (currentStep.multiple) {
+    if (steps[step].multiple) {
       if (currentField === 'region') {
         const newRegions = selectedRegions.includes(value)
           ? selectedRegions.filter(r => r !== value)
@@ -279,13 +84,9 @@ export const RecommendationForm = () => {
         form.setValue('interests', newInterests);
       }
     } else {
-      form.setValue(currentField, value);
+      form.setValue(currentField as keyof FormData, value);
+      handleNext();
     }
-  };
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    console.log("Showing filtered results");
   };
 
   if (isInspireMode) {
@@ -341,12 +142,6 @@ export const RecommendationForm = () => {
             </div>
           ))}
         </div>
-        <div className="h-2 bg-gray-200 rounded-full">
-          <div
-            className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-300"
-            style={{ width: `${((step + 1) / steps.length) * 100}%` }}
-          />
-        </div>
       </div>
 
       <AnimatePresence mode="wait">
@@ -359,18 +154,14 @@ export const RecommendationForm = () => {
         >
           <div className="text-center mb-8">
             <h3 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent mb-2">
-              {currentStep.title}
+              {steps[step].title}
             </h3>
             <p className="text-gray-600">
-              {currentStep.description}
+              {steps[step].description}
             </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {currentStep.options.map((option) => (
-              <Card
-                key={option.value}
-                className={cn(
-                  "relative overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 bg-white/40 backdrop-blur-sm border-emerald-100 shadow-lg shadow-emerald-100/20",
-                  (currentStep.multiple
-                   
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+};
