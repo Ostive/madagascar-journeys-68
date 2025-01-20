@@ -32,6 +32,7 @@ export interface Circuit {
   tour_location?: string;
   highlights?: string[];
   custom_highlights?: string[];
+  coordinates?: [number, number];
   clothing_advisor?: {
     essential_items: string[];
     recommended_items: string[];
@@ -46,7 +47,7 @@ export interface Circuit {
     day: number;
     title: string;
     description: string;
-    coordinates?: [number, number];  // Explicitly typed as tuple
+    coordinates?: [number, number];
   }>;
   reviews?: Array<{
     id: number;
@@ -59,6 +60,11 @@ export interface Circuit {
 
 export interface CircuitMapProps {
   circuit: Circuit;
+  cities?: Array<{
+    name: string;
+    coordinates: [number, number];
+    day: number;
+  }>;
   className?: string;
 }
 
@@ -93,3 +99,15 @@ export interface ReservationCardProps {
   destinationId?: string;
   className?: string;
 }
+
+export interface RecommendationFormData {
+  region?: string[];
+  duration?: string;
+  groupSize?: string;
+  seasonPreference?: string;
+  interests?: string[];
+  travelStyle?: string;
+  activityLevel?: string;
+}
+
+export type RecommendationFormFields = keyof RecommendationFormData;
