@@ -7,6 +7,12 @@ interface InformationTabProps {
 }
 
 const InformationTab = ({ circuit }: InformationTabProps) => {
+  // Combine predefined and custom highlights
+  const allHighlights = [
+    ...(circuit.highlights || []),
+    ...(circuit.custom_highlights || [])
+  ];
+
   return (
     <div className="space-y-8">
       {/* Stats Grid */}
@@ -70,7 +76,7 @@ const InformationTab = ({ circuit }: InformationTabProps) => {
       >
         <h3 className="text-xl font-semibold text-gray-900">Points forts</h3>
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {circuit.highlights?.map((highlight, index) => (
+          {allHighlights.map((highlight, index) => (
             <li key={index} className="flex items-center gap-2 text-gray-600">
               <div className="w-2 h-2 rounded-full bg-emerald-500" />
               {highlight}

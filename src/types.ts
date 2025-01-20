@@ -18,6 +18,7 @@ export interface Circuit {
   created_at?: string | Date;
   updated_at?: string | Date;
   tour_location?: string;
+  custom_highlights?: string[];
   itinerary?: Array<{
     day: number;
     title: string;

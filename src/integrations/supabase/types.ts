@@ -48,9 +48,40 @@ export type Database = {
         }
         Relationships: []
       }
+      circuit_highlights: {
+        Row: {
+          circuit_id: number
+          highlight_id: number
+        }
+        Insert: {
+          circuit_id: number
+          highlight_id: number
+        }
+        Update: {
+          circuit_id?: number
+          highlight_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circuit_highlights_circuit_id_fkey"
+            columns: ["circuit_id"]
+            isOneToOne: false
+            referencedRelation: "circuits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "circuit_highlights_highlight_id_fkey"
+            columns: ["highlight_id"]
+            isOneToOne: false
+            referencedRelation: "highlights"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       circuits: {
         Row: {
           created_at: string | null
+          custom_highlights: string[] | null
           date_range: string | null
           departure_location: string | null
           departure_time: string | null
@@ -75,6 +106,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          custom_highlights?: string[] | null
           date_range?: string | null
           departure_location?: string | null
           departure_time?: string | null
@@ -99,6 +131,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          custom_highlights?: string[] | null
           date_range?: string | null
           departure_location?: string | null
           departure_time?: string | null
