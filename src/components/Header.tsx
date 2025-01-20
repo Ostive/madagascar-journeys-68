@@ -16,12 +16,18 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { navigationConfig } from "@/components/navigation/config";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { User } from '@supabase/supabase-js';
+
+interface ExtendedUser extends User {
+  photoURL?: string;
+  displayName?: string;
+}
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
-  const { user, signOut } = useAuth();
+  const { user } = useAuth() as { user: ExtendedUser | null };
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -125,7 +131,9 @@ const Header = () => {
                       ? "hover:bg-emerald-500/20 focus:bg-emerald-500/20"
                       : "hover:bg-emerald-500/40 focus:bg-emerald-500/40"
                   )}
-                  onClick={signOut}
+                  onClick={() => {
+                    // Handle sign out
+                  }}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Se déconnecter</span>

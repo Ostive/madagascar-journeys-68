@@ -18,12 +18,13 @@ export interface Circuit {
   created_at?: string | Date;
   updated_at?: string | Date;
   tour_location?: string;
+  highlights?: string[];
   custom_highlights?: string[];
   itinerary?: Array<{
     day: number;
     title: string;
     description: string;
-    coordinates?: [number, number];
+    coordinates?: [number, number];  // Explicitly typed as tuple
   }>;
   reviews?: Array<{
     id: number;
@@ -32,17 +33,4 @@ export interface Circuit {
     author: string;
     date: string;
   }>;
-  highlights?: string[];
-  departure_location?: string;
-  departure_time?: string;
-  clothing_advisor?: {
-    essential_items: string[];
-    recommended_items: string[];
-  };
-  practical_info?: {
-    health_safety: string[];
-    best_time_to_visit: string[];
-    accommodation: string[];
-    transportation: string[];
-  };
 }
