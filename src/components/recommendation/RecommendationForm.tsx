@@ -7,6 +7,7 @@ import * as z from "zod";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ArrowRight, ArrowLeft } from "lucide-react";
+import { Circuit } from "@/data/types";
 
 const formSchema = z.object({
   groupSize: z.string().min(1, "Veuillez sélectionner avec qui vous voyagez"),
