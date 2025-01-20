@@ -1,3 +1,15 @@
+export interface BlogPost {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  date: string;
+  image: string;
+  category: string;
+  author?: string;
+  readTime?: string;
+}
+
 export interface Circuit {
   id: number;
   name: string;
@@ -20,6 +32,16 @@ export interface Circuit {
   tour_location?: string;
   highlights?: string[];
   custom_highlights?: string[];
+  clothing_advisor?: {
+    essential_items: string[];
+    recommended_items: string[];
+  };
+  practical_info?: {
+    health_safety: string[];
+    best_time_to_visit: string[];
+    accommodation: string[];
+    transportation: string[];
+  };
   itinerary?: Array<{
     day: number;
     title: string;
@@ -33,4 +55,41 @@ export interface Circuit {
     author: string;
     date: string;
   }>;
+}
+
+export interface CircuitMapProps {
+  circuit: Circuit;
+  className?: string;
+}
+
+export interface Destination {
+  id: number;
+  name: string;
+  description: string;
+  short_description?: string;
+  long_description?: string;
+  price: number;
+  main_image: string;
+  gallery?: string[];
+  highlights?: string[];
+  included?: string[];
+  not_included?: string[];
+  location: string;
+  coordinates?: [number, number];
+  altitude?: string;
+  duration: string;
+  best_time_to_visit: string;
+  location_id?: number;
+  user_id?: string;
+}
+
+export interface ReservationCardProps {
+  price: string;
+  duration?: string;
+  persons?: string;
+  bestTimeToVisit?: string;
+  title?: string;
+  description?: string;
+  destinationId?: string;
+  className?: string;
 }
