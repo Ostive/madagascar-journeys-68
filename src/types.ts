@@ -6,8 +6,36 @@ export interface BlogPost {
   date: string;
   image: string;
   category: string;
-  author?: string;
-  readTime?: string;
+  user_id?: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface CarouselSlide {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  link?: string;
+}
+
+export interface Destination {
+  id: number;
+  name: string;
+  description: string;
+  long_description: string;
+  price: number;
+  main_image: string;
+  gallery: string[];
+  highlights: string[];
+  included: string[];
+  not_included: string[];
+  location: string;
+  duration: string;
+  best_time_to_visit: string;
+  location_id?: number;
+  user_id?: string;
+  direction?: string;
 }
 
 export interface Circuit {
@@ -47,67 +75,6 @@ export interface Circuit {
     day: number;
     title: string;
     description: string;
-    coordinates?: [number, number];
   }>;
-  reviews?: Array<{
-    id: number;
-    rating: number;
-    review_text: string;
-    author: string;
-    date: string;
-  }>;
+  direction?: string;
 }
-
-export interface CircuitMapProps {
-  circuit: Circuit;
-  cities?: Array<{
-    name: string;
-    coordinates: [number, number];
-    day: number;
-  }>;
-  className?: string;
-}
-
-export interface Destination {
-  id: number;
-  name: string;
-  description: string;
-  short_description?: string;
-  long_description?: string;
-  price: number;
-  main_image: string;
-  gallery?: string[];
-  highlights?: string[];
-  included?: string[];
-  not_included?: string[];
-  location: string;
-  coordinates?: [number, number];
-  altitude?: string;
-  duration: string;
-  best_time_to_visit: string;
-  location_id?: number;
-  user_id?: string;
-}
-
-export interface ReservationCardProps {
-  price: string;
-  duration?: string;
-  persons?: string;
-  bestTimeToVisit?: string;
-  title?: string;
-  description?: string;
-  destinationId?: string;
-  className?: string;
-}
-
-export interface RecommendationFormData {
-  region?: string[];
-  duration?: string;
-  groupSize?: string;
-  seasonPreference?: string;
-  interests?: string[];
-  travelStyle?: string;
-  activityLevel?: string;
-}
-
-export type RecommendationFormFields = keyof RecommendationFormData;

@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { CircuitMapProps } from '@/types';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
-mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
-
-const CircuitMap: React.FC<CircuitMapProps> = ({ circuit, cities, className }) => {
+const CircuitMap = ({ circuit, cities = [], className = "w-full h-96" }: CircuitMapProps) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -51,7 +50,7 @@ const CircuitMap: React.FC<CircuitMapProps> = ({ circuit, cities, className }) =
   return (
     <div
       ref={mapContainerRef}
-      className={className || "w-full h-96"}
+      className={className}
     />
   );
 };

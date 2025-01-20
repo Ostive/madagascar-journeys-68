@@ -8,6 +8,33 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ArrowRight, ArrowLeft } from "lucide-react";
 
+const steps = [
+  {
+    title: "Avec qui voyagez-vous ?",
+    description: "Sélectionnez votre type de voyage",
+    field: "groupSize",
+    options: [
+      { value: "solo", label: "Solo" },
+      { value: "couple", label: "En couple" },
+      { value: "family", label: "En famille" },
+      { value: "friends", label: "Entre amis" },
+      { value: "group", label: "En groupe" }
+    ]
+  },
+  {
+    title: "Quelle durée souhaitez-vous ?",
+    description: "Choisissez la durée idéale pour votre voyage",
+    field: "duration",
+    options: [
+      { value: "3-5", label: "3-5 jours" },
+      { value: "6-10", label: "6-10 jours" },
+      { value: "11-15", label: "11-15 jours" },
+      { value: "15+", label: "Plus de 15 jours" }
+    ]
+  },
+  // ... Add other steps as needed
+];
+
 const formSchema = z.object({
   groupSize: z.string().min(1, "Veuillez sélectionner avec qui vous voyagez"),
   seasonPreference: z.string().min(1, "Veuillez sélectionner une saison").optional(),

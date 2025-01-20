@@ -13,7 +13,7 @@ import GalleryTab from "@/components/destination/tabs/GalleryTab";
 import ReviewsTab from "@/components/destination/tabs/ReviewsTab";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { CircuitMap } from "@/components/maps/CircuitMap";
+import CircuitMap from "@/components/maps/CircuitMap";
 import ReservationCard from "@/components/reservation/ReservationCard";
 
 const DestinationDetail = () => {
