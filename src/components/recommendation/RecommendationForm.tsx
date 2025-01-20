@@ -1,3 +1,4 @@
+<lov-code>
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -246,7 +247,6 @@ export const RecommendationForm = () => {
 
   const handleInspireMe = () => {
     setIsInspireMode(true);
-    // Show curated suggestions immediately
     console.log("Showing inspired suggestions");
   };
 
@@ -285,7 +285,6 @@ export const RecommendationForm = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
-    // Show filtered results based on all criteria
     console.log("Showing filtered results");
   };
 
@@ -300,7 +299,6 @@ export const RecommendationForm = () => {
             Découvrez nos circuits les plus populaires
           </p>
         </div>
-        {/* Add your suggestions component here */}
       </div>
     );
   }
@@ -321,7 +319,6 @@ export const RecommendationForm = () => {
         </Button>
       </div>
 
-      {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between mb-2">
           {steps.map((s, i) => (
@@ -352,7 +349,6 @@ export const RecommendationForm = () => {
         </div>
       </div>
 
-      {/* Step Content */}
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -377,61 +373,4 @@ export const RecommendationForm = () => {
                 className={cn(
                   "relative overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 bg-white/40 backdrop-blur-sm border-emerald-100 shadow-lg shadow-emerald-100/20",
                   (currentStep.multiple
-                    ? (currentStep.field === 'region' ? selectedRegions.includes(option.value) : selectedInterests.includes(option.value))
-                    : form.watch(currentStep.field) === option.value)
-                    ? "ring-4 ring-emerald-500"
-                    : ""
-                )}
-                onClick={() => handleOptionSelect(option.value)}
-              >
-                <div className="absolute inset-0">
-                  <img
-                    src={option.image}
-                    alt={option.label}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/20" />
-                </div>
-                <div className="relative p-6 flex flex-col h-[200px] justify-end">
-                  <h4 className="text-xl font-semibold text-white mb-2">
-                    {option.label}
-                  </h4>
-                  {option.description && (
-                    <p className="text-white/80 text-sm">
-                      {option.description}
-                    </p>
-                  )}
-                </div>
-              </Card>
-            ))}
-          </div>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Navigation Buttons */}
-      <div className="flex justify-between mt-8">
-        <Button
-          variant="outline"
-          onClick={handleBack}
-          disabled={step === 0}
-          className="flex items-center gap-2 bg-white/40 hover:bg-white/60 text-gray-800"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Précédent
-        </Button>
-        <Button
-          onClick={handleNext}
-          disabled={
-            currentStep.multiple
-              ? (currentStep.field === 'region' ? selectedRegions.length === 0 : selectedInterests.length === 0)
-              : !form.watch(currentStep.field)
-          }
-          className="flex items-center gap-2 bg-gradient-to-r from-emerald-400 to-teal-500 text-white hover:opacity-90"
-        >
-          {isLastStep ? "Voir les résultats" : "Suivant"}
-          {!isLastStep && <ArrowRight className="w-4 h-4" />}
-        </Button>
-      </div>
-    </div>
-  );
-};
+                   
