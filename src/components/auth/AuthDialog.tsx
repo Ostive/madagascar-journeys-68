@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
@@ -45,16 +45,18 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
     }
   };
 
-  const handleSignIn = async (email: string, password: string) => {
+  const handleSignIn = async (email: string, password: string): Promise<void> => {
     if (!validateForm(email, password)) return;
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+      console.log("Logged in user:", user);
+      
       if (error) throw error;
       
       toast({
@@ -63,11 +65,12 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
         className: "bg-emerald-50 border-emerald-200",
       });
       onClose();
-    } catch (error: any) {
-      let errorMessage = "Une erreur est survenue";
-      if (error.message.includes("Invalid login credentials")) {
-        errorMessage = "Email ou mot de passe incorrect";
-      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error 
+        ? error.message.includes("Invalid login credentials")
+          ? "Email ou mot de passe incorrect"
+          : error.message
+        : "Une erreur est survenue";
       toast({
         variant: "destructive",
         title: "Erreur de connexion",
@@ -78,7 +81,58 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
     }
   };
 
-  const handleSignUp = async (email: string, password: string) => {
+  const handleLogout = async (): Promise<void> => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: "Déconnexion réussie",
+        description: "Vous êtes maintenant déconnecté",
+        className: "bg-emerald-50 border-emerald-200",
+      });
+      onClose();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Une erreur est survenue';
+      toast({
+        variant: "destructive",
+        title: "Erreur de déconnexion",
+        description: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (email: string): Promise<void> => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Email envoyé",
+        description: "Vérifiez votre email pour réinitialiser votre mot de passe",
+        className: "bg-emerald-50 border-emerald-200",
+      });
+      setIsResetPassword(false);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Une erreur est survenue";
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignUp = async (email: string, password: string): Promise<void> => {
     if (!validateForm(email, password)) return;
     setLoading(true);
     
@@ -110,11 +164,16 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
         className: "bg-emerald-50 border-emerald-200",
       });
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error 
+        ? error.message.includes("User already registered")
+          ? "Un compte existe déjà avec cet email"
+          : error.message
+        : "Une erreur est survenue lors de l'inscription";
       toast({
         variant: "destructive",
         title: "Erreur d'inscription",
-        description: "Une erreur est survenue lors de l'inscription",
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -124,6 +183,9 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden bg-white dark:bg-gray-900">
+        <DialogTitle className="sr-only">
+          {isSignUp ? "Créer un compte" : "Se connecter"}
+        </DialogTitle>
         <div className="grid sm:grid-cols-2">
           {/* Left side - Decorative */}
           <div className="hidden sm:block relative overflow-hidden">
@@ -151,8 +213,10 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
                   transition={{ duration: 0.2 }}
                 >
                   <ResetPasswordForm
+                    onSubmit={handleResetPassword}
                     onBack={() => setIsResetPassword(false)}
                     loading={loading}
+                    errors={errors}
                   />
                 </motion.div>
               ) : (

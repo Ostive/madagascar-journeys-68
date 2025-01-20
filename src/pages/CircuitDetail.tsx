@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 interface Circuit {
   id: number;
@@ -27,21 +26,28 @@ interface Circuit {
     day: number;
     title: string;
     description: string;
+    coordinates?: [number, number];
   }>;
-  reviews?: {
+  reviews?: Array<{
     id: number;
     rating: number;
     review_text: string;
-    traveler_name: string;
-    circuit_id: number;
-  }[];
+    author: string;
+    date: string;
+  }>;
   highlights?: string[];
   departure_location?: string;
   departure_time?: string;
-  itineraries?: {
-    day_number: number;
-    activities: string;
-  }[];
+  clothing_advisor?: {
+    essential_items: string[];
+    recommended_items: string[];
+  };
+  practical_info?: {
+    health_safety: string[];
+    best_time_to_visit: string[];
+    accommodation: string[];
+    transportation: string[];
+  };
 }
 
 interface ReservationCardProps {
@@ -318,7 +324,7 @@ const CircuitDetail = () => {
         </div>
       )}
 
-      <Footer />
+  
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import * as React from "react"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
+import { useNavigate } from "react-router-dom"
 import { cva } from "class-variance-authority"
 import { ChevronDown } from "lucide-react"
 
@@ -78,7 +79,33 @@ const NavigationMenuContent = React.forwardRef<
 
 NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName
 
-const NavigationMenuLink = NavigationMenuPrimitive.Link
+const NavigationMenuLink = React.forwardRef<
+  React.ElementRef<typeof NavigationMenuPrimitive.Link>,
+  React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Link> & {
+    to?: string;
+  }
+>(({ className, to, href, onClick, ...props }, ref) => {
+  const navigate = useNavigate();
+  
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (to) {
+      e.preventDefault();
+      navigate(to);
+    }
+    onClick?.(e);
+  };
+
+  return (
+    <NavigationMenuPrimitive.Link
+      ref={ref}
+      href={to || href}
+      onClick={handleClick}
+      className={className}
+      {...props}
+    />
+  );
+});
+NavigationMenuLink.displayName = NavigationMenuPrimitive.Link.displayName;
 
 const NavigationMenuViewport = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Viewport>,
