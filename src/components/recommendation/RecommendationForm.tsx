@@ -421,7 +421,7 @@ export const RecommendationForm = () => {
           disabled={
             currentStep.multiple
               ? (currentStep.field === 'region' ? selectedRegions.length === 0 : selectedInterests.length === 0)
-              : !form.watch(currentStep.field)
+              : !form.getValues(currentStep.field as keyof FormFields)
           }
           className="flex items-center gap-2 bg-gradient-to-r from-emerald-400 to-teal-500 text-white hover:opacity-90"
         >
@@ -432,3 +432,4 @@ export const RecommendationForm = () => {
     </div>
   );
 };
+
