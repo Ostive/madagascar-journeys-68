@@ -216,7 +216,7 @@ export const RecommendationForm = () => {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [isInspireMode, setIsInspireMode] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       groupSize: "",
@@ -282,7 +282,7 @@ export const RecommendationForm = () => {
     }
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: FormFields) => {
     console.log(values);
     console.log("Showing filtered results");
   };
