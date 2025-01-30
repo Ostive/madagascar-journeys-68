@@ -48,9 +48,100 @@ export type Database = {
         }
         Relationships: []
       }
+      circuit_clothing_advice: {
+        Row: {
+          circuit_id: number
+          clothing_advice_id: number
+        }
+        Insert: {
+          circuit_id: number
+          clothing_advice_id: number
+        }
+        Update: {
+          circuit_id?: number
+          clothing_advice_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circuit_clothing_advice_circuit_id_fkey"
+            columns: ["circuit_id"]
+            isOneToOne: false
+            referencedRelation: "circuits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "circuit_clothing_advice_clothing_advice_id_fkey"
+            columns: ["clothing_advice_id"]
+            isOneToOne: false
+            referencedRelation: "clothing_advice"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      circuit_highlights: {
+        Row: {
+          circuit_id: number
+          highlight_id: number
+        }
+        Insert: {
+          circuit_id: number
+          highlight_id: number
+        }
+        Update: {
+          circuit_id?: number
+          highlight_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circuit_highlights_circuit_id_fkey"
+            columns: ["circuit_id"]
+            isOneToOne: false
+            referencedRelation: "circuits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "circuit_highlights_highlight_id_fkey"
+            columns: ["highlight_id"]
+            isOneToOne: false
+            referencedRelation: "highlights"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      circuit_practical_information: {
+        Row: {
+          circuit_id: number
+          practical_information_id: number
+        }
+        Insert: {
+          circuit_id: number
+          practical_information_id: number
+        }
+        Update: {
+          circuit_id?: number
+          practical_information_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circuit_practical_information_circuit_id_fkey"
+            columns: ["circuit_id"]
+            isOneToOne: false
+            referencedRelation: "circuits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "circuit_practical_information_practical_information_id_fkey"
+            columns: ["practical_information_id"]
+            isOneToOne: false
+            referencedRelation: "practical_information"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       circuits: {
         Row: {
           created_at: string | null
+          custom_highlights: string[] | null
           date_range: string | null
           departure_location: string | null
           departure_time: string | null
@@ -75,6 +166,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          custom_highlights?: string[] | null
           date_range?: string | null
           departure_location?: string | null
           departure_time?: string | null
@@ -99,6 +191,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          custom_highlights?: string[] | null
           date_range?: string | null
           departure_location?: string | null
           departure_time?: string | null
@@ -120,6 +213,24 @@ export type Database = {
           tour_location?: string | null
           updated_at?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      clothing_advice: {
+        Row: {
+          advice: string
+          id: number
+          type: string
+        }
+        Insert: {
+          advice: string
+          id?: never
+          type: string
+        }
+        Update: {
+          advice?: string
+          id?: never
+          type?: string
         }
         Relationships: []
       }
@@ -152,6 +263,36 @@ export type Database = {
           },
         ]
       }
+      destination_clothing_advice: {
+        Row: {
+          clothing_advice_id: number
+          destination_id: number
+        }
+        Insert: {
+          clothing_advice_id: number
+          destination_id: number
+        }
+        Update: {
+          clothing_advice_id?: number
+          destination_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "destination_clothing_advice_clothing_advice_id_fkey"
+            columns: ["clothing_advice_id"]
+            isOneToOne: false
+            referencedRelation: "clothing_advice"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "destination_clothing_advice_destination_id_fkey"
+            columns: ["destination_id"]
+            isOneToOne: false
+            referencedRelation: "destinations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       destination_highlights: {
         Row: {
           destination_id: number
@@ -178,6 +319,36 @@ export type Database = {
             columns: ["highlight_id"]
             isOneToOne: false
             referencedRelation: "highlights"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      destination_practical_information: {
+        Row: {
+          destination_id: number
+          practical_information_id: number
+        }
+        Insert: {
+          destination_id: number
+          practical_information_id: number
+        }
+        Update: {
+          destination_id?: number
+          practical_information_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "destination_practical_information_destination_id_fkey"
+            columns: ["destination_id"]
+            isOneToOne: false
+            referencedRelation: "destinations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "destination_practical_information_practical_information_id_fkey"
+            columns: ["practical_information_id"]
+            isOneToOne: false
+            referencedRelation: "practical_information"
             referencedColumns: ["id"]
           },
         ]
@@ -279,29 +450,65 @@ export type Database = {
         }
         Relationships: []
       }
-      included_options: {
+      included_circuit_options: {
         Row: {
-          destination_id: number
+          circuit_id: number
+          id: number
           option_id: number
         }
         Insert: {
-          destination_id: number
+          circuit_id: number
+          id?: never
           option_id: number
         }
         Update: {
-          destination_id?: number
+          circuit_id?: number
+          id?: never
           option_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "included_options_destination_id_fkey"
+            foreignKeyName: "included_circuit_options_circuit_id_fkey"
+            columns: ["circuit_id"]
+            isOneToOne: false
+            referencedRelation: "circuits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "included_circuit_options_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      included_destination_options: {
+        Row: {
+          destination_id: number
+          id: number
+          option_id: number
+        }
+        Insert: {
+          destination_id: number
+          id?: never
+          option_id: number
+        }
+        Update: {
+          destination_id?: number
+          id?: never
+          option_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "included_destination_options_destination_id_fkey"
             columns: ["destination_id"]
             isOneToOne: false
             referencedRelation: "destinations"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "included_options_option_id_fkey"
+            foreignKeyName: "included_destination_options_option_id_fkey"
             columns: ["option_id"]
             isOneToOne: false
             referencedRelation: "options"
@@ -315,6 +522,8 @@ export type Database = {
           circuit_id: number | null
           day_number: number
           id: number
+          location_id: number | null
+          photo: string | null
           travel_duration: string | null
         }
         Insert: {
@@ -322,6 +531,8 @@ export type Database = {
           circuit_id?: number | null
           day_number: number
           id?: never
+          location_id?: number | null
+          photo?: string | null
           travel_duration?: string | null
         }
         Update: {
@@ -329,6 +540,8 @@ export type Database = {
           circuit_id?: number | null
           day_number?: number
           id?: never
+          location_id?: number | null
+          photo?: string | null
           travel_duration?: string | null
         }
         Relationships: [
@@ -337,6 +550,13 @@ export type Database = {
             columns: ["circuit_id"]
             isOneToOne: false
             referencedRelation: "circuits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itineraries_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
             referencedColumns: ["id"]
           },
         ]
@@ -424,29 +644,65 @@ export type Database = {
         }
         Relationships: []
       }
-      not_included_options: {
+      not_included_circuit_options: {
         Row: {
-          destination_id: number
+          circuit_id: number
+          id: number
           option_id: number
         }
         Insert: {
-          destination_id: number
+          circuit_id: number
+          id?: never
           option_id: number
         }
         Update: {
-          destination_id?: number
+          circuit_id?: number
+          id?: never
           option_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "not_included_options_destination_id_fkey"
+            foreignKeyName: "not_included_circuit_options_circuit_id_fkey"
+            columns: ["circuit_id"]
+            isOneToOne: false
+            referencedRelation: "circuits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "not_included_circuit_options_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      not_included_destination_options: {
+        Row: {
+          destination_id: number
+          id: number
+          option_id: number
+        }
+        Insert: {
+          destination_id: number
+          id?: never
+          option_id: number
+        }
+        Update: {
+          destination_id?: number
+          id?: never
+          option_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "not_included_destination_options_destination_id_fkey"
             columns: ["destination_id"]
             isOneToOne: false
             referencedRelation: "destinations"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "not_included_options_option_id_fkey"
+            foreignKeyName: "not_included_destination_options_option_id_fkey"
             columns: ["option_id"]
             isOneToOne: false
             referencedRelation: "options"
@@ -474,38 +730,25 @@ export type Database = {
       }
       practical_information: {
         Row: {
-          circuit_id: number | null
+          category: string
+          details: string
           id: number
-          included: string | null
-          not_included: string | null
-          recommended_gear: string | null
         }
         Insert: {
-          circuit_id?: number | null
+          category: string
+          details: string
           id?: never
-          included?: string | null
-          not_included?: string | null
-          recommended_gear?: string | null
         }
         Update: {
-          circuit_id?: number | null
+          category?: string
+          details?: string
           id?: never
-          included?: string | null
-          not_included?: string | null
-          recommended_gear?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "practical_information_circuit_id_fkey"
-            columns: ["circuit_id"]
-            isOneToOne: false
-            referencedRelation: "circuits"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
+          avatar: string | null
           created_at: string
           email: string | null
           id: string
@@ -513,6 +756,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          avatar?: string | null
           created_at?: string
           email?: string | null
           id: string
@@ -520,6 +764,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          avatar?: string | null
           created_at?: string
           email?: string | null
           id?: string
