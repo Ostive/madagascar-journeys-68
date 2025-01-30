@@ -1,37 +1,30 @@
 import React, { useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
+import { CircuitMapProps } from '@/types';
 
-interface CircuitMapProps {
-  cities: {
-    name: string;
-    coordinates: [number, number];
-    day: number;
-  }[];
-}
-
-const CircuitMap: React.FC<CircuitMapProps> = ({ cities }) => {
+const CircuitMap: React.FC<CircuitMapProps> = ({ cities, className }) => {
   useEffect(() => {
     mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
 
     const map = new mapboxgl.Map({
-      container: 'map', // ID of the container element
-      style: 'mapbox://styles/mapbox/streets-v11', // Map style
-      center: cities[0].coordinates, // Initial map center
-      zoom: 6, // Initial zoom level
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: cities[0].coordinates,
+      zoom: 6,
     });
 
     cities.forEach(city => {
       new mapboxgl.Marker()
         .setLngLat(city.coordinates)
-        .setPopup(new mapboxgl.Popup().setText(city.name)) // Add popups
+        .setPopup(new mapboxgl.Popup().setText(city.name))
         .addTo(map);
     });
 
-    return () => map.remove(); // Cleanup on unmount
+    return () => map.remove();
   }, [cities]);
 
   return (
-    <>
+    <div className={className}>
       <div id="map" className="w-full h-full" />
       <style>
         {`
@@ -41,7 +34,7 @@ const CircuitMap: React.FC<CircuitMapProps> = ({ cities }) => {
           }
         `}
       </style>
-    </>
+    </div>
   );
 };
 

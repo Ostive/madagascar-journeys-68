@@ -7,6 +7,7 @@ import * as z from "zod";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ArrowRight, ArrowLeft } from "lucide-react";
+import { FormFields } from "@/types";
 
 const formSchema = z.object({
   groupSize: z.string().min(1, "Veuillez sélectionner avec qui vous voyagez"),
@@ -245,7 +246,6 @@ export const RecommendationForm = () => {
 
   const handleInspireMe = () => {
     setIsInspireMode(true);
-    // Show curated suggestions immediately
     console.log("Showing inspired suggestions");
   };
 
@@ -284,7 +284,6 @@ export const RecommendationForm = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
-    // Show filtered results based on all criteria
     console.log("Showing filtered results");
   };
 
@@ -299,7 +298,6 @@ export const RecommendationForm = () => {
             Découvrez nos circuits les plus populaires
           </p>
         </div>
-        {/* Add your suggestions component here */}
       </div>
     );
   }
@@ -320,7 +318,6 @@ export const RecommendationForm = () => {
         </Button>
       </div>
 
-      {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between mb-2">
           {steps.map((s, i) => (
@@ -351,7 +348,6 @@ export const RecommendationForm = () => {
         </div>
       </div>
 
-      {/* Step Content */}
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -407,7 +403,6 @@ export const RecommendationForm = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation Buttons */}
       <div className="flex justify-between mt-8">
         <Button
           variant="outline"
