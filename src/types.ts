@@ -31,6 +31,16 @@ export interface Circuit {
   updated_at?: string | Date;
   tour_location?: string;
   highlights?: string[];
+  clothing_advisor?: {
+    essential_items: string[];
+    recommended_items: string[];
+  };
+  practical_info?: {
+    health_safety: string[];
+    best_time_to_visit: string[];
+    accommodation: string[];
+    transportation: string[];
+  };
   itinerary?: Array<{
     day: number;
     title: string;
@@ -53,6 +63,7 @@ export interface Destination {
   name: string;
   description: string;
   long_description: string;
+  short_description?: string;
   price: number;
   main_image: string;
   gallery: string[];
@@ -60,11 +71,11 @@ export interface Destination {
   included: string[];
   not_included: string[];
   location: string;
+  direction?: string;
   duration: string;
   best_time_to_visit: string;
   coordinates?: [number, number];
   altitude?: string;
-  short_description?: string;
   reviews?: Array<{
     id: number;
     rating: number;
@@ -73,3 +84,33 @@ export interface Destination {
     date: string;
   }>;
 }
+
+export interface CardProps {
+  type: 'destination' | 'circuit' | 'blog';
+  data: any;
+  index: number;
+  onClick: () => void;
+  className?: string;
+}
+
+export interface ReservationCardProps {
+  price: string;
+  duration: string;
+  bestTimeToVisit: string;
+  title: string;
+  description: string;
+  destinationId: string;
+  className?: string;
+}
+
+export type FormFields = {
+  region: string[];
+  duration: string;
+  groupSize: string;
+  seasonPreference: string;
+  interests: string[];
+  travelStyle: string;
+  activityLevel: string;
+};
+
+export type FormField = keyof FormFields;

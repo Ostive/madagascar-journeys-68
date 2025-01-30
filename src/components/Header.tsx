@@ -100,11 +100,11 @@ const Header = () => {
                 )}>
                   <Avatar className="h-8 w-8">
                     <AvatarImage
-                      src={user.photoURL || undefined}
-                      alt={user.displayName || "User"}
+                      src={user?.photoURL || undefined}
+                      alt={user?.displayName || "User"}
                     />
                     <AvatarFallback>
-                      {user.displayName?.[0] || "U"}
+                      {user?.displayName?.[0] || user?.email?.[0]?.toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
                 </Button>

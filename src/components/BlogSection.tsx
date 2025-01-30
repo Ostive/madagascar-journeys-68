@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import BlogCard from "./cards/BlogCard";
+import { BlogPost } from "@/types";
 
-const blogPosts = [
+const blogPosts: BlogPost[] = [
   {
+    id: "plages-madagascar",
     title: "Les 10 plus belles plages de Madagascar",
     excerpt: "Découvrez notre sélection des plus belles plages de l'île, des lagons turquoise aux criques secrètes.",
     image: "https://madagascar-tourisme.com/wp-content/uploads/2017/04/33879604103_f0de969da2_k.jpg",
@@ -12,8 +14,10 @@ const blogPosts = [
     date: "12 Jan 2024",
     category: "Plages",
     readTime: "5 min",
+    content: "Découvrez les plus belles plages de Madagascar..."
   },
   {
+    id: "guide-baobabs",
     title: "Guide complet de l'Allée des Baobabs",
     excerpt: "Tout ce que vous devez savoir pour visiter ce site emblématique de Madagascar.",
     image: "https://cedar-cdn-aws-webp.s3.eu-central-1.amazonaws.com/app/uploads/2020/10/24070404/Western-Madagascar-avenue-de-baobabs-SS-705245614-1920.jpg",
@@ -21,8 +25,10 @@ const blogPosts = [
     date: "8 Jan 2024",
     category: "Guide",
     readTime: "8 min",
+    content: "Guide complet pour visiter l'Allée des Baobabs..."
   },
   {
+    id: "faune-unique",
     title: "La faune unique de Madagascar",
     excerpt: "Partez à la découverte des espèces endémiques qui peuplent cette île extraordinaire.",
     image: "https://static.edenviaggi.it/.imaging/default/dam/edenviaggi.it/img/escursioni/madagascar/1900x1070-.png/jcr:content.png",
@@ -30,6 +36,7 @@ const blogPosts = [
     date: "5 Jan 2024",
     category: "Nature",
     readTime: "6 min",
+    content: "Découvrez la faune unique de Madagascar..."
   },
 ];
 
