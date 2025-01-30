@@ -1,17 +1,16 @@
 import CircuitMap from "@/components/maps/CircuitMap";
 import { MapPin } from "lucide-react";
 import { motion } from "framer-motion";
-import { Circuit } from "@/types";
 
 interface LocationTabProps {
-  circuit: Circuit;
+  circuit: any;
 }
 
 const LocationTab = ({ circuit }: LocationTabProps) => {
   // Get unique cities from the circuit's itinerary
-  const cities = circuit?.itinerary?.map((day) => ({
+  const cities = circuit?.itinerary?.map((day: any) => ({
     name: day.title,
-    coordinates: day.coordinates || [47.5162, -18.8792] as [number, number],
+    coordinates: day.coordinates || [47.5162, -18.8792],
     day: day.day
   })) || [];
 
@@ -25,6 +24,7 @@ const LocationTab = ({ circuit }: LocationTabProps) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
+        {/* Map with connected cities */}
         <div className="rounded-2xl overflow-hidden bg-white/80 backdrop-blur-md border border-emerald-100/20 shadow-lg shadow-emerald-100/10">
           <div className="p-4 border-b border-emerald-100/20">
             <div className="flex items-center gap-3">
@@ -38,7 +38,6 @@ const LocationTab = ({ circuit }: LocationTabProps) => {
             </div>
           </div>
           <CircuitMap 
-            circuit={circuit}
             cities={cities}
             className="w-full h-[600px]"
           />

@@ -1,4 +1,4 @@
- import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -26,30 +26,32 @@ export const MainNavigation = () => {
           <InspirationMenu />
           <BlogMenu />
           <NavigationMenuItem>
-            <NavigationMenuLink
-              to="/about"
-              className={cn(
-                "px-3 py-2 text-sm font-medium rounded-full transition-colors",
-                "text-white/80 hover:text-white",
-                "hover:bg-white/10",
-                location.pathname === "/about" && "bg-white/10 text-white"
-              )}
-            >
-              À propos
-            </NavigationMenuLink>
+            <Link to="/about">
+              <NavigationMenuLink
+                className={cn(
+                  "px-3 py-2 text-sm font-medium rounded-full transition-colors",
+                  "text-white/80 hover:text-white",
+                  "hover:bg-white/10",
+                  location.pathname === "/about" && "bg-white/10 text-white"
+                )}
+              >
+                À propos
+              </NavigationMenuLink>
+            </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuLink
-              to="/contact"
-              className={cn(
-                "px-4 py-2 text-sm font-medium rounded-full transition-colors",
-                "text-white/80 hover:text-white",
-                "hover:bg-white/10",
-                location.pathname === "/contact" && "bg-white/10 text-white"
-              )}
-            >
-              Contact
-            </NavigationMenuLink>
+            <Link to="/contact">
+              <NavigationMenuLink
+                className={cn(
+                  "px-4 py-2 text-sm font-medium rounded-full transition-colors",
+                  "text-white/80 hover:text-white",
+                  "hover:bg-white/10",
+                  location.pathname === "/contact" && "bg-white/10 text-white"
+                )}
+              >
+                Contact
+              </NavigationMenuLink>
+            </Link>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>

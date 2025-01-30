@@ -1,80 +1,114 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import CircuitCard from "@/components/cards/CircuitCard";
-import { recommendCircuits } from '@/utils/recommendations';
-import { Circuit } from '@/types';
-import { circuits } from '@/data/circuits';
-import { motion } from 'framer-motion';
+import { Button } from "@/components/ui/button";
+import { CircuitCard } from "@/components/cards/CircuitCard";
+import { recommendCircuits } from "@/utils/recommendations";
 
-export default function ResultsPage() {
+export default function RecommendationResultsPage() {
   const location = useLocation();
-  const preferences = location.state?.preferences || {};
-  const recommendedCircuits = recommendCircuits(circuits, preferences);
+  const searchParams = new URLSearchParams(location.search);
+  const preferences = {
+    duration: searchParams.get("duration"),
+    budget: searchParams.get("budget"),
+    travelStyle: searchParams.get("travelStyle"),
+    interests: searchParams.getAll("interests"),
+    activityLevel: searchParams.get("activityLevel"),
+    seasonPreference: searchParams.get("seasonPreference"),
+    groupSize: searchParams.get("groupSize"),
+  };
+
+  const recommendedCircuits = recommendCircuits(preferences);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 pt-24">
+    <div className="min-h-screen bg-gradient-to-b from-[#0B1C2F] to-[#1F3B60] pt-24">
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent mb-4">
-              Circuits Recommandés
-            </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Basé sur vos préférences, voici les circuits qui pourraient vous intéresser
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Results Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {recommendedCircuits.length > 0 ? (
-            recommendedCircuits.map((circuit: Circuit) => (
-              <motion.div
-                key={circuit.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <CircuitCard circuit={circuit} />
-              </motion.div>
-            ))
-          ) : (
-            <div className="col-span-3 text-center py-12">
-              <Card className="p-8 bg-white/40 backdrop-blur-sm border-emerald-100 shadow-lg shadow-emerald-100/20">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  Aucun circuit trouvé
-                </h3>
-                <p className="text-gray-600">
-                  Nous n'avons pas trouvé de circuits correspondant exactement à vos critères.
-                  Essayez d'ajuster vos préférences pour voir plus d'options.
-                </p>
-              </Card>
-            </div>
-          )}
+          <h1 className="text-4xl font-bold text-white mb-4">
+            Vos Circuits Recommandés
+          </h1>
+          <p className="text-lg text-white/80 max-w-2xl mx-auto">
+            Basé sur vos préférences, voici une sélection de circuits qui correspondent
+            le mieux à vos envies.
+          </p>
         </div>
 
         {/* Preferences Summary */}
-        <Card className="mt-12 p-6 bg-white/40 backdrop-blur-sm border-emerald-100 shadow-lg shadow-emerald-100/20">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Vos préférences
-          </h3>
+        <Card className="bg-white/10 border-white/10 p-6 rounded-2xl mb-12">
+          <h2 className="text-xl font-semibold text-white mb-4">
+            Vos Critères
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {Object.entries(preferences).map(([key, value]) => (
-              <div key={key} className="space-y-1">
-                <p className="text-sm text-gray-500 capitalize">
-                  {key.replace(/_/g, ' ')}
-                </p>
-                <p className="text-base text-gray-900">
-                  {Array.isArray(value) ? value.join(', ') : value}
-                </p>
+            {preferences.duration && (
+              <div>
+                <p className="text-white/60 text-sm">Durée</p>
+                <p className="text-white">{preferences.duration}</p>
               </div>
+            )}
+            {preferences.budget && (
+              <div>
+                <p className="text-white/60 text-sm">Budget</p>
+                <p className="text-white">{preferences.budget}</p>
+              </div>
+            )}
+            {preferences.travelStyle && (
+              <div>
+                <p className="text-white/60 text-sm">Style de voyage</p>
+                <p className="text-white">{preferences.travelStyle}</p>
+              </div>
+            )}
+            {preferences.activityLevel && (
+              <div>
+                <p className="text-white/60 text-sm">Niveau d'activité</p>
+                <p className="text-white">{preferences.activityLevel}</p>
+              </div>
+            )}
+          </div>
+          <Button 
+            variant="outline" 
+            className="mt-4 text-white border-white/20 hover:bg-white/10"
+            onClick={() => window.history.back()}
+          >
+            Modifier les critères
+          </Button>
+        </Card>
+
+        {/* Best Matches */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6">
+            Meilleures Correspondances
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {recommendedCircuits.bestMatches?.map((circuit) => (
+              <CircuitCard key={circuit.id} circuit={circuit} />
             ))}
           </div>
+        </div>
+
+        {/* Alternative Suggestions */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6">
+            Autres Suggestions
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {recommendedCircuits.alternatives?.map((circuit) => (
+              <CircuitCard key={circuit.id} circuit={circuit} />
+            ))}
+          </div>
+        </div>
+
+        {/* Need Help Section */}
+        <Card className="bg-white/10 border-white/10 p-6 rounded-2xl text-center">
+          <h3 className="text-xl font-semibold text-white mb-4">
+            Besoin d'aide pour choisir ?
+          </h3>
+          <p className="text-white/80 mb-6">
+            Nos experts sont là pour vous aider à planifier votre voyage idéal.
+            Contactez-nous pour un conseil personnalisé.
+          </p>
+          <Button className="bg-gradient-to-r from-emerald-400 to-teal-500 text-white hover:opacity-90">
+            Contactez un expert
+          </Button>
         </Card>
       </div>
     </div>

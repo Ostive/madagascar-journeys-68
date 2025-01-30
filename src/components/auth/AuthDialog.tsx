@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
@@ -183,9 +183,6 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden bg-white dark:bg-gray-900">
-        <DialogTitle className="sr-only">
-          {isSignUp ? "Créer un compte" : "Se connecter"}
-        </DialogTitle>
         <div className="grid sm:grid-cols-2">
           {/* Left side - Decorative */}
           <div className="hidden sm:block relative overflow-hidden">

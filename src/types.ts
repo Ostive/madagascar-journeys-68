@@ -1,43 +1,3 @@
-export interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  excerpt: string;
-  date: string;
-  image: string;
-  category: string;
-  user_id?: string;
-  created_at?: Date;
-  updated_at?: Date;
-}
-
-export interface CarouselSlide {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  link?: string;
-}
-
-export interface Destination {
-  id: number;
-  name: string;
-  description: string;
-  long_description: string;
-  price: number;
-  main_image: string;
-  gallery: string[];
-  highlights: string[];
-  included: string[];
-  not_included: string[];
-  location: string;
-  duration: string;
-  best_time_to_visit: string;
-  location_id?: number;
-  user_id?: string;
-  direction?: string;
-}
-
 export interface Circuit {
   id: number;
   name: string;
@@ -58,9 +18,22 @@ export interface Circuit {
   created_at?: string | Date;
   updated_at?: string | Date;
   tour_location?: string;
+  itinerary?: Array<{
+    day: number;
+    title: string;
+    description: string;
+    coordinates?: [number, number];
+  }>;
+  reviews?: Array<{
+    id: number;
+    rating: number;
+    review_text: string;
+    author: string;
+    date: string;
+  }>;
   highlights?: string[];
-  custom_highlights?: string[];
-  coordinates?: [number, number];
+  departure_location?: string;
+  departure_time?: string;
   clothing_advisor?: {
     essential_items: string[];
     recommended_items: string[];
@@ -71,10 +44,4 @@ export interface Circuit {
     accommodation: string[];
     transportation: string[];
   };
-  itinerary?: Array<{
-    day: number;
-    title: string;
-    description: string;
-  }>;
-  direction?: string;
 }
