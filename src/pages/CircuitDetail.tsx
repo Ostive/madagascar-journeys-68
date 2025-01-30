@@ -1,68 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import Header from "@/components/Header";
-
-interface Circuit {
-  id: number;
-  name: string;
-  description: string;
-  duration_days: number;
-  price: number;
-  short_description?: string;
-  long_description?: string;
-  persons?: string;
-  rating?: number;
-  date_range?: string;
-  main_image?: string;
-  difficulty?: string;
-  user_id?: string;
-  gallery?: string[];
-  included?: string[];
-  not_included?: string[];
-  created_at?: string | Date;
-  updated_at?: string | Date;
-  tour_location?: string;
-  itinerary?: Array<{
-    day: number;
-    title: string;
-    description: string;
-    coordinates?: [number, number];
-  }>;
-  reviews?: Array<{
-    id: number;
-    rating: number;
-    review_text: string;
-    author: string;
-    date: string;
-  }>;
-  highlights?: string[];
-  departure_location?: string;
-  departure_time?: string;
-  clothing_advisor?: {
-    essential_items: string[];
-    recommended_items: string[];
-  };
-  practical_info?: {
-    health_safety: string[];
-    best_time_to_visit: string[];
-    accommodation: string[];
-    transportation: string[];
-  };
-}
-
-interface ReservationCardProps {
-  price: string;
-  duration?: string;
-  persons?: string;
-  bestTimeToVisit?: string;
-  title?: string;
-  description?: string;
-  destinationId?: string;
-}
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { Circuit } from "@/types";
 import ReservationCard from "@/components/reservation/ReservationCard";
 import { motion, AnimatePresence } from "framer-motion";
 import InformationTab from "@/components/circuit/tabs/InformationTab";
@@ -70,26 +9,32 @@ import CircuitPlanTab from "@/components/circuit/tabs/CircuitPlanTab";
 import LocationTab from "@/components/circuit/tabs/LocationTab";
 import GalleryTab from "@/components/circuit/tabs/GalleryTab";
 import ReviewsTab from "@/components/circuit/tabs/ReviewsTab";
-import GalleryGrid from "@/components/GaleryGrid";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Info, Map, MapPin, Image, MessageSquare } from "lucide-react";
 import CircuitCard from "@/components/cards/CircuitCard";
 import CardCarousel from "@/components/CardCarousel";
-import { mockCircuit, mockSimilarCircuits } from "@/data/mockCircuit";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const CircuitDetail = () => {
   const { id } = useParams();
-  const { toast } = useToast();
-  const navigate = useNavigate();
-
   const [activeTab, setActiveTab] = useState('information');
+
   const { data: circuit, isLoading } = useQuery<Circuit>({
     queryKey: ['circuit', id],
     queryFn: async () => {
-      // Simulate loading
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return mockCircuit;
+      const { data, error } = await supabase
+        .from('circuits')
+        .select(`
+          *,
+          reviews (*)
+        `)
+        .eq('id', parseInt(id || '0'))
+        .single();
+
+      if (error) throw error;
+      return data as Circuit;
     },
   });
 
@@ -97,9 +42,17 @@ const CircuitDetail = () => {
   const { data: similarCircuits } = useQuery<Circuit[]>({
     queryKey: ['similar-circuits', id],
     queryFn: async () => {
-      // Simulate loading
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return mockSimilarCircuits;
+      const { data, error } = await supabase
+        .from('circuits')
+        .select(`
+          *,
+          reviews (*)
+        `)
+        .neq('id', parseInt(id || '0'))
+        .limit(3);
+
+      if (error) throw error;
+      return data as Circuit[];
     },
     enabled: !!circuit,
   });
@@ -323,8 +276,6 @@ const CircuitDetail = () => {
           </div>
         </div>
       )}
-
-  
     </div>
   );
 };

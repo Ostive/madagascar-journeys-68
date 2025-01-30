@@ -1,3 +1,15 @@
+export interface BlogPost {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  date: string;
+  image: string;
+  category: string;
+  author?: string;
+  readTime?: string;
+}
+
 export interface Circuit {
   id: number;
   name: string;
@@ -18,12 +30,41 @@ export interface Circuit {
   created_at?: string | Date;
   updated_at?: string | Date;
   tour_location?: string;
+  highlights?: string[];
   itinerary?: Array<{
     day: number;
     title: string;
     description: string;
     coordinates?: [number, number];
+    activities?: string[];
+    accommodation?: string;
+    meals?: string[];
   }>;
+  reviews?: Array<{
+    id: number;
+    rating: number;
+    review_text: string;
+    traveler_name: string;
+  }>;
+}
+
+export interface Destination {
+  id: number;
+  name: string;
+  description: string;
+  long_description: string;
+  price: number;
+  main_image: string;
+  gallery: string[];
+  highlights: string[];
+  included: string[];
+  not_included: string[];
+  location: string;
+  duration: string;
+  best_time_to_visit: string;
+  coordinates?: [number, number];
+  altitude?: string;
+  short_description?: string;
   reviews?: Array<{
     id: number;
     rating: number;
@@ -31,17 +72,4 @@ export interface Circuit {
     author: string;
     date: string;
   }>;
-  highlights?: string[];
-  departure_location?: string;
-  departure_time?: string;
-  clothing_advisor?: {
-    essential_items: string[];
-    recommended_items: string[];
-  };
-  practical_info?: {
-    health_safety: string[];
-    best_time_to_visit: string[];
-    accommodation: string[];
-    transportation: string[];
-  };
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 import Card from "@/components/shared/Card";
-import { Circuit } from "@/data/types";
+import { Circuit } from "@/types";
 
 interface CircuitCardProps {
   circuit: Circuit;
@@ -21,7 +21,7 @@ const CircuitCard = ({
     duration: `${circuit.duration_days} jours`,
     price: `${circuit.price}€`,
     rating: circuit.rating || 4.5,
-    reviews: 24,
+    reviews: circuit.reviews?.length || 24,
     nextDeparture: circuit.date_range || "Toute l'année",
     highlights: circuit.highlights || [],
   };
@@ -32,6 +32,7 @@ const CircuitCard = ({
       data={cardData}
       index={0}
       onClick={() => navigate(`/circuit/${circuit.id}`)}
+      className={className}
     />
   );
 };
