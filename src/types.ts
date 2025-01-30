@@ -114,3 +114,12 @@ export type FormFields = {
 };
 
 export type FormField = keyof FormFields;
+
+// Add User type extension for Supabase User
+declare module '@supabase/supabase-js' {
+  interface User {
+    photoURL?: string;
+    displayName?: string;
+    email?: string;
+  }
+}

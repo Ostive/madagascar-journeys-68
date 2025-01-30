@@ -250,7 +250,7 @@ export const RecommendationForm = () => {
   };
 
   const handleOptionSelect = (value: string) => {
-    const currentField = currentStep.field;
+    const currentField = currentStep.field as keyof FormFields;
     
     if (value === 'inspire') {
       if (currentField === 'interests') {
