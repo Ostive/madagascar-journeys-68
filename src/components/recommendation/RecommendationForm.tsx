@@ -279,6 +279,9 @@ export const RecommendationForm = () => {
       }
     } else {
       form.setValue(currentField, value);
+      if (!currentStep.multiple) {
+        handleNext();
+      }
     }
   };
 
