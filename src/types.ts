@@ -56,6 +56,12 @@ export interface Circuit {
     review_text: string;
     traveler_name: string;
   }>;
+  departure_location?: string;
+  departure_time?: string;
+  return_time?: string;
+  dress_code?: string;
+  enabled?: boolean;
+  custom_highlights?: string[];
 }
 
 export interface Destination {
@@ -100,6 +106,15 @@ export interface ReservationCardProps {
   title: string;
   description: string;
   destinationId: string;
+  className?: string;
+}
+
+export interface CircuitMapProps {
+  cities: Array<{
+    name: string;
+    coordinates: [number, number];
+    day: number;
+  }>;
   className?: string;
 }
 
