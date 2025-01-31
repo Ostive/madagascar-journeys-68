@@ -216,7 +216,7 @@ export const RecommendationForm = () => {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [isInspireMode, setIsInspireMode] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       groupSize: "",
@@ -279,10 +279,13 @@ export const RecommendationForm = () => {
       }
     } else {
       form.setValue(currentField, value);
+      if (!currentStep.multiple) {
+        handleNext();
+      }
     }
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: FormFields) => {
     console.log(values);
     console.log("Showing filtered results");
   };
@@ -418,7 +421,7 @@ export const RecommendationForm = () => {
           disabled={
             currentStep.multiple
               ? (currentStep.field === 'region' ? selectedRegions.length === 0 : selectedInterests.length === 0)
-              : !form.watch(currentStep.field)
+              : !form.getValues(currentStep.field as keyof FormFields)
           }
           className="flex items-center gap-2 bg-gradient-to-r from-emerald-400 to-teal-500 text-white hover:opacity-90"
         >
