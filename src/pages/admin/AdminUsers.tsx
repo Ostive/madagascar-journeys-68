@@ -3,7 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { UserTable } from "./users/UserTable";
 import { fetchProfiles, updateUserRole } from "./users/userUtils";
-import type { Profile } from "./users/types";
+import type { Profile, UserRole } from "./users/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const AdminUsers = () => {
@@ -24,6 +24,7 @@ const AdminUsers = () => {
       setProfiles(profilesData);
     } catch (error) {
       console.error('Error fetching profiles:', error);
+      console.log(error);
       setError("Impossible de charger les utilisateurs. Veuillez réessayer plus tard.");
       toast({
         title: "Erreur",
@@ -40,7 +41,7 @@ const AdminUsers = () => {
       const newRole = await updateUserRole(userId, currentRole);
       
       setProfiles(profiles.map(profile => 
-        profile.id === userId ? { ...profile, role: newRole } : profile
+        profile.id === userId ? { ...profile, role: newRole as UserRole } : profile
       ));
 
       toast({

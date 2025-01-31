@@ -1,42 +1,49 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Profile } from "./types";
+import { Profile, UserRole } from "./types";
 
-export const fetchProfiles = async () => {
+export const fetchProfiles = async (): Promise<Profile[]> => {
+  // Fetch profiles with additional columns
   const { data: profilesData, error: profilesError } = await supabase
     .from('profiles')
-    .select('*');
+    .select('*, email');
 
-  if (profilesError) throw profilesError;
-
-  // Fetch users one at a time to avoid token issues
-  const profilesWithEmail = [];
-  for (const profile of profilesData) {
-    try {
-      const { data: { user }, error: userError } = await supabase.auth.admin.getUserById(profile.id);
-      if (userError) {
-        console.error('Error fetching user:', userError);
-        profilesWithEmail.push({ ...profile, email: 'Email not available' });
-      } else {
-        profilesWithEmail.push({ ...profile, email: user?.email });
-      }
-    } catch (error) {
-      console.error('Error fetching user:', error);
-      profilesWithEmail.push({ ...profile, email: 'Email not available' });
-    }
+  if (profilesError) {
+    console.error('Error fetching profiles:', profilesError);
+    throw profilesError;
   }
 
-  return profilesWithEmail;
+  // If no profiles, return empty array
+  if (!profilesData || profilesData.length === 0) {
+    return [];
+  }
+
+  // Combine profiles with user data
+  const profilesWithDetails = profilesData.map(profile => ({
+    ...profile,
+    email: profile.email || 'Email not available',
+    phone: 'Phone not available',
+    avatarUrl: profile.avatar_url || '/default-avatar.png',
+    role: profile.role as UserRole
+  }));
+
+  return profilesWithDetails;
 };
 
-export const updateUserRole = async (userId: string, currentRole: string) => {
-  const newRole = currentRole === 'admin' ? 'user' : 'admin';
+export const updateUserRole = async (userId: string, currentRole: string): Promise<UserRole> => {
+  const newRole = (currentRole === 'admin' ? 'user' : 'admin') as UserRole;
   
   const { error } = await supabase
     .from('profiles')
-    .update({ role: newRole })
+    .update({ 
+      role: newRole,
+      updated_at: new Date().toISOString()
+    })
     .eq('id', userId);
 
-  if (error) throw error;
+  if (error) {
+    console.error('Error updating user role:', error);
+    throw error;
+  }
   
   return newRole;
 };

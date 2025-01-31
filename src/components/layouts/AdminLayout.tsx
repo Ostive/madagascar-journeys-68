@@ -19,11 +19,35 @@ import {
   Settings,
   FileText,
   Calendar,
-  Image
+  Image,
+  LogOut
 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/components/auth/AuthProvider"; 
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function AdminLayout() {
   const location = useLocation();
+  const { user, signOut } = useAuth(); 
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   const items = [
     {
@@ -33,7 +57,7 @@ export function AdminLayout() {
     },
     {
       title: "Circuits",
-      url: "/admin/circuit",
+      url: "/admin/circuits",
       icon: Map,
     },
     {
@@ -94,6 +118,31 @@ export function AdminLayout() {
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
+            <div className="mt-auto p-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full justify-start gap-2">
+                    <Avatar>
+                      <AvatarImage 
+                        src={user?.avatarUrl || "/default-avatar.png"} 
+                        alt={`${user?.name || 'User'}'s avatar`} 
+                      />
+                      <AvatarFallback>
+                        <Users className="h-6 w-6" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <span>{user?.name}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="h-4 w-4" />
+                    <span>Déconnexion</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </SidebarContent>
         </Sidebar>
         <main className="flex-1 overflow-x-hidden p-8">

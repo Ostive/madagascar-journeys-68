@@ -137,16 +137,24 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.signUp({
+      // Generate a default avatar URL
+      const defaultAvatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(email)}`;
+
+      // Sign up the user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            avatar: defaultAvatarUrl,
+            email: email,
+          }
         },
       });
 
-      if (error) {
-        if (error.message.includes("User already registered")) {
+      if (authError) {
+        if (authError.message.includes("User already registered")) {
           toast({
             variant: "destructive",
             title: "Compte existant",
@@ -155,7 +163,30 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
           setIsSignUp(false);
           return;
         }
-        throw error;
+        throw authError;
+      }
+
+      // If user is created, insert additional user profile data
+      if (authData.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: authData.user.id,
+            email: email,
+            avatar: defaultAvatarUrl,
+            username: email.split('@')[0], // Use part of email as username
+          }, { 
+            onConflict: 'id' 
+          });
+
+        if (profileError) {
+          console.error('Error creating profile:', profileError);
+          toast({
+            variant: "destructive",
+            title: "Erreur de profil",
+            description: "Impossible de créer le profil complet",
+          });
+        }
       }
 
       toast({

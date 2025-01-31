@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import CircuitBasicInfo from "@/components/admin/forms/circuit/CircuitBasicInfo";
 import CircuitPricing from "@/components/admin/forms/circuit/CircuitPricing";
 import CircuitLogistics from "@/components/admin/forms/circuit/CircuitLogistics";
@@ -12,6 +12,7 @@ import CircuitItinerary from "@/components/admin/forms/circuit/CircuitItinerary"
 import CircuitGallery from "@/components/admin/forms/circuit/CircuitGallery";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ItineraryDay {
   day_number: number;
@@ -43,9 +44,33 @@ const CreateCircuit = () => {
 
   const [itinerary, setItinerary] = useState<ItineraryDay[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to create a circuit",
+          variant: "destructive"
+        });
+        navigate('/admin/login');
+      } else {
+        setCurrentUser(user);
+      }
+    };
+
+    checkAuth();
+  }, [navigate, toast]);
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
+      if (!currentUser) {
+        throw new Error("User not authenticated");
+      }
+
       setIsSubmitting(true);
       
       // First, create the circuit
@@ -54,7 +79,7 @@ const CreateCircuit = () => {
         .insert([{
           ...data,
           rating: 0,
-          user_id: (await supabase.auth.getUser()).data.user?.id,
+          user_id: currentUser.id,
         }])
         .select()
         .single();
@@ -79,16 +104,16 @@ const CreateCircuit = () => {
     },
     onSuccess: () => {
       toast({
-        title: "Circuit créé",
-        description: "Le circuit a été créé avec succès.",
+        title: "Circuit Created",
+        description: "The circuit was successfully created.",
       });
-      navigate('/admin/circuit');
+      navigate('/admin/circuits');
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Error creating circuit:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de créer le circuit. Veuillez réessayer.",
+        title: "Error",
+        description: error.message || "Unable to create the circuit. Please try again.",
         variant: "destructive",
       });
     },
@@ -106,14 +131,13 @@ const CreateCircuit = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (itinerary.length === 0) {
+  const handleSubmit = () => {
+    // Validate form data before submission
+    if (!formData.name || formData.duration_days <= 0 || formData.price <= 0) {
       toast({
-        title: "Attention",
-        description: "Veuillez ajouter au moins un jour à l'itinéraire.",
-        variant: "destructive",
+        title: "Validation Error",
+        description: "Please fill in all required fields correctly",
+        variant: "destructive"
       });
       return;
     }
@@ -122,61 +146,64 @@ const CreateCircuit = () => {
   };
 
   return (
-    <div className="container mx-auto p-8">
-      <div className="flex items-center gap-4 mb-8">
-        <Button variant="ghost" onClick={() => navigate('/admin/circuit')}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour à la liste des circuits
-        </Button>
-        <h1 className="text-3xl font-bold">Créer un nouveau circuit</h1>
-      </div>
-      
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="enabled"
-            checked={formData.enabled}
-            onCheckedChange={(checked) => 
-              setFormData(prev => ({ ...prev, enabled: checked }))
-            }
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle>Create New Circuit</CardTitle>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/admin/circuits')}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft size={16} /> Back to Circuits
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <CircuitBasicInfo 
+            formData={formData} 
+            handleChange={handleChange}
           />
-          <Label htmlFor="enabled">Circuit actif</Label>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-8">
-            <CircuitBasicInfo formData={formData} handleChange={handleChange} />
-            <CircuitPricing 
-              formData={formData} 
-              handleChange={handleChange}
-              handleSelectChange={handleSelectChange}
+          <CircuitPricing 
+            formData={formData} 
+            handleChange={handleChange}
+            handleSelectChange={handleSelectChange}
+          />
+          <CircuitLogistics 
+            formData={formData} 
+            handleChange={handleChange}
+          />
+          <CircuitItinerary 
+            itinerary={itinerary}
+            onItineraryChange={setItinerary}
+          />
+          <CircuitGallery 
+            mainImage={formData.main_image}
+            gallery={formData.gallery}
+            onMainImageChange={(url) => setFormData(prev => ({ ...prev, main_image: url }))}
+            onGalleryChange={(urls) => setFormData(prev => ({ ...prev, gallery: urls }))}
+          />
+          
+          <div className="flex items-center space-x-2">
+            <Switch 
+              id="circuit-enabled"
+              checked={formData.enabled}
+              onCheckedChange={(checked) => setFormData(prev => ({...prev, enabled: checked}))}
             />
-            <CircuitLogistics formData={formData} handleChange={handleChange} />
+            <Label htmlFor="circuit-enabled">Circuit Enabled</Label>
           </div>
 
-          <div className="space-y-8">
-            <CircuitGallery
-              mainImage={formData.main_image}
-              gallery={formData.gallery}
-              onMainImageChange={(url) => setFormData(prev => ({ ...prev, main_image: url }))}
-              onGalleryChange={(urls) => setFormData(prev => ({ ...prev, gallery: urls }))}
-            />
-            <CircuitItinerary
-              itinerary={itinerary}
-              onItineraryChange={setItinerary}
-            />
-          </div>
+          <Button 
+            onClick={handleSubmit} 
+            disabled={isSubmitting}
+            className="w-full"
+          >
+            {isSubmitting ? "Creating..." : "Create Circuit"}
+          </Button>
         </div>
-        
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Création en cours..." : "Créer le circuit"}
-        </Button>
-      </form>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

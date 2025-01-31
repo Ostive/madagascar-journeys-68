@@ -38,6 +38,10 @@ import InspirationPage from "@/pages/inspiration";
 import ThemesPage from "@/pages/inspiration/themes";
 import PopularPage from "@/pages/inspiration/popular";
 import SeasonsPage from "@/pages/inspiration/seasons";
+import { lazy, Suspense } from 'react';
+
+// Lazy load the AuthCallback component
+const AuthCallback = lazy(() => import('./pages/auth/Callback'));
 
 import "./App.css";
 
@@ -54,7 +58,7 @@ function App() {
           <Route path="destinations" element={<Destinations />} />
           <Route path="destination/:id" element={<DestinationDetail />} />
           <Route path="circuits" element={<Circuits />} />
-          <Route path="circuit/:id" element={<CircuitDetail />} />
+          <Route path="circuits/:id" element={<CircuitDetail />} />
           <Route path="quiz" element={<Quiz />} />
           <Route path="reservation" element={<Reservation />} />
           
@@ -82,10 +86,10 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="destination" element={<AdminDestination />} />
           <Route path="destination/create" element={<CreateDestination />} />
-          <Route path="circuit" element={<AdminCircuit />} />
-          <Route path="circuit/create" element={<CreateCircuit />} />
-          <Route path="circuit/edit/:id" element={<EditCircuit />} />
-          <Route path="circuit/:id" element={<CircuitDetailPage />} />
+          <Route path="circuits" element={<AdminCircuit />} />
+          <Route path="circuits/create" element={<CreateCircuit />} />
+          <Route path="circuits/edit/:id" element={<EditCircuit />} />
+          <Route path="circuits/:id" element={<CircuitDetailPage />} />
           <Route path="blog" element={<AdminBlog />} />
           <Route path="blog/create" element={<CreateBlog />} />
           <Route path="bookings" element={<AdminBookings />} />
@@ -96,6 +100,11 @@ function App() {
             <Route path="options" element={<OptionsSettings />} />
           </Route>
         </Route>
+        <Route path="/auth/callback" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <AuthCallback />
+          </Suspense>
+        } />
       </Routes>
     </Router>
   );

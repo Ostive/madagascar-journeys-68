@@ -13,7 +13,9 @@ export const UserTable = ({ profiles, onRoleChange }: UserTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Avatar</TableHead>
             <TableHead>Email</TableHead>
+            <TableHead>Téléphone</TableHead>
             <TableHead>Rôle</TableHead>
             <TableHead>Date d'inscription</TableHead>
             <TableHead>Actions</TableHead>
