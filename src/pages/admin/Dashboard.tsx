@@ -1,94 +1,211 @@
-import { Card } from "@/components/ui/card";
-import { BarChart, Users, DollarSign, Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Users,
+  Route,
+  CalendarDays,
+  Heart,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+} from "lucide-react";
+
+interface DashboardStats {
+  totalUsers: number;
+  totalCircuits: number;
+  totalBookings: number;
+  totalFavorites: number;
+  recentBookings: any[];
+  userGrowth: number;
+}
 
 const Dashboard = () => {
+  const [stats, setStats] = useState<DashboardStats>({
+    totalUsers: 0,
+    totalCircuits: 0,
+    totalBookings: 0,
+    totalFavorites: 0,
+    recentBookings: [],
+    userGrowth: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [
+          { count: usersCount },
+          { count: circuitsCount },
+          { count: bookingsCount },
+          { count: favoritesCount },
+          { data: recentBookings },
+        ] = await Promise.all([
+          supabase.from("users").select("*", { count: "exact" }),
+          supabase.from("circuits").select("*", { count: "exact" }),
+          supabase.from("reservations").select("*", { count: "exact" }),
+          supabase.from("favorites").select("*", { count: "exact" }),
+          supabase
+            .from("reservations")
+            .select("*, circuit:circuits(title)")
+            .order("created_at", { ascending: false })
+            .limit(5),
+        ]);
+
+        setStats({
+          totalUsers: usersCount || 0,
+          totalCircuits: circuitsCount || 0,
+          totalBookings: bookingsCount || 0,
+          totalFavorites: favoritesCount || 0,
+          recentBookings: recentBookings || [],
+          userGrowth: 12, // Example growth percentage
+        });
+      } catch (error) {
+        console.error("Error fetching dashboard stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const stats_cards = [
+    {
+      title: "Utilisateurs",
+      value: stats.totalUsers,
+      icon: Users,
+      growth: stats.userGrowth,
+      trend: "up",
+    },
+    {
+      title: "Circuits",
+      value: stats.totalCircuits,
+      icon: Route,
+      growth: 8,
+      trend: "up",
+    },
+    {
+      title: "Réservations",
+      value: stats.totalBookings,
+      icon: CalendarDays,
+      growth: -5,
+      trend: "down",
+    },
+    {
+      title: "Favoris",
+      value: stats.totalFavorites,
+      icon: Heart,
+      growth: 15,
+      trend: "up",
+    },
+  ];
+
+  if (loading) {
+    return (
+      <div className="text-gray-600">
+        Chargement du tableau de bord...
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold">Tableau de bord</h1>
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900">Tableau de bord</h2>
+        <p className="mt-1 text-gray-500">
+          Vue d'ensemble de votre activité
+        </p>
+      </div>
 
-      {/* KPIs */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="p-6 space-y-2">
-          <div className="flex items-center space-x-2">
-            <Calendar className="h-4 w-4 text-blue-500" />
-            <h3 className="text-sm font-medium">Réservations</h3>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats_cards.map((stat) => (
+          <div
+            key={stat.title}
+            className="p-6 rounded-lg bg-white border border-gray-100 shadow-sm"
+          >
+            <div className="flex items-center justify-between">
+              <div
+                className={`p-2 rounded-lg ${
+                  stat.trend === "up"
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "bg-red-50 text-red-600"
+                }`}
+              >
+                <stat.icon className="h-5 w-5" />
+              </div>
+              <div className="flex items-center space-x-1">
+                <span
+                  className={`text-sm ${
+                    stat.trend === "up" ? "text-emerald-600" : "text-red-600"
+                  }`}
+                >
+                  {stat.growth}%
+                </span>
+                {stat.trend === "up" ? (
+                  <ArrowUpRight className="h-4 w-4 text-emerald-600" />
+                ) : (
+                  <ArrowDownRight className="h-4 w-4 text-red-600" />
+                )}
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+              <div className="text-sm text-gray-500">{stat.title}</div>
+            </div>
           </div>
-          <p className="text-2xl font-bold">123</p>
-          <p className="text-xs text-muted-foreground">+12% depuis le mois dernier</p>
-        </Card>
-
-        <Card className="p-6 space-y-2">
-          <div className="flex items-center space-x-2">
-            <Users className="h-4 w-4 text-green-500" />
-            <h3 className="text-sm font-medium">Visiteurs</h3>
-          </div>
-          <p className="text-2xl font-bold">1,234</p>
-          <p className="text-xs text-muted-foreground">+5% depuis le mois dernier</p>
-        </Card>
-
-        <Card className="p-6 space-y-2">
-          <div className="flex items-center space-x-2">
-            <DollarSign className="h-4 w-4 text-yellow-500" />
-            <h3 className="text-sm font-medium">Revenus</h3>
-          </div>
-          <p className="text-2xl font-bold">12,345€</p>
-          <p className="text-xs text-muted-foreground">+8% depuis le mois dernier</p>
-        </Card>
-
-        <Card className="p-6 space-y-2">
-          <div className="flex items-center space-x-2">
-            <BarChart className="h-4 w-4 text-purple-500" />
-            <h3 className="text-sm font-medium">Conversion</h3>
-          </div>
-          <p className="text-2xl font-bold">3.2%</p>
-          <p className="text-xs text-muted-foreground">+2% depuis le mois dernier</p>
-        </Card>
+        ))}
       </div>
 
       {/* Recent Bookings */}
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Dernières réservations</h2>
-        <div className="space-y-4">
-          {/* Sample booking items */}
-          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-            <div>
-              <p className="font-medium">Circuit Nosy Be</p>
-              <p className="text-sm text-muted-foreground">John Doe - 2 personnes</p>
-            </div>
-            <div className="text-right">
-              <p className="font-medium">1,234€</p>
-              <p className="text-sm text-muted-foreground">Il y a 2 heures</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-            <div>
-              <p className="font-medium">Destination Antananarivo</p>
-              <p className="text-sm text-muted-foreground">Jane Smith - 4 personnes</p>
-            </div>
-            <div className="text-right">
-              <p className="font-medium">2,345€</p>
-              <p className="text-sm text-muted-foreground">Il y a 5 heures</p>
-            </div>
-          </div>
+      <div className="rounded-lg border border-gray-100 overflow-hidden">
+        <div className="bg-white px-6 py-4 border-b border-gray-100">
+          <h3 className="font-medium text-gray-900">Réservations récentes</h3>
         </div>
-      </Card>
-
-      {/* System Alerts */}
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Alertes système</h2>
-        <div className="space-y-4">
-          <div className="p-4 bg-yellow-50 text-yellow-800 rounded-lg">
-            <p className="font-medium">Mise à jour disponible</p>
-            <p className="text-sm">Une nouvelle version du système est disponible.</p>
-          </div>
-          
-          <div className="p-4 bg-green-50 text-green-800 rounded-lg">
-            <p className="font-medium">Sauvegarde réussie</p>
-            <p className="text-sm">La dernière sauvegarde a été effectuée avec succès.</p>
-          </div>
+        <div className="divide-y divide-gray-100">
+          {stats.recentBookings.map((booking) => (
+            <div
+              key={booking.id}
+              className="flex items-center justify-between p-4 bg-white hover:bg-gray-50"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center space-x-3">
+                  <div className="flex-shrink-0">
+                    <CalendarDays className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {booking.circuit.title}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {new Date(booking.created_at).toLocaleDateString("fr-FR", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                className={`px-3 py-1 rounded-full text-sm ${
+                  booking.status === "confirmed"
+                    ? "bg-emerald-50 text-emerald-700"
+                    : booking.status === "pending"
+                    ? "bg-yellow-50 text-yellow-700"
+                    : "bg-red-50 text-red-700"
+                }`}
+              >
+                {booking.status === "confirmed"
+                  ? "Confirmé"
+                  : booking.status === "pending"
+                  ? "En attente"
+                  : "Annulé"}
+              </div>
+            </div>
+          ))}
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

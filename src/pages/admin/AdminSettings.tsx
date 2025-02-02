@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, Home, List } from "lucide-react";
+import { Settings, Home, List, LogOut, Palette, Globe, Bell } from "lucide-react";
 import HomeSettings from "./settings/HomeSettings";
 import OptionsSettings from "./settings/OptionsSettings";
 import { useState } from "react";
@@ -9,9 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import SettingsCard from "@/components/admin/settings/SettingsCard";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 const AdminSettings = () => {
   const { toast } = useToast();
+  const { signOut } = useAuth();
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [siteName, setSiteName] = useState("Madagascar Travel");
   const [contactEmail, setContactEmail] = useState("contact@madagascartravel.com");
@@ -39,21 +41,35 @@ const AdminSettings = () => {
 
   return (
     <div className="container mx-auto py-10 px-4">
-      <h1 className="text-3xl font-bold mb-8">Paramètres</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Paramètres</h1>
+        <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
+          <LogOut className="h-4 w-4" />
+          Déconnexion
+        </Button>
+      </div>
 
       <Tabs defaultValue="home" className="space-y-6">
-        <TabsList>
+        <TabsList className="grid grid-cols-5 w-full">
           <TabsTrigger value="home" className="flex items-center gap-2">
             <Home className="h-4 w-4" />
-            Page d'accueil
+            Accueil
+          </TabsTrigger>
+          <TabsTrigger value="theme" className="flex items-center gap-2">
+            <Palette className="h-4 w-4" />
+            Thème
+          </TabsTrigger>
+          <TabsTrigger value="site" className="flex items-center gap-2">
+            <Globe className="h-4 w-4" />
+            Site
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="flex items-center gap-2">
+            <Bell className="h-4 w-4" />
+            Notifications
           </TabsTrigger>
           <TabsTrigger value="options" className="flex items-center gap-2">
             <List className="h-4 w-4" />
             Options
-          </TabsTrigger>
-          <TabsTrigger value="general" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
-            Général
           </TabsTrigger>
         </TabsList>
 
@@ -61,11 +77,18 @@ const AdminSettings = () => {
           <HomeSettings />
         </TabsContent>
 
-        <TabsContent value="options">
-          <OptionsSettings />
+        <TabsContent value="theme">
+          <div className="grid gap-6">
+            <SettingsCard
+              title="Thème"
+              description="Configurez le thème de votre site"
+            >
+              {/* Add theme settings here */}
+            </SettingsCard>
+          </div>
         </TabsContent>
 
-        <TabsContent value="general">
+        <TabsContent value="site">
           <div className="grid gap-6">
             <SettingsCard
               title="Paramètres généraux"
@@ -89,7 +112,11 @@ const AdminSettings = () => {
                 />
               </div>
             </SettingsCard>
+          </div>
+        </TabsContent>
 
+        <TabsContent value="notifications">
+          <div className="grid gap-6">
             <SettingsCard
               title="Notifications"
               description="Gérez vos préférences de notifications"
@@ -107,18 +134,22 @@ const AdminSettings = () => {
                 />
               </div>
             </SettingsCard>
-
-            <div className="flex justify-end">
-              <Button 
-                onClick={handleSave}
-                disabled={isLoading}
-              >
-                {isLoading ? "Sauvegarde en cours..." : "Sauvegarder les modifications"}
-              </Button>
-            </div>
           </div>
         </TabsContent>
+
+        <TabsContent value="options">
+          <OptionsSettings />
+        </TabsContent>
       </Tabs>
+
+      <div className="flex justify-end mt-6">
+        <Button 
+          onClick={handleSave}
+          disabled={isLoading}
+        >
+          {isLoading ? "Sauvegarde en cours..." : "Sauvegarder les modifications"}
+        </Button>
+      </div>
     </div>
   );
 };

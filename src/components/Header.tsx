@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, LogOut, ChevronDown, ArrowLeft, Palmtree, Mountain, Building, MapPin, BookOpen, Compass, Bell, ChevronRight } from "lucide-react";
+import { Menu, X, LogOut, ChevronDown, ArrowLeft, Palmtree, Mountain, Building, MapPin, BookOpen, Compass, Bell, ChevronRight, User, CalendarDays, Heart } from "lucide-react";
 import { Button, type ButtonProps } from "./ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { AuthDialog } from "./auth/AuthDialog";
@@ -25,6 +25,10 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+
+  useEffect(() => {
+    console.log("Current user state:", user); // Debug log
+  }, [user]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,7 +80,75 @@ const Header = () => {
 
         {/* User Menu */}
         <div className="flex items-center space-x-4">
-          {!user && (
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0 hover:bg-emerald-500/20">
+                  <Avatar className="h-8 w-8 border-2 border-emerald-500/50">
+                    <AvatarImage 
+                      src={
+                        user.app_metadata.provider === 'google' 
+                          ? user.identities?.[0]?.identity_data?.avatar_url 
+                          : user.user_metadata?.avatar_url
+                      } 
+                      alt={user.email} 
+                    />
+                    <AvatarFallback className="bg-emerald-500/20 text-white font-medium">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-black/90 backdrop-blur-xl border border-emerald-500/20" align="end" forceMount>
+                <DropdownMenuItem className="flex items-center justify-between text-white/90 focus:text-white focus:bg-emerald-500/20">
+                  {user.email}
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="flex items-center text-white/90 focus:text-white focus:bg-emerald-500/20"
+                  asChild
+                >
+                  <Link to="/account">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Mon compte</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="flex items-center text-white/90 focus:text-white focus:bg-emerald-500/20"
+                  asChild
+                >
+                  <Link to="/mes-reservations">
+                    <CalendarDays className="mr-2 h-4 w-4" />
+                    <span>Mes réservations</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="flex items-center text-white/90 focus:text-white focus:bg-emerald-500/20"
+                  asChild
+                >
+                  <Link to="/mes-favoris">
+                    <Heart className="mr-2 h-4 w-4" />
+                    <span>Mes favoris</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="flex items-center text-white/90 focus:text-white focus:bg-emerald-500/20"
+                  asChild
+                >
+                  <Link to="/notifications">
+                    <Bell className="mr-2 h-4 w-4" />
+                    <span>Notifications</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="flex items-center text-white/90 focus:text-white focus:bg-emerald-500/20" 
+                  onClick={signOut}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Se déconnecter</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
             <Button 
               onClick={() => setIsAuthDialogOpen(true)}
               className={cn(
@@ -89,51 +161,6 @@ const Header = () => {
               Se connecter
             </Button>
           )}
-          {user && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className={cn(
-                  "relative h-8 w-8 rounded-full border transition-all",
-                  isHomePage
-                    ? "bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-500/30 hover:border-emerald-500/50"
-                    : "bg-emerald-500/40 hover:bg-emerald-500/50 border-emerald-500/50 hover:border-emerald-500/70"
-                )}>
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={user?.photoURL || undefined}
-                      alt={user?.displayName || "User"}
-                    />
-                    <AvatarFallback>
-                      {user?.displayName?.[0] || user?.email?.[0]?.toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className={cn(
-                  "w-56 backdrop-blur-xl border transition-all",
-                  isHomePage
-                    ? "bg-white/5 border-emerald-500/20"
-                    : "bg-black/40 border-emerald-500/40"
-                )}
-              >
-                <DropdownMenuItem
-                  className={cn(
-                    "text-white transition-all",
-                    isHomePage
-                      ? "hover:bg-emerald-500/20 focus:bg-emerald-500/20"
-                      : "hover:bg-emerald-500/40 focus:bg-emerald-500/40"
-                  )}
-                  onClick={signOut}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Se déconnecter</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-
           {/* Mobile Menu Button */}
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>

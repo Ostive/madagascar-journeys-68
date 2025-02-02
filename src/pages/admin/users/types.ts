@@ -14,7 +14,8 @@ export interface Profile {
   // From auth.users table
   email?: string;
   phone?: string;
-  avatarUrl?: string;
+  full_name?: string;
+  is_active: boolean;
   
   // Additional metadata from auth.users
   metadata?: UserMetadata;

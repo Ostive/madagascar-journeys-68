@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import { UserTable } from "./users/UserTable";
+import { UserTable } from "./users/components/UserTable";
 import { fetchProfiles, updateUserRole } from "./users/userUtils";
 import type { Profile, UserRole } from "./users/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";

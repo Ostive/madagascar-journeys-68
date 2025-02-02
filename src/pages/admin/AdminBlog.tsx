@@ -28,7 +28,13 @@ const AdminBlog = () => {
   useEffect(() => {
     const checkAdmin = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user || user.email !== 'admin@example.com') {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user?.id)
+        .single();
+
+      if (!user || !profile || profile.role !== 'admin') {
         toast({
           title: "Accès refusé",
           description: "Vous n'avez pas les droits d'accès à cette page.",
@@ -120,7 +126,7 @@ const AdminBlog = () => {
     <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Gestion des articles</h1>
-        <Button onClick={() => navigate('/admin/blog/create')}>
+        <Button onClick={() => navigate('/admin/blogs/create')}>
           <Plus className="h-4 w-4 mr-2" />
           Créer un article
         </Button>

@@ -7,6 +7,7 @@ import { AuthForm } from "./AuthForm";
 import { ResetPasswordForm } from "./ResetPasswordForm";
 import { SocialAuth } from "./SocialAuth";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from 'react-router-dom';
 
 interface AuthDialogProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ const authSchema = z.object({
 });
 
 export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [isResetPassword, setIsResetPassword] = useState(false);
@@ -48,37 +50,24 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
   const handleSignIn = async (email: string, password: string): Promise<void> => {
     if (!validateForm(email, password)) return;
     setLoading(true);
-    
-    try {
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      console.log("Logged in user:", user);
-      
-      if (error) throw error;
-      
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      console.error('Sign-in error:', error);
+      let errorMessage = error.message;
+      if (error.message.includes("Invalid login credentials")) {
+        errorMessage = "Identifiants de connexion invalides";
+      }
+      setErrors({ email: errorMessage, password: errorMessage }); 
       toast({
-        title: "Connexion réussie",
-        description: "Vous êtes maintenant connecté",
-        className: "bg-emerald-50 border-emerald-200",
-      });
-      onClose();
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error 
-        ? error.message.includes("Invalid login credentials")
-          ? "Email ou mot de passe incorrect"
-          : error.message
-        : "Une erreur est survenue";
-      toast({
-        variant: "destructive",
-        title: "Erreur de connexion",
+        variant: 'destructive',
+        title: 'Erreur de connexion',
         description: errorMessage,
       });
-    } finally {
       setLoading(false);
+      return;
     }
+    // Handle successful sign-in
+    onClose(); // Close dialog on success
   };
 
   const handleLogout = async (): Promise<void> => {
@@ -135,80 +124,26 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
   const handleSignUp = async (email: string, password: string): Promise<void> => {
     if (!validateForm(email, password)) return;
     setLoading(true);
-    
-    try {
-      // Generate a default avatar URL
-      const defaultAvatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(email)}`;
-
-      // Sign up the user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-          data: {
-            avatar: defaultAvatarUrl,
-            email: email,
-          }
-        },
-      });
-
-      if (authError) {
-        if (authError.message.includes("User already registered")) {
-          toast({
-            variant: "destructive",
-            title: "Compte existant",
-            description: "Un compte existe déjà avec cet email. Veuillez vous connecter.",
-          });
-          setIsSignUp(false);
-          return;
-        }
-        throw authError;
-      }
-
-      // If user is created, insert additional user profile data
-      if (authData.user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .upsert({
-            id: authData.user.id,
-            email: email,
-            avatar: defaultAvatarUrl,
-            username: email.split('@')[0], // Use part of email as username
-          }, { 
-            onConflict: 'id' 
-          });
-
-        if (profileError) {
-          console.error('Error creating profile:', profileError);
-          toast({
-            variant: "destructive",
-            title: "Erreur de profil",
-            description: "Impossible de créer le profil complet",
-          });
-        }
-      }
-
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      console.error('Sign-up error:', error);
+      let errorMessage = error.message;
+      setErrors({ email: errorMessage, password: errorMessage }); // Set error messages
       toast({
-        title: "Inscription réussie",
-        description: "Vérifiez votre email pour confirmer votre compte",
-        className: "bg-emerald-50 border-emerald-200",
-      });
-      onClose();
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error 
-        ? error.message.includes("User already registered")
-          ? "Un compte existe déjà avec cet email"
-          : error.message
-        : "Une erreur est survenue lors de l'inscription";
-      toast({
-        variant: "destructive",
-        title: "Erreur d'inscription",
+        variant: 'destructive',
+        title: 'Erreur d\'inscription',
         description: errorMessage,
       });
-    } finally {
-      setLoading(false);
+    } else {
+      // Redirect to the intended page or home
+      navigate('/'); // Redirect to home or desired page
     }
+    setLoading(false);
+  };
+
+  const handleSwitchToSignUp = () => {
+    setIsSignUp(true);
+    setErrors({}); // Clear errors when switching to sign-up
   };
 
   return (
@@ -283,7 +218,7 @@ export const AuthDialog = ({ isOpen, onClose }: AuthDialogProps) => {
                     <AuthForm
                       isSignUp={isSignUp}
                       onSubmit={isSignUp ? handleSignUp : handleSignIn}
-                      onToggleMode={() => setIsSignUp(!isSignUp)}
+                      onToggleMode={handleSwitchToSignUp}
                       onResetPassword={() => setIsResetPassword(true)}
                       loading={loading}
                       errors={errors}
